@@ -57,7 +57,9 @@ const texts = {
         labelGiveaway: 'Отдают', labelWish: 'Ищут', typeLabel: 'Что вы хотите сделать?',
         typeGiveawayLabel: 'Подарю', typeWishLabel: 'Ищу', wishBadge: 'ИЩУ',
         leaderboardTitle: 'Топ Героев', topHeroes: 'Лучшие дарители',
-        heroicDeeds: 'добрых дел'
+        heroicDeeds: 'добрых дел',
+        activityNewItem: 'добавил(а) вещь:', activityNewWish: 'ищет:',
+        activityGiven: 'только что отдал(а):'
     },
     'en': {
         appSubtitle:'Exchange kids items', search:'Search items...',
@@ -95,7 +97,9 @@ const texts = {
         labelGiveaway: 'Offers', labelWish: 'Wishes', typeLabel: 'What do you want to do?',
         typeGiveawayLabel: 'Gifting', typeWishLabel: 'Searching', wishBadge: 'WISH',
         leaderboardTitle: 'Top Heroes', topHeroes: 'Best Givers',
-        heroicDeeds: 'heroic deeds'
+        heroicDeeds: 'heroic deeds',
+        activityNewItem: 'added an item:', activityNewWish: 'is looking for:',
+        activityGiven: 'just gave away:'
     },
     'es': {
         appSubtitle:'Intercambio infantil', search:'Buscar artículos...',
@@ -133,7 +137,9 @@ const texts = {
         labelGiveaway: 'Regalan', labelWish: 'Buscan', typeLabel: '¿Qué quieres hacer?',
         typeGiveawayLabel: 'Regalo', typeWishLabel: 'Busco', wishBadge: 'BUSCO',
         leaderboardTitle: 'Top Héroes', topHeroes: 'Mejores donantes',
-        heroicDeeds: 'actos heroicos'
+        heroicDeeds: 'actos heroicos',
+        activityNewItem: 'agregó un artículo:', activityNewWish: 'está buscando:',
+        activityGiven: 'acaba de dar:'
     },
     'pt': {
         appSubtitle:'Troca infantil', search:'Procurar itens...',
@@ -171,7 +177,9 @@ const texts = {
         labelGiveaway: 'Doando', labelWish: 'Procurando', typeLabel: 'O que você quer fazer?',
         typeGiveawayLabel: 'Doar', typeWishLabel: 'Procurar', wishBadge: 'PROCURO',
         leaderboardTitle: 'Top Heróis', topHeroes: 'Melhores doadores',
-        heroicDeeds: 'atos heroicos'
+        heroicDeeds: 'atos heroicos',
+        activityNewItem: 'adicionou um item:', activityNewWish: 'está procurando:',
+        activityGiven: 'acabou de doar:'
     },
     'uk': {
         appSubtitle:'Обмін дитячими речами', search:'Пошук речей...',
@@ -209,7 +217,9 @@ const texts = {
         labelGiveaway: 'Віддають', labelWish: 'Шукають', typeLabel: 'Що ви хочете зробити?',
         typeGiveawayLabel: 'Віддаю', typeWishLabel: 'Шукаю', wishBadge: 'ШУКАЮ',
         leaderboardTitle: 'Топ Героїв', topHeroes: 'Найкращі дарувальники',
-        heroicDeeds: 'добрих справ'
+        heroicDeeds: 'добрих справ',
+        activityNewItem: 'додав(ла) річ:', activityNewWish: 'шукає:',
+        activityGiven: 'щойно віддав(ла):'
     },
     'ka': {
         appSubtitle:'ბავშვთა ნივთების გაცვლა', search:'ნივთების ძიება...',
@@ -245,7 +255,9 @@ const texts = {
         markAsGiven: 'ჩემგან წაიღეს', givenAway: 'გაიცა', openFavorites: 'რჩეულები',
         typeGiveawayLabel: 'ვაძლევ', typeWishLabel: 'ვეძებ', wishBadge: 'ვეძებ',
         leaderboardTitle: 'გმირების სია', topHeroes: 'საუკეთესო გამცემები',
-        heroicDeeds: 'გმირული საქმე'
+        heroicDeeds: 'გმირული საქმე',
+        activityNewItem: 'დაამატა ნივთი:', activityNewWish: 'ეძებს:',
+        activityGiven: 'ახლახანს გასცა:'
     }
 };
 
@@ -295,6 +307,8 @@ document.addEventListener('DOMContentLoaded', () => {
         loadUser();
         loadItems();
         setupEventListeners();
+        loadActivities();
+        setInterval(loadActivities, 30000); // 30s polling
 
         const welcome = document.getElementById('welcomeMessage');
         if (welcome && currentCountry && currentCity) {
@@ -1044,6 +1058,40 @@ async function loadLeaderboard() {
         console.error("Leaderboard load error", e);
         list.innerHTML = `<p class="text-center text-red-400 py-8">${texts[currentLang].errorServer}</p>`;
     }
+}
+
+let activeActivityIndex = 0;
+async function loadActivities() {
+    try {
+        const res = await fetch('/api/activities');
+        const data = await res.json();
+        if (data.length === 0) return;
+        
+        const container = document.getElementById('activityBarContainer');
+        const textEl = document.getElementById('activityText');
+        if (!container || !textEl) return;
+        
+        container.classList.remove('hidden');
+        
+        // Pick one activity and cycle
+        const act = data[activeActivityIndex % data.length];
+        activeActivityIndex++;
+        
+        let msg = '';
+        const name = `<b>${act.user_name}</b>`;
+        const title = act.item_title;
+        
+        if (act.activity_type === 'new_item') msg = `${name} ${t('activityNewItem')} ${title}`;
+        else if (act.activity_type === 'new_wish') msg = `${name} ${t('activityNewWish')} ${title}`;
+        else if (act.activity_type === 'item_given') msg = `${name} ${t('activityGiven')} ${title}`;
+        
+        textEl.style.opacity = '0';
+        setTimeout(() => {
+            textEl.innerHTML = msg;
+            textEl.style.opacity = '1';
+        }, 300);
+        
+    } catch (e) { console.error("Activity load error", e); }
 }
 
 function showFavorites() {

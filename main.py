@@ -43,13 +43,15 @@ async def init_db():
     async with aiosqlite.connect('swap_global.db') as db:
         await db.execute('''CREATE TABLE IF NOT EXISTS users 
                             (user_id INTEGER PRIMARY KEY, is_premium BOOLEAN DEFAULT 0,
-                             username TEXT, first_name TEXT, last_name TEXT)''')
+                             username TEXT, first_name TEXT, last_name TEXT,
+                             given_count INTEGER DEFAULT 0)''')
         await db.execute('''CREATE TABLE IF NOT EXISTS items 
                             (id INTEGER PRIMARY KEY AUTOINCREMENT, owner_id INTEGER, title TEXT, 
                              country TEXT, city TEXT, category TEXT, district TEXT,
                              contact TEXT, image_url TEXT, 
                              status TEXT DEFAULT 'active',
                              receiver_id INTEGER,
+                             item_type TEXT DEFAULT 'giveaway',
                              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
         # Включаем внешние ключи и миграцию (на случай если колонки не создались)
         try:
@@ -61,10 +63,18 @@ async def init_db():
         try:
             await db.execute("ALTER TABLE items ADD COLUMN item_type TEXT DEFAULT 'giveaway'")
         except: pass
+        try:
+            await db.execute("ALTER TABLE users ADD COLUMN given_count INTEGER DEFAULT 0")
+        except: pass
         
         await db.execute('''CREATE TABLE IF NOT EXISTS favorites 
                             (user_id INTEGER, item_id INTEGER, 
                              PRIMARY KEY (user_id, item_id))''')
+        await db.execute('''CREATE TABLE IF NOT EXISTS activities 
+                            (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                             user_id INTEGER, item_id INTEGER, 
+                             activity_type TEXT, item_title TEXT, user_name TEXT,
+                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
         await db.execute('''CREATE TABLE IF NOT EXISTS chats 
                             (id INTEGER PRIMARY KEY AUTOINCREMENT, item_id INTEGER, 
                              buyer_id INTEGER, seller_id INTEGER, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
@@ -197,6 +207,14 @@ async def api_get_leaderboard(request):
             rows = await cur.fetchall()
             return web.json_response([dict(r) for r in rows])
 
+async def api_get_activities(request):
+    """Последние 10 активностей сообщества"""
+    async with aiosqlite.connect('swap_global.db') as db:
+        db.row_factory = aiosqlite.Row
+        async with db.execute("SELECT * FROM activities ORDER BY id DESC LIMIT 10") as cur:
+            rows = await cur.fetchall()
+            return web.json_response([dict(r) for r in rows])
+
 async def api_register_user(request):
     """Register user from WebApp (if not yet in DB)"""
     data = await request.json()
@@ -271,8 +289,21 @@ async def api_add_item(request):
              data['category'], data.get('district', ''), data['contact'], data.get('image', ''),
              data.get('item_type', 'giveaway'))
         )
+        item_id = cursor.lastrowid
+        
+        # Activity Logging
+        activity_type = 'new_item' if data.get('item_type') != 'wish' else 'new_wish'
+        async with db.execute("SELECT first_name FROM users WHERE user_id = ?", (data['user_id'],)) as cur:
+            user_row = await cur.fetchone()
+            user_name = user_row[0] if user_row else 'Пользователь'
+            
+        await db.execute(
+            "INSERT INTO activities (user_id, item_id, activity_type, item_title, user_name) VALUES (?, ?, ?, ?, ?)",
+            (data['user_id'], item_id, activity_type, data['title'], user_name)
+        )
+        
         await db.commit()
-        return web.json_response({'ok': True, 'id': cursor.lastrowid})
+        return web.json_response({'ok': True, 'id': item_id})
 
 async def api_mark_item_given(request):
     """Отметить вещь как отданную"""
@@ -282,10 +313,29 @@ async def api_mark_item_given(request):
     receiver_id = data.get('receiver_id') # who received it
     
     async with aiosqlite.connect('swap_global.db') as db:
+        async with db.execute("SELECT title, item_type FROM items WHERE id = ?", (item_id,)) as cur:
+            item_row = await cur.fetchone()
+            if not item_row: return web.json_response({'error': 'Not found'}, status=404)
+            title, i_type = item_row
+            
         await db.execute(
             "UPDATE items SET status = 'given', receiver_id = ? WHERE id = ? AND owner_id = ?",
             (receiver_id, item_id, user_id)
         )
+        
+        # Update given_count and log activity for giveaway
+        if i_type == 'giveaway':
+            await db.execute("UPDATE users SET given_count = given_count + 1 WHERE user_id = ?", (user_id,))
+            
+            async with db.execute("SELECT first_name FROM users WHERE user_id = ?", (user_id,)) as cur:
+                u_row = await cur.fetchone()
+                u_name = u_row[0] if u_row else 'Пользователь'
+            
+            await db.execute(
+                "INSERT INTO activities (user_id, item_id, activity_type, item_title, user_name) VALUES (?, ?, ?, ?, ?)",
+                (user_id, item_id, 'item_given', title, u_name)
+            )
+            
         await db.commit()
         return web.json_response({'ok': True})
 
@@ -546,6 +596,7 @@ async def main():
     app.router.add_post('/api/items/mark_given', api_mark_item_given)
     app.router.add_get('/api/user/stats', api_get_user_stats)
     app.router.add_get('/api/leaderboard', api_get_leaderboard)
+    app.router.add_get('/api/activities', api_get_activities)
     app.router.add_post('/api/items/toggle_like', api_toggle_like)
     app.router.add_get('/api/chats', api_get_chats)
     app.router.add_get('/api/messages', api_get_messages)
