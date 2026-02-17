@@ -36,7 +36,13 @@ if not BOT_TOKEN:
     print("   Для Replit: Secrets → BOT_TOKEN")
     print("   Локально: создайте .env файл с BOT_TOKEN=ваш_токен")
 
-bot = Bot(token=BOT_TOKEN or "placeholder")
+try:
+    bot = Bot(token=BOT_TOKEN or "12345678:placeholder")
+except Exception as e:
+    print(f"⚠️ Ошибка инициализации бота: {e}")
+    print("   Режим тестирования UI без функционала бота.")
+    bot = None
+
 
 # --- БАЗА ДАННЫХ ---
 async def init_db():
@@ -171,7 +177,10 @@ async def on_successful_payment(message: types.Message):
 
 # --- ВЕБ-СЕРВЕР ---
 async def handle_index(request):
-    with open('templates/index.html', 'r', encoding='utf-8') as f:
+    import os
+    # Путь к шаблону
+    template_path = os.path.join(os.path.dirname(__file__), 'templates', 'index.html')
+    with open(template_path, 'r', encoding='utf-8') as f:
         html_content = f.read()
     return web.Response(text=html_content, content_type='text/html')
 
@@ -611,11 +620,24 @@ async def main():
     await site.start()
     
     print(f"✅ Сервер работает: {BASE_URL}")
-    print(f"🤖 Бот запущен")
     
-    # Удаляем вебхук и пропускаем старые обновления, чтобы избежать Conflict
-    await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(bot, skip_updates=True)
+    if bot:
+        print(f"🤖 Бот запущен")
+        try:
+            # Удаляем вебхук и пропускаем старые обновления, чтобы избежать Conflict
+            await bot.delete_webhook(drop_pending_updates=True)
+            await dp.start_polling(bot, skip_updates=True)
+        except Exception as e:
+            print(f"⚠️ Ошибка при запуске бота: {e}")
+            print("   Веб-сервер продолжает работу.")
+            # Держим сервер запущенным, если бот упал
+            while True:
+                await asyncio.sleep(3600)
+    else:
+        print("⚠️ Бот не запущен (неверный токен). Только веб-интерфейс доступен.")
+        # Держим сервер запущенным
+        while True:
+            await asyncio.sleep(3600)
 
 if __name__ == "__main__":
     asyncio.run(main())

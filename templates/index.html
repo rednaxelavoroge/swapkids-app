@@ -124,35 +124,27 @@
     </style>
   </head>
   <body
-    class="bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50 min-h-screen"
+    class="bg-white md:bg-gradient-to-br md:from-teal-50 md:via-cyan-50 md:to-blue-50 min-h-screen"
   >
     <div
-      class="max-w-md mx-auto bg-white rounded-[2.5rem] overflow-hidden min-h-screen relative shadow-2xl"
+      class="max-w-md mx-auto bg-white md:rounded-[2.5rem] overflow-hidden min-h-screen relative md:shadow-2xl"
     >
       <!-- Header -->
-      <div class="bg-gradient-to-r from-teal-600 to-teal-500 px-6 pb-6 pt-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <h1 class="text-2xl font-bold text-white flex items-center gap-2">
-              <i class="fas fa-exchange-alt"></i>
-              <span id="appTitle">Swap Kids</span>
-            </h1>
-            <p class="text-teal-100 text-sm mt-1" id="appSubtitle">
-              Обмен детскими вещами
-            </p>
-          </div>
-          <div class="flex items-center gap-3">
-            <div 
-              onclick="openLeaderboard()"
-              class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white cursor-pointer hover:bg-white/30 transition-all shadow-sm"
-              title="Leaderboard"
-            >
-              <i class="fas fa-trophy"></i>
+      <div class="bg-gradient-to-r from-teal-600 to-teal-500 px-4 pb-6 pt-6 shadow-lg">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur shadow-inner">
+              <i class="fas fa-exchange-alt text-white text-xl"></i>
             </div>
+            <h1 class="text-2xl font-black text-white tracking-tight">
+              Swap Kids <span class="text-[10px] bg-white/20 px-1.5 py-0.5 rounded-md font-normal ml-1 align-top">v3.1</span>
+            </h1>
+          </div>
+          <div class="flex items-center gap-2">
             <select
               id="langSelector"
               onchange="changeLanguage()"
-              class="bg-white/20 text-white text-xs rounded-full px-2 py-2 border-0 outline-none cursor-pointer backdrop-blur"
+              class="bg-white/20 text-white text-xs font-bold rounded-full px-3 py-2 border-0 outline-none cursor-pointer backdrop-blur appearance-none shadow-sm hover:bg-white/30 transition-all"
             >
               <option value="ru" class="text-gray-800">🇷🇺 RU</option>
               <option value="en" class="text-gray-800">🇺🇸 EN</option>
@@ -161,23 +153,20 @@
               <option value="uk" class="text-gray-800">🇺🇦 UK</option>
               <option value="ka" class="text-gray-800">🇬🇪 KA</option>
             </select>
-            <div
-              id="profileEntry"
-              onclick="switchView('profile')"
-              class="w-10 h-10 rounded-full border-2 border-white/30 overflow-hidden flex items-center justify-center backdrop-blur cursor-pointer hover:scale-110 transition-all shadow-sm"
-            >
-              <img id="userAvatar" src="" alt="" class="w-full h-full object-cover hidden" />
-              <i id="userAvatarIcon" class="fas fa-user-circle text-white text-2xl"></i>
-            </div>
           </div>
         </div>
-        <div class="mt-5 relative">
-          <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-teal-400"></i>
+        
+        <p class="text-teal-50 text-sm font-medium opacity-90 mb-5 pl-1" id="appSubtitle">
+          Обмен детскими вещами для заботливых родителей
+        </p>
+
+        <div class="relative group">
+          <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-teal-400 group-focus-within:text-teal-600 transition-colors"></i>
           <input
             type="text"
             id="searchInput"
-            placeholder="Поиск вещей..."
-            class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-white/95 border-0 text-gray-700 shadow-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all"
+            placeholder="Что вы ищете сегодня?"
+            class="w-full pl-11 pr-4 py-4 rounded-2xl bg-white border-0 text-gray-700 shadow-xl placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-teal-400/20 transition-all text-sm"
           />
         </div>
       </div>
@@ -307,8 +296,8 @@
 
         <!-- Items Grid -->
         <div
-          class="px-4 py-4 pb-24 overflow-y-auto"
-          style="max-height: calc(100vh - 320px)"
+          class="px-4 py-4 pb-32 overflow-y-auto"
+          style="height: calc(100vh - 300px)"
         >
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold text-gray-800" id="feedTitle">
@@ -316,11 +305,45 @@
             </h2>
             <span class="text-sm text-gray-500" id="itemsCount">0 вещей</span>
           </div>
-          <div id="itemsGrid" class="grid grid-cols-2 gap-3"></div>
+          <div id="itemsGrid" class="grid grid-cols-2 gap-3 pb-8"></div>
         </div>
       </div>
 
-      <!-- Profile View (Modal Overlay) -->
+      <!-- Bottom Navigation -->
+      <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-gray-100 px-6 py-3 pb-8 flex items-center justify-around z-50 max-w-md mx-auto rounded-t-[2.5rem] shadow-[0_-15px_30px_-5px_rgba(0,0,0,0.08)]">
+          <button id="navHome" onclick="switchView('home')" class="flex flex-col items-center gap-1.5 text-teal-600 transition-all active:scale-95">
+              <i class="fas fa-house text-xl"></i>
+              <span class="text-[9px] font-black uppercase tracking-widest" id="navHomeLabel">Лента</span>
+          </button>
+          
+          <button onclick="openLeaderboard()" class="flex flex-col items-center gap-1.5 text-gray-400 hover:text-teal-500 transition-all active:scale-95">
+              <i class="fas fa-trophy text-xl"></i>
+              <span class="text-[9px] font-black uppercase tracking-widest" id="navLeaderLabel">Топ</span>
+          </button>
+
+          <div class="w-16"></div> <!-- Large Spacer for FAB -->
+
+          <button onclick="showFavorites()" class="flex flex-col items-center gap-1.5 text-gray-400 hover:text-teal-500 transition-all active:scale-95">
+              <i class="fas fa-heart text-xl"></i>
+              <span class="text-[9px] font-black uppercase tracking-widest" id="navFavLabel">Лайки</span>
+          </button>
+
+          <button id="navProfile" onclick="switchView('profile')" class="flex flex-col items-center gap-1.5 text-gray-400 hover:text-teal-500 transition-all active:scale-95">
+              <i class="fas fa-user-circle text-xl"></i>
+              <span class="text-[9px] font-black uppercase tracking-widest" id="navProfileLabel">Профиль</span>
+          </button>
+
+          <!-- Centered FAB -->
+          <button
+            id="fabAdd"
+            onclick="openAddModal()"
+            class="absolute -top-6 left-1/2 -translate-x-1/2 w-16 h-16 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full shadow-[0_10px_25px_-5px_rgba(20,184,166,0.5)] flex items-center justify-center text-white text-3xl z-[60] transition-all hover:scale-110 active:scale-90 border-4 border-white"
+          >
+            <i class="fas fa-plus"></i>
+          </button>
+      </nav>
+    </div>
+    </div>
       <div id="profileView" class="fixed inset-0 z-50 hidden">
           <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="switchView('home')"></div>
           <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-w-md mx-auto h-[90vh] overflow-y-auto slide-up p-6">
@@ -368,17 +391,7 @@
           </div>
       </div>
 
-      <!-- FAB (Restored to original position) -->
-      <button
-        id="fabAdd"
-        onclick="openAddModal()"
-        class="fixed bottom-8 right-6 w-14 h-14 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full shadow-lg shadow-teal-500/40 flex items-center justify-center text-white text-2xl z-40 transition-transform hover:scale-110"
-      >
-        <i class="fas fa-plus"></i>
-      </button>
-    </div>
-
-    <!-- Location Modal -->
+      <!-- Add Item Modal -->
     <div id="locationModal" class="fixed inset-0 z-50 hidden">
       <div
         class="absolute inset-0 bg-black/60 backdrop-blur-sm"
@@ -787,6 +800,6 @@
       </div>
     </div>
 
-    <script src="/static/app.js"></script>
+    <script src="/static/app.js?v=3.1"></script>
   </body>
 </html>

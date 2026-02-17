@@ -1,0 +1,26 @@
+⚠️ BOT_TOKEN не установлен! Задайте через переменные окружеINFO:aiohttp.access:127.0.0.1 [17/Feb/2026:12:56:33 +0400] "GET / HTTP/1.1" 200 34665 "-" "curl/8.7.1"
+е .env файл с BOT_TOKEN=ваш_токен
+Traceback (most recent call last):
+  File "/Users/aego/swapkids_app/main.py", line 650, in <module>
+    asyncio.run(main())
+    ~~~~~~~~~~~^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py", line 204, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/runners.py", line 127, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/Users/aego/swapkids_app/main.py", line 627, in main
+    await site.start()
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages/aiohttp/web_runner.py", line 121, in start
+    self._server = await loop.create_server(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/asyncio/base_events.py", line 1627, in create_server
+    raise OSError(err.errno, msg) from None
+OSError: [Errno 48] error while attempting to bind on address ('0.0.0.0', 8080): [errno 48] address already in use

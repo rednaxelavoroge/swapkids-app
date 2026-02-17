@@ -1095,9 +1095,59 @@ async function loadActivities() {
 }
 
 function showFavorites() {
-    // For now, reuse the existing logic if any, or just show alert
-    // Actually, I can just load favorites into the main grid and switch to home
     isFavoritesOnly = true;
     switchView('home');
     loadItems();
 }
+
+// ==================== COLLAPSIBLE NAV ====================
+let navCollapsed = false;
+let touchStartY = 0;
+
+function initCollapsibleNav() {
+    const nav = document.querySelector('nav');
+    if (!nav) return;
+
+    // We add swipe gestures to the nav bar and its handle (+)
+    const fab = document.getElementById('fabAdd');
+    
+    // Using simple touch events for swipe
+    nav.addEventListener('touchstart', e => touchStartY = e.touches[0].clientY, {passive: true});
+    nav.addEventListener('touchend', e => {
+        const touchEndY = e.changedTouches[0].clientY;
+        const diff = touchEndY - touchStartY;
+        if (diff > 50 && !navCollapsed) toggleNav(true);
+        else if (diff < -50 && navCollapsed) toggleNav(false);
+    }, {passive: true});
+
+    // Also allow clicking the FAB to toggle when collapsed
+    if (fab) {
+        fab.addEventListener('click', (e) => {
+            if (navCollapsed) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleNav(false);
+            }
+        });
+    }
+}
+
+function toggleNav(collapse) {
+    const nav = document.querySelector('nav');
+    if (!nav) return;
+
+    navCollapsed = collapse;
+    if (collapse) {
+        nav.style.transform = 'translateY(80%)';
+        nav.style.opacity = '0.9';
+    } else {
+        nav.style.transform = 'translateY(0)';
+        nav.style.opacity = '1';
+    }
+}
+
+// Call init on load
+document.addEventListener('DOMContentLoaded', () => {
+    initCollapsibleNav();
+});
+
