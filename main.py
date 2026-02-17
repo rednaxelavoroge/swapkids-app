@@ -105,6 +105,129 @@ async def init_db():
                              UNIQUE(referred_id))''')
         await db.commit()
 
+async def seed_demo_data():
+    """Заполнить ленту демо-данными если она пустая"""
+    async with aiosqlite.connect('swap_global.db') as db:
+        async with db.execute("SELECT COUNT(*) FROM items") as cur:
+            count = (await cur.fetchone())[0]
+        if count > 0:
+            return  # Уже есть данные
+        
+        # Демо пользователь
+        await db.execute("INSERT OR IGNORE INTO users (user_id, username, first_name, karma) VALUES (0, 'demo', 'SwapKids Demo', 0)")
+        
+        # === GIVEAWAY ITEMS ===
+        demo_items = [
+            # (title, country, city, category, district, image_url)
+            ("Коляска Bugaboo Fox 3", "GE", "Тбилиси", "strollers", "Ваке",
+             "https://images.unsplash.com/photo-1591088398332-8a7791972843?w=400&h=300&fit=crop"),
+            ("Комбинезон зимний 80 см", "GE", "Тбилиси", "clothes", "Сабуртало",
+             "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=400&h=300&fit=crop"),
+            ("LEGO Duplo набор", "GE", "Батуми", "toys", "Старый город",
+             "https://images.unsplash.com/photo-1587654780291-39c9404d7dd0?w=400&h=300&fit=crop"),
+            ("Автокресло Maxi-Cosi 0-13 кг", "ES", "Барселона", "car_seats", "Эшампле",
+             "https://images.unsplash.com/photo-1594583388647-364ea6532257?w=400&h=300&fit=crop"),
+            ("Пакет одежды мальчик 3-6 мес", "ES", "Мадрид", "clothes", "Центр",
+             "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=400&h=300&fit=crop"),
+            ("Беговел Strider 12", "RU", "Москва", "toys", "Хамовники",
+             "https://images.unsplash.com/photo-1608889175123-8ee362201f81?w=400&h=300&fit=crop"),
+            ("Манеж складной", "RU", "Москва", "furniture", "Арбат",
+             "https://images.unsplash.com/photo-1566004100631-35d015d6a491?w=400&h=300&fit=crop"),
+            ("Конверт в коляску зимний", "UA", "Киев", "strollers", "Печерск",
+             "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop"),
+            ("Набор пазлов 2+", "PT", "Лиссабон", "toys", "Шиаду",
+             "https://images.unsplash.com/photo-1606503153255-59d5e417c4ed?w=400&h=300&fit=crop"),
+            ("Куртка демисезонная 98 см", "GE", "Тбилиси", "clothes", "Дидубе",
+             "https://images.unsplash.com/photo-1578587018452-892bacefd3f2?w=400&h=300&fit=crop"),
+            ("Развивающий коврик Tiny Love", "GE", "Тбилиси", "toys", "Глдани",
+             "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=300&fit=crop"),
+            ("Бустер для авто 15-36 кг", "ES", "Валенсия", "car_seats", "Русафа",
+             "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=400&h=300&fit=crop"),
+            ("Платье нарядное 110 см", "RU", "Санкт-Петербург", "clothes", "Центральный",
+             "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?w=400&h=300&fit=crop"),
+            ("Самокат Micro Mini", "UA", "Одесса", "toys", "Приморский",
+             "https://images.unsplash.com/photo-1609710228159-0fa9bd7c0827?w=400&h=300&fit=crop"),
+            ("Стульчик для кормления IKEA", "GE", "Батуми", "furniture", "Новый бульвар",
+             "https://images.unsplash.com/photo-1586105449897-20b5efeb3233?w=400&h=300&fit=crop"),
+            ("Рюкзак-переноска Ergobaby", "PT", "Порту", "strollers", "Рибейра",
+             "https://images.unsplash.com/photo-1544413660-299165566b1d?w=400&h=300&fit=crop"),
+            ("Книжки детские 20 шт", "RU", "Казань", "toys", "Вахитовский",
+             "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=300&fit=crop"),
+            ("Ботинки зимние 26 размер", "UA", "Львов", "clothes", "Галицкий",
+             "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop"),
+            ("Качели детские подвесные", "GE", "Тбилиси", "furniture", "Исани",
+             "https://images.unsplash.com/photo-1575783970733-1aaedde1db74?w=400&h=300&fit=crop"),
+            ("Набор посуды детский", "ES", "Малага", "other", "Центр",
+             "https://images.unsplash.com/photo-1590005354167-6da97870c757?w=400&h=300&fit=crop"),
+        ]
+        
+        import random
+        for title, country, city, cat, district, img in demo_items:
+            await db.execute(
+                """INSERT INTO items (owner_id, title, country, city, category, district, contact, image_url, item_type)
+                   VALUES (0, ?, ?, ?, ?, ?, '@swapkids_demo', ?, 'giveaway')""",
+                (title, country, city, cat, district, img))
+        
+        # === WISH ITEMS (Доска желаний) ===
+        demo_wishes = [
+            ("Ищу зимний комбинезон 86 см", "GE", "Тбилиси", "clothes", "Ваке",
+             "https://images.unsplash.com/photo-1607453998774-d533f65dac99?w=400&h=300&fit=crop"),
+            ("Нужна коляска-трость лёгкая", "RU", "Москва", "strollers", "Марьино", ""),
+            ("Ищу конструктор Duplo/Mega Bloks", "ES", "Барселона", "toys", "Грасия",
+             "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&h=300&fit=crop"),
+            ("Нужен велосипед 14 дюймов", "UA", "Киев", "toys", "Оболонь", ""),
+            ("Ищу автокресло 9-18 кг", "GE", "Батуми", "car_seats", "Центр", ""),
+            ("Нужна ванночка для купания", "PT", "Лиссабон", "other", "Байша",
+             "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop"),
+        ]
+        
+        for title, country, city, cat, district, img in demo_wishes:
+            await db.execute(
+                """INSERT INTO items (owner_id, title, country, city, category, district, contact, image_url, item_type)
+                   VALUES (0, ?, ?, ?, ?, ?, '@swapkids_demo', ?, 'wish')""",
+                (title, country, city, cat, district, img))
+        
+        # === DEMO LIKES (рандомные лайки) ===
+        async with db.execute("SELECT id FROM items") as cur:
+            item_ids = [row[0] for row in await cur.fetchall()]
+        
+        # Создаём фейковых «лайкеров»
+        for fake_uid in range(100001, 100020):
+            await db.execute("INSERT OR IGNORE INTO users (user_id, username, first_name) VALUES (?, ?, ?)",
+                           (fake_uid, f'user{fake_uid}', f'Parent{fake_uid-100000}'))
+        
+        for item_id in item_ids:
+            num_likes = random.randint(1, 12)
+            likers = random.sample(range(100001, 100020), min(num_likes, 19))
+            for uid in likers:
+                try:
+                    await db.execute("INSERT OR IGNORE INTO likes (user_id, item_id) VALUES (?, ?)", (uid, item_id))
+                except: pass
+        
+        # === DEMO ACTIVITIES ===
+        demo_activities = [
+            (0, 'new_item', "Коляска Bugaboo Fox 3", "Мария"),
+            (0, 'new_item', "LEGO Duplo набор", "Анна"),
+            (0, 'item_given', "Автокресло Maxi-Cosi", "Елена"),
+            (0, 'new_item', "Беговел Strider 12", "Наталья"),
+            (0, 'item_given', "Комбинезон зимний", "Ольга"),
+            (0, 'new_wish', "Ищу коляску-трость", "Давид"),
+            (0, 'new_item', "Развивающий коврик", "Софи"),
+            (0, 'item_given', "Книжки детские 20 шт", "Тамара"),
+            (0, 'new_item', "Самокат Micro Mini", "Ирина"),
+            (0, 'item_given', "Набор посуды детский", "Лейла"),
+            (0, 'new_item', "Стульчик IKEA", "Нино"),
+            (0, 'new_wish', "Нужен велосипед 14\"", "Андрей"),
+        ]
+        
+        for uid, atype, title, name in demo_activities:
+            await db.execute(
+                "INSERT INTO activities (user_id, item_id, activity_type, item_title, user_name) VALUES (?, 1, ?, ?, ?)",
+                (uid, atype, title, name))
+        
+        await db.commit()
+        print("✅ Demo data seeded!")
+
 # --- ЛОГИКА ТЕЛЕГРАМ БОТА ---
 @router.message(CommandStart())
 async def command_start(message: types.Message):
@@ -695,6 +818,7 @@ async def handle_static(request):
 # --- RUN ---
 async def main():
     await init_db()
+    await seed_demo_data()
     
     app = web.Application()
     

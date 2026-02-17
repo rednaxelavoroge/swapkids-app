@@ -617,6 +617,7 @@ function renderItems() {
                          alt="${item.title}" class="w-full h-32 object-cover" loading="lazy"
                          onerror="this.src='https://placehold.co/400x300/e0f2fe/0d9488?text=${encodeURIComponent(item.title)}'">
                     ${item.owner_id == userId ? `<span class="absolute top-2 left-2 px-2 py-1 bg-teal-500 text-white text-xs font-medium rounded-full">${t('myItem')}</span>` : ''}
+                    ${item.owner_id == 0 ? `<span class="absolute top-2 left-2 px-1.5 py-0.5 bg-black/30 text-white/70 text-[8px] font-medium rounded backdrop-blur-sm uppercase tracking-wider">demo</span>` : ''}
                 `}
                 
                 <!-- Like Button -->
@@ -1211,38 +1212,62 @@ async function loadLeaderboard() {
     }
 }
 
-let activeActivityIndex = 0;
+let tickerMessages = [];
+let tickerIndex = 0;
+let tickerInterval = null;
+
 async function loadActivities() {
     try {
         const res = await fetch('/api/activities');
         const data = await res.json();
-        if (data.length === 0) return;
         
-        const container = document.getElementById('activityBarContainer');
-        const textEl = document.getElementById('activityText');
-        if (!container || !textEl) return;
+        const textEl = document.getElementById('tickerText');
+        if (!textEl) return;
         
-        container.classList.remove('hidden');
+        // Format messages
+        tickerMessages = data.map(act => {
+            const name = act.user_name;
+            const title = act.item_title;
+            if (act.activity_type === 'new_item') return `🎁 <b>${name}</b> ${t('activityNewItem')} ${title}`;
+            if (act.activity_type === 'new_wish') return `🔍 <b>${name}</b> ${t('activityNewWish')} ${title}`;
+            if (act.activity_type === 'item_given') return `💚 <b>${name}</b> ${t('activityGiven')} ${title}`;
+            return `⚡ <b>${name}</b> — ${title}`;
+        });
         
-        // Pick one activity and cycle
-        const act = data[activeActivityIndex % data.length];
-        activeActivityIndex++;
+        // Fallback demo messages if no real data
+        if (tickerMessages.length === 0) {
+            tickerMessages = [
+                '🎁 <b>Мария</b> добавила коляску в Тбилиси',
+                '💚 <b>Елена</b> отдала автокресло в Барселоне',
+                '🔍 <b>Давид</b> ищет зимний комбинезон',
+                '🎁 <b>Анна</b> добавила набор LEGO в Батуми',
+                '💚 <b>Тамара</b> отдала 20 книжек в Казани',
+            ];
+        }
         
-        let msg = '';
-        const name = `<b>${act.user_name}</b>`;
-        const title = act.item_title;
+        // Show first message
+        showTickerMessage();
         
-        if (act.activity_type === 'new_item') msg = `${name} ${t('activityNewItem')} ${title}`;
-        else if (act.activity_type === 'new_wish') msg = `${name} ${t('activityNewWish')} ${title}`;
-        else if (act.activity_type === 'item_given') msg = `${name} ${t('activityGiven')} ${title}`;
+        // Auto-cycle every 4 seconds
+        if (tickerInterval) clearInterval(tickerInterval);
+        tickerInterval = setInterval(showTickerMessage, 4000);
         
-        textEl.style.opacity = '0';
-        setTimeout(() => {
-            textEl.innerHTML = msg;
-            textEl.style.opacity = '1';
-        }, 300);
-        
-    } catch (e) { console.error("Activity load error", e); }
+    } catch (e) { console.error("Ticker error", e); }
+}
+
+function showTickerMessage() {
+    const textEl = document.getElementById('tickerText');
+    if (!textEl || tickerMessages.length === 0) return;
+    
+    textEl.style.opacity = '0';
+    textEl.style.transform = 'translateY(8px)';
+    
+    setTimeout(() => {
+        textEl.innerHTML = tickerMessages[tickerIndex % tickerMessages.length];
+        textEl.style.opacity = '1';
+        textEl.style.transform = 'translateY(0)';
+        tickerIndex++;
+    }, 400);
 }
 
 function showFavorites() {

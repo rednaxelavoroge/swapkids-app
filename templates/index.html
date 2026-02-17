@@ -245,14 +245,15 @@
           </div>
         </div>
 
-        <!-- Community Activity Bar -->
-        <div id="activityBarContainer" class="px-4 py-3 bg-teal-50/50 border-b border-teal-100/50 hidden">
-           <div class="flex items-center gap-3 overflow-hidden">
-             <div class="flex-shrink-0 w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center text-white text-xs">
-                <i class="fas fa-bolt"></i>
-             </div>
-             <div id="activityText" class="text-xs text-teal-800 font-medium truncate italic">
-                <!-- Activity will be loaded here -->
+        <!-- Live Activity Ticker -->
+        <div id="activityTicker" class="px-4 py-2.5 bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50 border-b border-teal-100/50 overflow-hidden">
+           <div class="flex items-center gap-2">
+             <span class="relative flex h-2.5 w-2.5 flex-shrink-0">
+               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+               <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+             </span>
+             <div id="tickerText" class="text-xs text-teal-800 font-medium truncate transition-all duration-500">
+                ⚡ Загрузка...
              </div>
            </div>
         </div>
@@ -838,6 +839,6 @@
       </div>
     </div>
 
-    <script src="/static/app.js?v=3.4"></script>
+    <script src="/static/app.js?v=3.5"></script>
   </body>
 </html>
