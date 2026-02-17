@@ -48,7 +48,8 @@ const texts = {
         cityNotSet:'Город не указан', errorPublish:'Ошибка публикации', errorServer:'Ошибка сервера',
         errorInvoice:'Ошибка создания счета', errorPayment:'Ошибка оплаты',
         invoiceSent:'Счёт отправлен! Проверьте бота 📩', premiumActivated:'🎉 Премиум активирован!',
-        confirmDelete:'Удалить это объявление?', myItemBadge:'Моя вещь'
+        confirmDelete:'Удалить это объявление?', myItemBadge:'Моя вещь',
+        everywhere: 'Везде', showEverywhere: 'Показать все'
     },
     'en': {
         appSubtitle:'Exchange kids items', search:'Search items...',
@@ -77,7 +78,8 @@ const texts = {
         cityNotSet:'City not set', errorPublish:'Error publishing', errorServer:'Server error',
         errorInvoice:'Error creating invoice', errorPayment:'Payment error',
         invoiceSent:'Invoice sent! Check your bot 📩', premiumActivated:'🎉 Premium activated!',
-        confirmDelete:'Delete this listing?', myItemBadge:'My item'
+        confirmDelete:'Delete this listing?', myItemBadge:'My item',
+        everywhere: 'Everywhere', showEverywhere: 'Show all'
     },
     'es': {
         appSubtitle:'Intercambio infantil', search:'Buscar artículos...',
@@ -106,7 +108,8 @@ const texts = {
         cityNotSet:'Sin ciudad', errorPublish:'Error al publicar', errorServer:'Error del servidor',
         errorInvoice:'Error al crear factura', errorPayment:'Error de pago',
         invoiceSent:'¡Factura enviada! Revisa tu bot 📩', premiumActivated:'🎉 ¡Premium activado!',
-        confirmDelete:'¿Eliminar este anuncio?', myItemBadge:'Mi artículo'
+        confirmDelete:'¿Eliminar este anuncio?', myItemBadge:'Mi artículo',
+        everywhere: 'En todas partes', showEverywhere: 'Mostrar todo'
     },
     'pt': {
         appSubtitle:'Troca infantil', search:'Procurar itens...',
@@ -135,7 +138,8 @@ const texts = {
         cityNotSet:'Sem cidade', errorPublish:'Erro ao publicar', errorServer:'Erro no servidor',
         errorInvoice:'Erro ao criar fatura', errorPayment:'Erro de pagamento',
         invoiceSent:'Fatura enviada! Verifique seu bot 📩', premiumActivated:'🎉 Premium ativado!',
-        confirmDelete:'Excluir este anúncio?', myItemBadge:'Meu item'
+        confirmDelete:'Excluir este anúncio?', myItemBadge:'Meu item',
+        everywhere: 'Em toda parte', showEverywhere: 'Mostrar tudo'
     },
     'uk': {
         appSubtitle:'Обмін дитячими речами', search:'Пошук речей...',
@@ -163,8 +167,9 @@ const texts = {
         selectCountry:'Виберіть країну...', enterCity:'Введіть місто...',
         cityNotSet:'Місто не вказано', errorPublish:'Помилка публікації', errorServer:'Помилка сервера',
         errorInvoice:'Помилка створення рахунку', errorPayment:'Помилка оплати',
-        invoiceSent:'Рахунок надіслано! Перевірте бота 📩', premiumActivated:'🎉 Преміум активовано!',
-        confirmDelete:'Видалити це оголошення?', myItemBadge:'Моя річ'
+        invoiceSent:'Рахунок надіслано! Перевірте бота 📩', premiumActivated:'🎉 Премиум активовано!',
+        confirmDelete:'Видалити це оголошення?', myItemBadge:'Моя річ',
+        everywhere: 'Скрізь', showEverywhere: 'Показати всі'
     },
     'ka': {
         appSubtitle:'ბავშვთა ნივთების გაცვლა', search:'ნივთების ძიება...',
@@ -193,7 +198,8 @@ const texts = {
         cityNotSet:'ქალაქი არ არის მითითებული', errorPublish:'გამოქვეყნების შეცდომა', errorServer:'სერვერის შეცდომა',
         errorInvoice:'ინვოისის შეცდომა', errorPayment:'გადახდის შეცდომა',
         invoiceSent:'ინვოისი გაიგზავნა! შეამოწმეთ ბოტი 📩', premiumActivated:'🎉 პრემიუმი გააქტიურდა!',
-        confirmDelete:'წაშალოთ ეს განცხადება?', myItemBadge:'ჩემი ნივთი'
+        confirmDelete:'წაშალოთ ეს განცხადება?', myItemBadge:'ჩემი ნივთი',
+        everywhere: 'ყველგან', showEverywhere: 'ყველას ჩვენება'
     }
 };
 
@@ -211,6 +217,7 @@ let currentItem = null;
 let uploadedPhoto = null;
 let currentFilter = 'all';
 let currentSearch = '';
+let isGlobalView = false;
 let currentLang = localStorage.getItem('swapkids_lang') || (tg.initDataUnsafe.user?.language_code?.substring(0,2)) || 'ru';
 let currentCountry = localStorage.getItem('swapkids_country') || '';
 let currentCity = localStorage.getItem('swapkids_city') || '';
@@ -245,6 +252,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const iCity = document.getElementById('itemCity');
         if (iCountry && currentCountry) iCountry.value = currentCountry;
         if (iCity && currentCity) iCity.value = currentCity;
+
+        // Default to global if no location is set
+        if (!currentCountry || !currentCity) {
+            isGlobalView = true;
+        }
     } catch (e) {
         console.error('Initialization error:', e);
     }
@@ -334,15 +346,20 @@ function applyTranslations() {
         setT('contactSellerTitle', lang.contactSeller);
         setT('writeTelegramText', lang.writeTelegram);
         setT('closeContactBtn', lang.close);
+        setT('showEverywhereText', lang.showEverywhere);
 
         // Location display
         const locDisp = document.getElementById('locationDisplay');
+        const globalBtn = document.getElementById('showGlobalBtn');
+        
         if (locDisp) {
-            if (currentCountry && currentCity) {
+            if (isGlobalView || !currentCountry || !currentCity) {
+                locDisp.innerHTML = '<i class="fas fa-globe text-teal-500 mr-1"></i>' + lang.everywhere;
+                if (globalBtn) globalBtn.classList.add('hidden');
+            } else {
                 const countryName = COUNTRIES.find(c => c[0] === currentCountry)?.[1] || currentCountry;
                 locDisp.innerHTML = '<i class="fas fa-map-marker-alt text-teal-500 mr-1"></i>📍 ' + countryName + ', ' + currentCity;
-            } else {
-                locDisp.innerHTML = '<i class="fas fa-map-marker-alt text-teal-500 mr-1"></i>' + lang.locationDisplay;
+                if (globalBtn) globalBtn.classList.remove('hidden');
             }
         }
 
@@ -386,12 +403,18 @@ async function loadUser() {
 async function loadItems() {
     try {
         let url = `/api/items?user_id=${userId}`;
-        if (currentCountry) url += `&country=${currentCountry}`;
-        if (currentCity) url += `&city=${encodeURIComponent(currentCity)}`;
+        if (!isGlobalView && currentCountry) url += `&country=${currentCountry}`;
+        if (!isGlobalView && currentCity) url += `&city=${encodeURIComponent(currentCity)}`;
         const res = await fetch(url);
         allItems = await res.json();
         filterAndRenderItems();
     } catch (e) { console.error('Error loading items:', e); }
+}
+
+function toggleGlobalView() {
+    isGlobalView = true;
+    applyTranslations();
+    loadItems();
 }
 
 // ==================== FILTERING & RENDERING ====================
@@ -507,6 +530,7 @@ function saveLocation() {
     if (country && city) {
         currentCountry = country;
         currentCity = city;
+        isGlobalView = false; // Disable global view when user explicitly sets location
         localStorage.setItem('swapkids_country', country);
         localStorage.setItem('swapkids_city', city);
         applyTranslations();
