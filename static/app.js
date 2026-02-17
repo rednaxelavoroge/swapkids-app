@@ -62,7 +62,7 @@ const texts = {
         activityGiven: 'только что отдал(а):',
         karmaLabel: 'Карма', karmaPoints: 'очков',
         referralTitle: 'Пригласи друзей', referralDesc: 'Пригласи 3 друзей и получи Premium навсегда!',
-        referralCopy: 'Скопировать ссылку', referralCopied: 'Скопировано! ✅',
+        referralCopy: 'Скопировать ссылку', referralCopied: 'Скопировано! ✅', referralShare: 'Поделиться в Telegram',
         referralProgress: 'из', needMoreKarma: 'Нужно больше кармы для бронирования',
         karmaInfoTitle: 'Как работает Карма?',
         karmaRule1: 'Опубликуй вещь — +10 кармы',
@@ -111,7 +111,7 @@ const texts = {
         activityGiven: 'just gave away:',
         karmaLabel: 'Karma', karmaPoints: 'points',
         referralTitle: 'Invite friends', referralDesc: 'Invite 3 friends and get Premium forever!',
-        referralCopy: 'Copy link', referralCopied: 'Copied! ✅',
+        referralCopy: 'Copy link', referralCopied: 'Copied! ✅', referralShare: 'Share via Telegram',
         referralProgress: 'of', needMoreKarma: 'Need more karma to book',
         karmaInfoTitle: 'How does Karma work?',
         karmaRule1: 'Post an item — +10 karma',
@@ -160,7 +160,7 @@ const texts = {
         activityGiven: 'acaba de dar:',
         karmaLabel: 'Karma', karmaPoints: 'puntos',
         referralTitle: 'Invita amigos', referralDesc: '¡Invita 3 amigos y obtén Premium para siempre!',
-        referralCopy: 'Copiar enlace', referralCopied: '¡Copiado! ✅',
+        referralCopy: 'Copiar enlace', referralCopied: '¡Copiado! ✅', referralShare: 'Compartir en Telegram',
         referralProgress: 'de', needMoreKarma: 'Necesitas más karma para reservar',
         karmaInfoTitle: '¿Cómo funciona el Karma?',
         karmaRule1: 'Publica un artículo — +10 karma',
@@ -209,7 +209,7 @@ const texts = {
         activityGiven: 'acabou de doar:',
         karmaLabel: 'Karma', karmaPoints: 'pontos',
         referralTitle: 'Convide amigos', referralDesc: 'Convide 3 amigos e ganhe Premium para sempre!',
-        referralCopy: 'Copiar link', referralCopied: 'Copiado! ✅',
+        referralCopy: 'Copiar link', referralCopied: 'Copiado! ✅', referralShare: 'Compartilhar no Telegram',
         referralProgress: 'de', needMoreKarma: 'Precisa de mais karma para reservar',
         karmaInfoTitle: 'Como funciona o Karma?',
         karmaRule1: 'Publique um item — +10 karma',
@@ -258,7 +258,7 @@ const texts = {
         activityGiven: 'щойно віддав(ла):',
         karmaLabel: 'Карма', karmaPoints: 'очків',
         referralTitle: 'Запроси друзів', referralDesc: 'Запроси 3 друзів та отримай Premium назавжди!',
-        referralCopy: 'Скопіювати посилання', referralCopied: 'Скопійовано! ✅',
+        referralCopy: 'Скопіювати посилання', referralCopied: 'Скопійовано! ✅', referralShare: 'Поділитися в Telegram',
         referralProgress: 'з', needMoreKarma: 'Потрібно більше карми для бронювання',
         karmaInfoTitle: 'Як працює Карма?',
         karmaRule1: 'Опублікуй річ — +10 карми',
@@ -305,7 +305,7 @@ const texts = {
         activityGiven: 'ახლახანს გასცა:',
         karmaLabel: 'კარმა', karmaPoints: 'ქულა',
         referralTitle: 'მეგობრების მოწვევა', referralDesc: 'მოიწვიე 3 მეგობარი და მიიღე Premium სამუდამოდ!',
-        referralCopy: 'ბმულის კოპირება', referralCopied: 'კოპირებულია! ✅',
+        referralCopy: 'ბმულის კოპირება', referralCopied: 'კოპირებულია! ✅', referralShare: 'Telegram-ით გაზიარება',
         referralProgress: '-დან', needMoreKarma: 'საჭიროა მეტი კარმა დასაჯავშნად',
         karmaInfoTitle: 'როგორ მუშაობს კარმა?',
         karmaRule1: 'გამოაქვეყნე ნივთი — +10 კარმა',
@@ -1028,37 +1028,41 @@ async function loadProfile() {
             const lang = texts[currentLang];
             
             refSection.innerHTML = `
-                <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl p-4 border border-purple-100">
-                    <div class="flex items-center gap-2 mb-3">
-                        <div class="w-8 h-8 bg-purple-500 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-user-plus text-white text-sm"></i>
+                <div class="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl p-5 text-white shadow-lg shadow-purple-500/20">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur">
+                            <i class="fas fa-gift text-2xl"></i>
                         </div>
-                        <h4 class="font-bold text-gray-800">${lang.referralTitle}</h4>
+                        <div>
+                            <h4 class="font-bold text-lg">${lang.referralTitle}</h4>
+                            <p class="text-purple-200 text-xs">${lang.referralDesc}</p>
+                        </div>
                     </div>
-                    <p class="text-sm text-gray-600 mb-3">${lang.referralDesc}</p>
-                    <div class="mb-3">
-                        <div class="flex justify-between text-xs text-gray-500 mb-1">
+                    <div class="mb-4">
+                        <div class="flex justify-between text-xs text-purple-200 mb-1">
                             <span>${progress} ${lang.referralProgress} ${refData.ref_needed}</span>
                             <span>${pct}%</span>
                         </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-gradient-to-r from-purple-500 to-indigo-500 h-2 rounded-full transition-all" style="width: ${pct}%"></div>
+                        <div class="w-full bg-white/20 rounded-full h-2.5">
+                            <div class="bg-gradient-to-r from-yellow-300 to-amber-400 h-2.5 rounded-full transition-all" style="width: ${pct}%"></div>
                         </div>
                     </div>
                     ${refData.premium_earned ? `
-                        <div class="text-center py-2 bg-green-50 rounded-xl text-green-600 text-sm font-bold">
-                            🎉 Premium активирован!
+                        <div class="text-center py-3 bg-white/20 rounded-xl text-white text-sm font-bold backdrop-blur">
+                            🌟 Premium активирован навсегда!
                         </div>
                     ` : `
                         <div class="space-y-2">
-                            <div class="flex gap-2 items-center">
-                                <input type="text" value="${refData.ref_link}" readonly 
-                                       class="flex-1 min-w-0 px-3 py-2 bg-white rounded-xl text-xs text-gray-600 border border-gray-200 truncate" id="refLinkInput">
-                                <button onclick="copyRefLink()" 
-                                        class="flex-shrink-0 w-10 h-10 bg-purple-500 text-white rounded-xl text-sm flex items-center justify-center hover:bg-purple-600 transition-all" id="copyRefBtn">
-                                    <i class="fas fa-copy"></i>
-                                </button>
-                            </div>
+                            <button onclick="shareRefLink('${refData.ref_link}')" 
+                                    class="w-full py-3 bg-white text-purple-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-purple-50 transition-all active:scale-[0.98]">
+                                <i class="fab fa-telegram text-lg"></i>
+                                ${lang.referralShare || 'Поделиться в Telegram'}
+                            </button>
+                            <button onclick="copyRefLinkAlt('${refData.ref_link}')" 
+                                    class="w-full py-2 bg-white/10 text-white/80 rounded-xl text-xs flex items-center justify-center gap-1 hover:bg-white/20 transition-all" id="copyRefBtnAlt">
+                                <i class="fas fa-link text-[10px]"></i>
+                                ${lang.referralCopy}
+                            </button>
                         </div>
                     `}
                 </div>
@@ -1109,24 +1113,33 @@ async function loadProfile() {
     } catch (e) { console.error("My items load error", e); }
 }
 
-function copyRefLink() {
-    const input = document.getElementById('refLinkInput');
-    const btn = document.getElementById('copyRefBtn');
-    if (input) {
-        navigator.clipboard.writeText(input.value).then(() => {
-            btn.innerHTML = `<i class="fas fa-check"></i>`;
-            btn.classList.add('bg-green-500');
-            btn.classList.remove('bg-purple-500');
-            setTimeout(() => {
-                btn.innerHTML = `<i class="fas fa-copy"></i>`;
-                btn.classList.remove('bg-green-500');
-                btn.classList.add('bg-purple-500');
-            }, 2000);
-        }).catch(() => {
-            input.select();
-            document.execCommand('copy');
-        });
+function shareRefLink(link) {
+    const shareMessages = {
+        'ru': '🎁 Присоединяйся к Swap Kids!\n\n👶 Родители со всего мира обмениваются детскими вещами БЕСПЛАТНО!\n\n👕 Одежда • 🧸 Игрушки • 🚗 Коляски • 💺 Автокресла\n\n✨ Не покупай — возьми у соседа!\n\n',
+        'en': '🎁 Join Swap Kids!\n\n👶 Parents worldwide exchange kids items for FREE!\n\n👕 Clothes • 🧸 Toys • 🚗 Strollers • 💺 Car seats\n\n✨ Don\'t buy — get it from a neighbor!\n\n',
+        'es': '🎁 ¡Únete a Swap Kids!\n\n👶 ¡Padres de todo el mundo intercambian artículos GRATIS!\n\n👕 Ropa • 🧸 Juguetes • 🚗 Cochecitos • 💺 Sillas\n\n✨ ¡No compres — consíguelo de un vecino!\n\n',
+        'pt': '🎁 Junte-se ao Swap Kids!\n\n👶 Pais do mundo todo trocam itens GRÁTIS!\n\n👕 Roupas • 🧸 Brinquedos • 🚗 Carrinhos • 💺 Cadeiras\n\n✨ Não compre — pegue do vizinho!\n\n',
+        'uk': '🎁 Приєднуйся до Swap Kids!\n\n👶 Батьки з усього світу обмінюються дитячими речами БЕЗКОШТОВНО!\n\n👕 Одяг • 🧸 Іграшки • 🚗 Візочки • 💺 Автокрісла\n\n✨ Не купуй — візьми у сусіда!\n\n',
+        'ka': '🎁 შემოგვიერთდი Swap Kids-ში!\n\n👶 მშობლები მთელი მსოფლიოდან ნივთებს უფასოდ ცვლიან!\n\n👕 ტანსაცმელი • 🧸 სათამაშოები • 🚗 ეტლები • 💺 ავტოსავარძლები\n\n✨ არ იყიდო — აიღე მეზობლისგან!\n\n'
+    };
+    const msg = shareMessages[currentLang] || shareMessages['en'];
+    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(msg)}`;
+    
+    try {
+        tg.openTelegramLink(shareUrl);
+    } catch(e) {
+        window.open(shareUrl, '_blank');
     }
+}
+
+function copyRefLinkAlt(link) {
+    const btn = document.getElementById('copyRefBtnAlt');
+    navigator.clipboard.writeText(link).then(() => {
+        const lang = texts[currentLang];
+        const origText = btn.innerHTML;
+        btn.innerHTML = `<i class="fas fa-check text-[10px]"></i> ${lang.referralCopied}`;
+        setTimeout(() => { btn.innerHTML = origText; }, 2000);
+    }).catch(() => {});
 }
 
 async function markAsGiven(itemId) {
