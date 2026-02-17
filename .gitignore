@@ -1,0 +1,15 @@
+# Environment
+.env
+.vercel
+
+# Database (created at runtime)
+*.db
+
+# System
+.DS_Store
+__pycache__/
+*.pyc
+
+# IDE
+.idea/
+.vscode/
