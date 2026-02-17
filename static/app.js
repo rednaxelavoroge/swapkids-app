@@ -1050,13 +1050,15 @@ async function loadProfile() {
                             🎉 Premium активирован!
                         </div>
                     ` : `
-                        <div class="flex gap-2">
-                            <input type="text" value="${refData.ref_link}" readonly 
-                                   class="flex-1 px-3 py-2 bg-white rounded-xl text-xs text-gray-600 border border-gray-200 truncate" id="refLinkInput">
-                            <button onclick="copyRefLink()" 
-                                    class="px-4 py-2 bg-purple-500 text-white rounded-xl text-xs font-bold hover:bg-purple-600 transition-all whitespace-nowrap" id="copyRefBtn">
-                                <i class="fas fa-copy mr-1"></i>${lang.referralCopy}
-                            </button>
+                        <div class="space-y-2">
+                            <div class="flex gap-2 items-center">
+                                <input type="text" value="${refData.ref_link}" readonly 
+                                       class="flex-1 min-w-0 px-3 py-2 bg-white rounded-xl text-xs text-gray-600 border border-gray-200 truncate" id="refLinkInput">
+                                <button onclick="copyRefLink()" 
+                                        class="flex-shrink-0 w-10 h-10 bg-purple-500 text-white rounded-xl text-sm flex items-center justify-center hover:bg-purple-600 transition-all" id="copyRefBtn">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
                         </div>
                     `}
                 </div>
@@ -1112,10 +1114,13 @@ function copyRefLink() {
     const btn = document.getElementById('copyRefBtn');
     if (input) {
         navigator.clipboard.writeText(input.value).then(() => {
-            const lang = texts[currentLang];
-            btn.innerHTML = `<i class="fas fa-check mr-1"></i>${lang.referralCopied}`;
+            btn.innerHTML = `<i class="fas fa-check"></i>`;
+            btn.classList.add('bg-green-500');
+            btn.classList.remove('bg-purple-500');
             setTimeout(() => {
-                btn.innerHTML = `<i class="fas fa-copy mr-1"></i>${lang.referralCopy}`;
+                btn.innerHTML = `<i class="fas fa-copy"></i>`;
+                btn.classList.remove('bg-green-500');
+                btn.classList.add('bg-purple-500');
             }, 2000);
         }).catch(() => {
             input.select();
