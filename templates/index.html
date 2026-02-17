@@ -196,93 +196,146 @@
         </div>
       </div>
 
-      <!-- Categories -->
-      <div class="px-4 py-4 bg-white border-b border-gray-100">
-        <div
-          class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
-          id="categories"
-        >
-          <button
-            class="category-btn active px-4 py-2 bg-teal-500 text-white rounded-full text-sm font-medium whitespace-nowrap transition-all"
-            data-category="all"
-          >
-            Все
-          </button>
-          <button
-            class="category-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap transition-all hover:bg-gray-200"
-            data-category="clothes"
-          >
-            <i class="fas fa-tshirt mr-1"></i>Одежда
-          </button>
-          <button
-            class="category-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap transition-all hover:bg-gray-200"
-            data-category="toys"
-          >
-            <i class="fas fa-gamepad mr-1"></i>Игрушки
-          </button>
-          <button
-            class="category-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap transition-all hover:bg-gray-200"
-            data-category="gear"
-          >
-            <i class="fas fa-baby-carriage mr-1"></i>Коляски
-          </button>
-          <button
-            class="category-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap transition-all hover:bg-gray-200"
-            data-category="seats"
-          >
-            <i class="fas fa-chair mr-1"></i>Автокресла
-          </button>
-        </div>
-      </div>
-
-      <!-- Welcome Message -->
-      <div
-        id="welcomeMessage"
-        class="px-4 py-4 bg-gradient-to-r from-teal-50 to-cyan-50 border-b border-teal-100"
-      >
-        <div class="flex items-start gap-3">
+      <!-- Main Content Views -->
+      <div id="homeView" class="view-content">
+        <!-- Categories -->
+        <div class="px-4 py-4 bg-white border-b border-gray-100">
           <div
-            class="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center text-white flex-shrink-0"
+            class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
+            id="categories"
           >
-            <i class="fas fa-hand-wave"></i>
-          </div>
-          <div>
-            <h3 class="font-semibold text-gray-800" id="welcomeTitle">
-              Добро пожаловать! 👋
-            </h3>
-            <p
-              class="text-sm text-gray-700 mt-1 font-medium"
-              id="welcomeSubtitle"
-            >
-              Здесь родители меняются детскими вещами по всему миру.
-            </p>
-            <p class="text-sm text-gray-600 mt-2" id="welcomeText">
-              Выберите свою страну и город, чтобы видеть объявления от родителей
-              рядом с вами.
-            </p>
             <button
-              onclick="showLocationModal()"
-              class="mt-2 text-teal-600 text-sm font-medium hover:text-teal-700"
+              class="category-btn active px-4 py-2 bg-teal-500 text-white rounded-full text-sm font-medium whitespace-nowrap transition-all"
+              data-category="all"
             >
-              <i class="fas fa-map-marker-alt mr-1"></i
-              ><span id="selectLocationBtnText">Выбрать локацию</span>
+              Все
+            </button>
+            <button
+              class="category-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap transition-all hover:bg-gray-200"
+              data-category="clothes"
+            >
+              <i class="fas fa-tshirt mr-1"></i>Одежда
+            </button>
+            <button
+              class="category-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap transition-all hover:bg-gray-200"
+              data-category="toys"
+            >
+              <i class="fas fa-gamepad mr-1"></i>Игрушки
+            </button>
+            <button
+              class="category-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap transition-all hover:bg-gray-200"
+              data-category="gear"
+            >
+              <i class="fas fa-baby-carriage mr-1"></i>Коляски
+            </button>
+            <button
+              class="category-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap transition-all hover:bg-gray-200"
+              data-category="seats"
+            >
+              <i class="fas fa-chair mr-1"></i>Автокресла
             </button>
           </div>
         </div>
+
+        <!-- Welcome Message -->
+        <div
+          id="welcomeMessage"
+          class="px-4 py-4 bg-gradient-to-r from-teal-50 to-cyan-50 border-b border-teal-100"
+        >
+          <div class="flex items-start gap-3">
+            <div
+              class="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center text-white flex-shrink-0"
+            >
+              <i class="fas fa-hand-wave"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800" id="welcomeTitle">
+                Добро пожаловать! 👋
+              </h3>
+              <p
+                class="text-sm text-gray-700 mt-1 font-medium"
+                id="welcomeSubtitle"
+              >
+                Здесь родители меняются детскими вещами по всему миру.
+              </p>
+              <p class="text-sm text-gray-600 mt-2" id="welcomeText">
+                Выберите свою страну и город, чтобы видеть объявления от родителей
+                рядом с вами.
+              </p>
+              <button
+                onclick="showLocationModal()"
+                class="mt-2 text-teal-600 text-sm font-medium hover:text-teal-700"
+              >
+                <i class="fas fa-map-marker-alt mr-1"></i
+                ><span id="selectLocationBtnText">Выбрать локацию</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Items Grid -->
+        <div
+          class="px-4 py-4 pb-24 overflow-y-auto"
+          style="max-height: calc(100vh - 320px)"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-800" id="feedTitle">
+              Лента объявлений
+            </h2>
+            <span class="text-sm text-gray-500" id="itemsCount">0 вещей</span>
+          </div>
+          <div id="itemsGrid" class="grid grid-cols-2 gap-3"></div>
+        </div>
       </div>
 
-      <!-- Items Grid -->
-      <div
-        class="px-4 py-4 pb-24 overflow-y-auto"
-        style="max-height: calc(100vh - 320px)"
-      >
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-gray-800" id="feedTitle">
-            Лента объявлений
-          </h2>
-          <span class="text-sm text-gray-500" id="itemsCount">0 вещей</span>
-        </div>
-        <div id="itemsGrid" class="grid grid-cols-2 gap-3"></div>
+      <!-- Profile View -->
+      <div id="profileView" class="view-content hidden min-h-[60vh] px-4 py-6">
+          <div class="bg-gradient-to-br from-teal-500 to-teal-600 rounded-3xl p-6 text-white mb-6 shadow-lg shadow-teal-500/20">
+              <div class="flex items-center gap-4 mb-6">
+                  <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur">
+                      <i class="fas fa-user text-3xl"></i>
+                  </div>
+                  <div>
+                      <h3 class="text-xl font-bold" id="profileName">User Name</h3>
+                      <p class="text-teal-100 text-sm" id="profileStatsLabel">Ваша статистика</p>
+                  </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                  <div class="bg-white/10 rounded-2xl p-4 backdrop-blur">
+                      <div class="text-2xl font-bold" id="statsGivenCount">0</div>
+                      <div class="text-xs text-teal-100 uppercase tracking-wider mt-1" id="statsGivenLabel">Отдано вещей</div>
+                  </div>
+                  <div class="bg-white/10 rounded-2xl p-4 backdrop-blur">
+                      <div class="text-2xl font-bold" id="statsRank">Hero</div>
+                      <div class="text-xs text-teal-100 uppercase tracking-wider mt-1" id="statsRankLabel">Статус</div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="mb-6">
+              <h4 class="text-lg font-bold text-gray-800 mb-4" id="myItemsTitle">Мои объявления</h4>
+              <div id="myItemsList" class="space-y-3">
+                  <!-- My items here -->
+              </div>
+          </div>
+          
+          <button onclick="showFavorites()" class="w-full py-4 bg-gray-50 border border-gray-200 text-gray-700 rounded-2xl font-semibold flex items-center justify-center gap-2 hover:bg-gray-100 transition-all">
+              <i class="fas fa-heart text-teal-500"></i>
+              <span id="openFavoritesBtn">Избранное</span>
+          </button>
+      </div>
+
+      <!-- Bottom Navigation -->
+      <div class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-gray-100 px-6 py-3 flex items-center justify-around z-50 max-w-md mx-auto rounded-t-[2rem]">
+          <button id="navHome" onclick="switchView('home')" class="flex flex-col items-center gap-1 text-teal-500">
+              <i class="fas fa-home text-xl"></i>
+              <span class="text-[10px] font-bold uppercase tracking-wider" id="navHomeLabel">Лента</span>
+          </button>
+          <div class="w-12"></div> <!-- Spacer for FAB -->
+          <button id="navProfile" onclick="switchView('profile')" class="flex flex-col items-center gap-1 text-gray-400">
+              <i class="fas fa-user-circle text-xl"></i>
+              <span class="text-[10px] font-bold uppercase tracking-wider" id="navProfileLabel">Профиль</span>
+          </button>
       </div>
 
       <!-- FAB -->

@@ -47,7 +47,18 @@ async def init_db():
         await db.execute('''CREATE TABLE IF NOT EXISTS items 
                             (id INTEGER PRIMARY KEY AUTOINCREMENT, owner_id INTEGER, title TEXT, 
                              country TEXT, city TEXT, category TEXT, district TEXT,
-                             contact TEXT, image_url TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
+                             contact TEXT, image_url TEXT, 
+                             status TEXT DEFAULT 'active',
+                             receiver_id INTEGER,
+                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
+        # Включаем внешние ключи и миграцию (на случай если колонки не создались)
+        try:
+            await db.execute("ALTER TABLE items ADD COLUMN status TEXT DEFAULT 'active'")
+        except: pass
+        try:
+            await db.execute("ALTER TABLE items ADD COLUMN receiver_id INTEGER")
+        except: pass
+        
         await db.execute('''CREATE TABLE IF NOT EXISTS favorites 
                             (user_id INTEGER, item_id INTEGER, 
                              PRIMARY KEY (user_id, item_id))''')
@@ -188,7 +199,7 @@ async def api_get_items(request):
     search = request.query.get('search', '')
     user_id = request.query.get('user_id')
     
-    query = "SELECT * FROM items WHERE 1=1"
+    query = "SELECT * FROM items WHERE status = 'active'"
     params = []
     
     if country:
@@ -232,6 +243,33 @@ async def api_add_item(request):
         )
         await db.commit()
         return web.json_response({'ok': True, 'id': cursor.lastrowid})
+
+async def api_mark_item_given(request):
+    """Отметить вещь как отданную"""
+    data = await request.json()
+    item_id = data.get('item_id')
+    user_id = data.get('user_id') # owner
+    receiver_id = data.get('receiver_id') # who received it
+    
+    async with aiosqlite.connect('swap_global.db') as db:
+        await db.execute(
+            "UPDATE items SET status = 'given', receiver_id = ? WHERE id = ? AND owner_id = ?",
+            (receiver_id, item_id, user_id)
+        )
+        await db.commit()
+        return web.json_response({'ok': True})
+
+async def api_get_user_stats(request):
+    """Получить статистику пользователя (сколько отдал)"""
+    user_id = request.query.get('user_id')
+    async with aiosqlite.connect('swap_global.db') as db:
+        async with db.execute(
+            "SELECT COUNT(*) FROM items WHERE owner_id = ? AND status = 'given'",
+            (user_id,)
+        ) as cur:
+            row = await cur.fetchone()
+            count = row[0] if row else 0
+            return web.json_response({'given_count': count})
 
 async def api_delete_item(request):
     """Удалить свою вещь"""
@@ -449,6 +487,8 @@ async def main():
     app.router.add_get('/api/contact', api_get_contact)
     app.router.add_get('/api/invoice', api_create_invoice)
     app.router.add_get('/api/my-items', api_get_my_items)
+    app.router.add_post('/api/items/mark_given', api_mark_item_given)
+    app.router.add_get('/api/user/stats', api_get_user_stats)
     app.router.add_get('/api/chats', api_get_chats)
     app.router.add_get('/api/messages', api_get_messages)
     app.router.add_post('/api/messages', api_send_message)

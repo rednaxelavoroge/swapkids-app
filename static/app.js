@@ -49,7 +49,11 @@ const texts = {
         errorInvoice:'Ошибка создания счета', errorPayment:'Ошибка оплаты',
         invoiceSent:'Счёт отправлен! Проверьте бота 📩', premiumActivated:'🎉 Премиум активирован!',
         confirmDelete:'Удалить это объявление?', myItemBadge:'Моя вещь',
-        everywhere: 'Везде', showEverywhere: 'Показать все', showNearby: 'Показать в nearby'
+        everywhere: 'Везде', showEverywhere: 'Показать все', showNearby: 'Показать в nearby',
+        navHome: 'Лента', navProfile: 'Профиль', profileTitle: 'Профиль',
+        statsGiven: 'Отдано вещей', statsRank: 'Статус', myItems: 'Мои объявления',
+        markAsGiven: 'У меня забрали', givenAway: 'Забрали', openFavorites: 'Избранное',
+        rankHero: 'Герой', rankMaster: 'Мастер', rankBeginner: 'Новичок'
     },
     'en': {
         appSubtitle:'Exchange kids items', search:'Search items...',
@@ -79,7 +83,11 @@ const texts = {
         errorInvoice:'Error creating invoice', errorPayment:'Payment error',
         invoiceSent:'Invoice sent! Check your bot 📩', premiumActivated:'🎉 Premium activated!',
         confirmDelete:'Delete this listing?', myItemBadge:'My item',
-        everywhere: 'Everywhere', showEverywhere: 'Show all', showNearby: 'Show in nearby'
+        everywhere: 'Everywhere', showEverywhere: 'Show all', showNearby: 'Show in nearby',
+        navHome: 'Feed', navProfile: 'Profile', profileTitle: 'Profile',
+        statsGiven: 'Items given', statsRank: 'Rank', myItems: 'My Listings',
+        markAsGiven: 'Mark as given', givenAway: 'Given Away', openFavorites: 'Favorites',
+        rankHero: 'Hero', rankMaster: 'Master', rankBeginner: 'Beginner'
     },
     'es': {
         appSubtitle:'Intercambio infantil', search:'Buscar artículos...',
@@ -109,7 +117,11 @@ const texts = {
         errorInvoice:'Error al crear factura', errorPayment:'Error de pago',
         invoiceSent:'¡Factura enviada! Revisa tu bot 📩', premiumActivated:'🎉 ¡Premium activado!',
         confirmDelete:'¿Eliminar este anuncio?', myItemBadge:'Mi artículo',
-        everywhere: 'En todas partes', showEverywhere: 'Mostrar todo', showNearby: 'Mostrar en nearby'
+        everywhere: 'En todas partes', showEverywhere: 'Mostrar todo', showNearby: 'Mostrar cerca',
+        navHome: 'Inicio', navProfile: 'Perfil', profileTitle: 'Perfil',
+        statsGiven: 'Artículos dados', statsRank: 'Rango', myItems: 'Mis anuncios',
+        markAsGiven: 'Me lo han quitado', givenAway: 'Entregado', openFavorites: 'Favoritos',
+        rankHero: 'Héroe', rankMaster: 'Maestro', rankBeginner: 'Principiante'
     },
     'pt': {
         appSubtitle:'Troca infantil', search:'Procurar itens...',
@@ -139,7 +151,11 @@ const texts = {
         errorInvoice:'Erro ao criar fatura', errorPayment:'Erro de pagamento',
         invoiceSent:'Fatura enviada! Verifique seu bot 📩', premiumActivated:'🎉 Premium ativado!',
         confirmDelete:'Excluir este anúncio?', myItemBadge:'Meu item',
-        everywhere: 'Em toda parte', showEverywhere: 'Mostrar tudo', showNearby: 'Mostrar em nearby'
+        everywhere: 'Em todo lugar', showEverywhere: 'Mostrar tudo', showNearby: 'Mostrar por perto',
+        navHome: 'Início', navProfile: 'Perfil', profileTitle: 'Perfil',
+        statsGiven: 'Itens doados', statsRank: 'Classificação', myItems: 'Meus anúncios',
+        markAsGiven: 'Marcar como entregue', givenAway: 'Entregue', openFavorites: 'Favoritos',
+        rankHero: 'Herói', rankMaster: 'Mestre', rankBeginner: 'Iniciante'
     },
     'uk': {
         appSubtitle:'Обмін дитячими речами', search:'Пошук речей...',
@@ -169,7 +185,11 @@ const texts = {
         errorInvoice:'Помилка створення рахунку', errorPayment:'Помилка оплати',
         invoiceSent:'Рахунок надіслано! Перевірте бота 📩', premiumActivated:'🎉 Премиум активовано!',
         confirmDelete:'Видалити це оголошення?', myItemBadge:'Моя річ',
-        everywhere: 'Скрізь', showEverywhere: 'Показати всі', showNearby: 'Показати в nearby'
+        everywhere: 'Скрізь', showEverywhere: 'Показати все', showNearby: 'Показати поруч',
+        navHome: 'Стрічка', navProfile: 'Профіль', profileTitle: 'Профіль',
+        statsGiven: 'Віддано речей', statsRank: 'Статус', myItems: 'Мої оголошення',
+        markAsGiven: 'У мене забрали', givenAway: 'Забрали', openFavorites: 'Обране',
+        rankHero: 'Герой', rankMaster: 'Майстер', rankBeginner: 'Новачок'
     },
     'ka': {
         appSubtitle:'ბავშვთა ნივთების გაცვლა', search:'ნივთების ძიება...',
@@ -198,8 +218,12 @@ const texts = {
         cityNotSet:'ქალაქი არ არის მითითებული', errorPublish:'გამოქვეყნების შეცდომა', errorServer:'სერვერის შეცდომა',
         errorInvoice:'ინვოისის შეცდომა', errorPayment:'გადახდის შეცდომა',
         invoiceSent:'ინვოისი გაიგზავნა! შეამოწმეთ ბოტი 📩', premiumActivated:'🎉 პრემიუმი გააქტიურდა!',
-        confirmDelete:'წაშალოთ ეს განცხადება?', myItemBadge:'ჩემი ნივთი',
-        everywhere: 'ყველგან', showEverywhere: 'ყველას ჩვენება', showNearby: 'ჩვენება nearby-ში'
+        confirmDelete:'წავშალოთ ეს განცხადება?', myItemBadge:'ჩემი ნივთი',
+        everywhere: 'ყველგან', showEverywhere: 'ყველას ჩვენება', showNearby: 'ახლოს ჩვენება',
+        navHome: 'ლენტა', navProfile: 'პროფილი', profileTitle: 'პროფილი',
+        statsGiven: 'გაცემული ნივთები', statsRank: 'სტატუსი', myItems: 'ჩემი განცხადებები',
+        markAsGiven: 'ჩემგან წაიღეს', givenAway: 'გაიცა', openFavorites: 'რჩეულები',
+        rankHero: 'გმირი', rankMaster: 'ოსტატი', rankBeginner: 'დამწყები'
     }
 };
 
@@ -334,6 +358,17 @@ function applyTranslations() {
         const itemContact = document.getElementById('itemContact');
         if (itemContact) itemContact.placeholder = lang.contactPlaceholder;
         setT('publishBtn', lang.publish);
+
+        // Bottom Nav
+        setT('navHomeLabel', lang.navHome);
+        setT('navProfileLabel', lang.navProfile);
+
+        // Profile View
+        setT('profileStatsLabel', lang.statsGiven);
+        setT('statsGivenLabel', lang.statsGiven);
+        setT('statsRankLabel', lang.statsRank);
+        setT('myItemsTitle', lang.myItems);
+        setT('openFavoritesBtn', lang.openFavorites || 'Favorites');
 
         // Premium modal
         setT('premiumTitle', lang.premiumTitle);
@@ -732,4 +767,113 @@ function showToast(message) {
     document.getElementById('toastMessage').textContent = message;
     toast.classList.remove('hidden');
     setTimeout(() => toast.classList.add('hidden'), 3000);
+}
+
+// ==================== VIEW SWITCHING ====================
+function switchView(view) {
+    const homeView = document.getElementById('homeView');
+    const profileView = document.getElementById('profileView');
+    const navHome = document.getElementById('navHome');
+    const navProfile = document.getElementById('navProfile');
+    const fab = document.getElementById('fabAdd');
+
+    if (view === 'home') {
+        homeView.classList.remove('hidden');
+        profileView.classList.add('hidden');
+        navHome.classList.add('text-teal-500');
+        navHome.classList.remove('text-gray-400');
+        navProfile.classList.add('text-gray-400');
+        navProfile.classList.remove('text-teal-500');
+        if (fab) fab.classList.remove('hidden');
+    } else {
+        homeView.classList.add('hidden');
+        profileView.classList.remove('hidden');
+        navHome.classList.add('text-gray-400');
+        navHome.classList.remove('text-teal-500');
+        navProfile.classList.add('text-teal-500');
+        navProfile.classList.remove('text-gray-400');
+        if (fab) fab.classList.add('hidden');
+        loadProfile();
+    }
+}
+
+async function loadProfile() {
+    const user = tg.initDataUnsafe?.user || { id: 12345, first_name: 'Local Test' };
+    document.getElementById('profileName').textContent = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+    
+    // Load Stats
+    try {
+        const statsRes = await fetch(`/api/user/stats?user_id=${user.id}`);
+        const stats = await statsRes.json();
+        const count = stats.given_count || 0;
+        document.getElementById('statsGivenCount').textContent = count;
+        
+        let rank = texts[currentLang].rankBeginner;
+        if (count >= 5) rank = texts[currentLang].rankMaster;
+        if (count >= 10) rank = texts[currentLang].rankHero;
+        document.getElementById('statsRank').textContent = rank;
+    } catch (e) { console.error("Stats load error", e); }
+
+    // Load My Items
+    try {
+        const itemsRes = await fetch(`/api/my-items?user_id=${user.id}`);
+        const items = await itemsRes.json();
+        const listContainer = document.getElementById('myItemsList');
+        listContainer.innerHTML = '';
+
+        if (items.length === 0) {
+            listContainer.innerHTML = `<p class="text-gray-400 text-sm text-center py-4">${texts[currentLang].noItems}</p>`;
+        }
+
+        items.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-2xl p-3 border border-gray-100 flex gap-3 items-center';
+            
+            const isGiven = item.status === 'given';
+            
+            card.innerHTML = `
+                <img src="${item.image_url}" class="w-16 h-16 rounded-xl object-cover ${isGiven ? 'grayscale opacity-50' : ''}">
+                <div class="flex-1 min-w-0">
+                    <h5 class="font-bold text-gray-800 truncate">${item.title}</h5>
+                    <p class="text-xs text-gray-500">${item.city || ''}</p>
+                </div>
+                ${!isGiven ? `
+                    <button onclick="markAsGiven(${item.id})" class="px-3 py-2 bg-teal-50 text-teal-600 rounded-xl text-xs font-bold whitespace-nowrap">
+                        ${texts[currentLang].markAsGiven}
+                    </button>
+                ` : `
+                    <span class="px-3 py-2 bg-gray-100 text-gray-400 rounded-xl text-xs font-bold uppercase">
+                        ${texts[currentLang].givenAway}
+                    </span>
+                `}
+            `;
+            listContainer.appendChild(card);
+        });
+    } catch (e) { console.error("My items load error", e); }
+}
+
+async function markAsGiven(itemId) {
+    const user = tg.initDataUnsafe?.user || { id: 12345 };
+    // Simple confirm
+    if (!confirm(texts[currentLang].confirmDelete)) return;
+
+    try {
+        const res = await fetch('/api/items/mark_given', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ item_id: itemId, user_id: user.id, receiver_id: 0 }) 
+        });
+        if (res.ok) {
+            showToast(texts[currentLang].published);
+            loadProfile(); // Refresh
+        }
+    } catch (e) { showToast(texts[currentLang].errorServer); }
+}
+
+function showFavorites() {
+    // For now, reuse the existing logic if any, or just show alert
+    // Actually, I can just load favorites into the main grid and switch to home
+    isFavoritesOnly = true;
+    switchView('home');
+    loadItems();
 }
