@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0fdf4;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#dcfce7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#bbf7d0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22c55e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16a34a;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="20" flood-color="#22c55e" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+  
+  <!-- Decorative circles -->
+  <circle cx="100" cy="100" r="150" fill="#22c55e" opacity="0.1"/>
+  <circle cx="1100" cy="530" r="200" fill="#fbbf24" opacity="0.1"/>
+  
+  <!-- Main content container -->
+  <g transform="translate(600, 315)">
+    <!-- Icon container -->
+    <g transform="translate(0, -50)" filter="url(#shadow)">
+      <rect x="-80" y="-80" width="160" height="160" rx="40" fill="url(#iconGrad)"/>
+      <!-- Arrows -->
+      <path d="M-25 -25 L25 -25 L10 -45 M25 -25 L10 -5" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="M25 25 L-25 25 L-10 45 M-25 25 L-10 5" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </g>
+    
+    <!-- Text -->
+    <text x="0" y="90" font-family="Arial, sans-serif" font-size="72" font-weight="bold" text-anchor="middle" fill="#166534">Swap Kids</text>
+    <text x="0" y="140" font-family="Arial, sans-serif" font-size="28" text-anchor="middle" fill="#22c55e">Круговорот добра в мире родителей</text>
+  </g>
+</svg>
