@@ -49,7 +49,7 @@ const texts = {
         errorInvoice:'Ошибка создания счета', errorPayment:'Ошибка оплаты',
         invoiceSent:'Счёт отправлен! Проверьте бота 📩', premiumActivated:'🎉 Премиум активирован!',
         confirmDelete:'Удалить это объявление?', myItemBadge:'Моя вещь',
-        everywhere: 'Везде', showEverywhere: 'Показать все'
+        everywhere: 'Везде', showEverywhere: 'Показать все', showNearby: 'Показать в nearby'
     },
     'en': {
         appSubtitle:'Exchange kids items', search:'Search items...',
@@ -79,7 +79,7 @@ const texts = {
         errorInvoice:'Error creating invoice', errorPayment:'Payment error',
         invoiceSent:'Invoice sent! Check your bot 📩', premiumActivated:'🎉 Premium activated!',
         confirmDelete:'Delete this listing?', myItemBadge:'My item',
-        everywhere: 'Everywhere', showEverywhere: 'Show all'
+        everywhere: 'Everywhere', showEverywhere: 'Show all', showNearby: 'Show in nearby'
     },
     'es': {
         appSubtitle:'Intercambio infantil', search:'Buscar artículos...',
@@ -109,7 +109,7 @@ const texts = {
         errorInvoice:'Error al crear factura', errorPayment:'Error de pago',
         invoiceSent:'¡Factura enviada! Revisa tu bot 📩', premiumActivated:'🎉 ¡Premium activado!',
         confirmDelete:'¿Eliminar este anuncio?', myItemBadge:'Mi artículo',
-        everywhere: 'En todas partes', showEverywhere: 'Mostrar todo'
+        everywhere: 'En todas partes', showEverywhere: 'Mostrar todo', showNearby: 'Mostrar en nearby'
     },
     'pt': {
         appSubtitle:'Troca infantil', search:'Procurar itens...',
@@ -139,7 +139,7 @@ const texts = {
         errorInvoice:'Erro ao criar fatura', errorPayment:'Erro de pagamento',
         invoiceSent:'Fatura enviada! Verifique seu bot 📩', premiumActivated:'🎉 Premium ativado!',
         confirmDelete:'Excluir este anúncio?', myItemBadge:'Meu item',
-        everywhere: 'Em toda parte', showEverywhere: 'Mostrar tudo'
+        everywhere: 'Em toda parte', showEverywhere: 'Mostrar tudo', showNearby: 'Mostrar em nearby'
     },
     'uk': {
         appSubtitle:'Обмін дитячими речами', search:'Пошук речей...',
@@ -169,7 +169,7 @@ const texts = {
         errorInvoice:'Помилка створення рахунку', errorPayment:'Помилка оплати',
         invoiceSent:'Рахунок надіслано! Перевірте бота 📩', premiumActivated:'🎉 Премиум активовано!',
         confirmDelete:'Видалити це оголошення?', myItemBadge:'Моя річ',
-        everywhere: 'Скрізь', showEverywhere: 'Показати всі'
+        everywhere: 'Скрізь', showEverywhere: 'Показати всі', showNearby: 'Показати в nearby'
     },
     'ka': {
         appSubtitle:'ბავშვთა ნივთების გაცვლა', search:'ნივთების ძიება...',
@@ -199,7 +199,7 @@ const texts = {
         errorInvoice:'ინვოისის შეცდომა', errorPayment:'გადახდის შეცდომა',
         invoiceSent:'ინვოისი გაიგზავნა! შეამოწმეთ ბოტი 📩', premiumActivated:'🎉 პრემიუმი გააქტიურდა!',
         confirmDelete:'წაშალოთ ეს განცხადება?', myItemBadge:'ჩემი ნივთი',
-        everywhere: 'ყველგან', showEverywhere: 'ყველას ჩვენება'
+        everywhere: 'ყველგან', showEverywhere: 'ყველას ჩვენება', showNearby: 'ჩვენება nearby-ში'
     }
 };
 
@@ -238,6 +238,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const langSel = document.getElementById('langSelector');
         if (langSel) langSel.value = currentLang;
         
+        // Default to global if no location is set
+        if (!currentCountry || !currentCity) {
+            isGlobalView = true;
+        }
+
         applyTranslations();
         loadUser();
         loadItems();
@@ -252,11 +257,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const iCity = document.getElementById('itemCity');
         if (iCountry && currentCountry) iCountry.value = currentCountry;
         if (iCity && currentCity) iCity.value = currentCity;
-
-        // Default to global if no location is set
-        if (!currentCountry || !currentCity) {
-            isGlobalView = true;
-        }
     } catch (e) {
         console.error('Initialization error:', e);
     }
@@ -353,13 +353,24 @@ function applyTranslations() {
         const globalBtn = document.getElementById('showGlobalBtn');
         
         if (locDisp) {
-            if (isGlobalView || !currentCountry || !currentCity) {
+            if (isGlobalView) {
                 locDisp.innerHTML = '<i class="fas fa-globe text-teal-500 mr-1"></i>' + lang.everywhere;
-                if (globalBtn) globalBtn.classList.add('hidden');
+                if (globalBtn) {
+                    if (currentCountry && currentCity) {
+                        // User has a location, show option to go back
+                        globalBtn.classList.remove('hidden');
+                        setT('showEverywhereText', (lang.showNearby || 'Show nearby').replace('nearby', currentCity));
+                    } else {
+                        globalBtn.classList.add('hidden');
+                    }
+                }
             } else {
                 const countryName = COUNTRIES.find(c => c[0] === currentCountry)?.[1] || currentCountry;
                 locDisp.innerHTML = '<i class="fas fa-map-marker-alt text-teal-500 mr-1"></i>📍 ' + countryName + ', ' + currentCity;
-                if (globalBtn) globalBtn.classList.remove('hidden');
+                if (globalBtn) {
+                    globalBtn.classList.remove('hidden');
+                    setT('showEverywhereText', lang.showEverywhere);
+                }
             }
         }
 
@@ -412,7 +423,7 @@ async function loadItems() {
 }
 
 function toggleGlobalView() {
-    isGlobalView = true;
+    isGlobalView = !isGlobalView; // Toggle
     applyTranslations();
     loadItems();
 }
