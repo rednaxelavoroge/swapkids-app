@@ -53,7 +53,9 @@ const texts = {
         navHome: 'Лента', navProfile: 'Профиль', profileTitle: 'Профиль',
         statsGiven: 'Отдано вещей', statsRank: 'Статус', myItems: 'Мои объявления',
         markAsGiven: 'У меня забрали', givenAway: 'Забрали', openFavorites: 'Избранное',
-        rankHero: 'Герой', rankMaster: 'Мастер', rankBeginner: 'Новичок'
+        rankHero: 'Герой', rankMaster: 'Мастер', rankBeginner: 'Новичок',
+        labelGiveaway: 'Отдают', labelWish: 'Ищут', typeLabel: 'Что вы хотите сделать?',
+        typeGiveawayLabel: 'Подарю', typeWishLabel: 'Ищу', wishBadge: 'ИЩУ'
     },
     'en': {
         appSubtitle:'Exchange kids items', search:'Search items...',
@@ -87,7 +89,9 @@ const texts = {
         navHome: 'Feed', navProfile: 'Profile', profileTitle: 'Profile',
         statsGiven: 'Items given', statsRank: 'Rank', myItems: 'My Listings',
         markAsGiven: 'Mark as given', givenAway: 'Given Away', openFavorites: 'Favorites',
-        rankHero: 'Hero', rankMaster: 'Master', rankBeginner: 'Beginner'
+        rankHero: 'Hero', rankMaster: 'Master', rankBeginner: 'Beginner',
+        labelGiveaway: 'Offers', labelWish: 'Wishes', typeLabel: 'What do you want to do?',
+        typeGiveawayLabel: 'Gifting', typeWishLabel: 'Searching', wishBadge: 'WISH'
     },
     'es': {
         appSubtitle:'Intercambio infantil', search:'Buscar artículos...',
@@ -121,7 +125,9 @@ const texts = {
         navHome: 'Inicio', navProfile: 'Perfil', profileTitle: 'Perfil',
         statsGiven: 'Artículos dados', statsRank: 'Rango', myItems: 'Mis anuncios',
         markAsGiven: 'Me lo han quitado', givenAway: 'Entregado', openFavorites: 'Favoritos',
-        rankHero: 'Héroe', rankMaster: 'Maestro', rankBeginner: 'Principiante'
+        rankHero: 'Héroe', rankMaster: 'Maestro', rankBeginner: 'Principiante',
+        labelGiveaway: 'Regalan', labelWish: 'Buscan', typeLabel: '¿Qué quieres hacer?',
+        typeGiveawayLabel: 'Regalo', typeWishLabel: 'Busco', wishBadge: 'BUSCO'
     },
     'pt': {
         appSubtitle:'Troca infantil', search:'Procurar itens...',
@@ -155,7 +161,9 @@ const texts = {
         navHome: 'Início', navProfile: 'Perfil', profileTitle: 'Perfil',
         statsGiven: 'Itens doados', statsRank: 'Classificação', myItems: 'Meus anúncios',
         markAsGiven: 'Marcar como entregue', givenAway: 'Entregue', openFavorites: 'Favoritos',
-        rankHero: 'Herói', rankMaster: 'Mestre', rankBeginner: 'Iniciante'
+        rankHero: 'Herói', rankMaster: 'Mestre', rankBeginner: 'Iniciante',
+        labelGiveaway: 'Doando', labelWish: 'Procurando', typeLabel: 'O que você quer fazer?',
+        typeGiveawayLabel: 'Doar', typeWishLabel: 'Procurar', wishBadge: 'PROCURO'
     },
     'uk': {
         appSubtitle:'Обмін дитячими речами', search:'Пошук речей...',
@@ -189,7 +197,9 @@ const texts = {
         navHome: 'Стрічка', navProfile: 'Профіль', profileTitle: 'Профіль',
         statsGiven: 'Віддано речей', statsRank: 'Статус', myItems: 'Мої оголошення',
         markAsGiven: 'У мене забрали', givenAway: 'Забрали', openFavorites: 'Обране',
-        rankHero: 'Герой', rankMaster: 'Майстер', rankBeginner: 'Новачок'
+        rankHero: 'Герой', rankMaster: 'Майстер', rankBeginner: 'Новачок',
+        labelGiveaway: 'Віддають', labelWish: 'Шукають', typeLabel: 'Що ви хочете зробити?',
+        typeGiveawayLabel: 'Віддаю', typeWishLabel: 'Шукаю', wishBadge: 'ШУКАЮ'
     },
     'ka': {
         appSubtitle:'ბავშვთა ნივთების გაცვლა', search:'ნივთების ძიება...',
@@ -223,7 +233,9 @@ const texts = {
         navHome: 'ლენტა', navProfile: 'პროფილი', profileTitle: 'პროფილი',
         statsGiven: 'გაცემული ნივთები', statsRank: 'სტატუსი', myItems: 'ჩემი განცხადებები',
         markAsGiven: 'ჩემგან წაიღეს', givenAway: 'გაიცა', openFavorites: 'რჩეულები',
-        rankHero: 'გმირი', rankMaster: 'ოსტატი', rankBeginner: 'დამწყები'
+        rankHero: 'გმირი', rankMaster: 'ოსტატი', rankBeginner: 'დამწყები',
+        labelGiveaway: 'აძლევენ', labelWish: 'ეძებენ', typeLabel: 'რისი გაკეთება გსურთ?',
+        typeGiveawayLabel: 'ვაძლევ', typeWishLabel: 'ვეძებ', wishBadge: 'ვეძებ'
     }
 };
 
@@ -240,6 +252,8 @@ let isPremium = false;
 let currentItem = null;
 let uploadedPhoto = null;
 let currentFilter = 'all';
+let currentFeedType = 'giveaway'; // giveaway or wish
+let newItemType = 'giveaway'; // for add modal
 let currentSearch = '';
 let isGlobalView = false;
 let currentLang = localStorage.getItem('swapkids_lang') || (tg.initDataUnsafe.user?.language_code?.substring(0,2)) || 'ru';
@@ -307,6 +321,8 @@ function applyTranslations() {
         };
 
         setT('appSubtitle', lang.appSubtitle);
+        setT('labelGiveaway', lang.labelGiveaway);
+        setT('labelWish', lang.labelWish);
         const searchInput = document.getElementById('searchInput');
         if (searchInput) searchInput.placeholder = lang.search;
 
@@ -335,6 +351,9 @@ function applyTranslations() {
 
         // Add item form
         setT('addItemTitle', lang.addItem);
+        setT('typeLabel', lang.typeLabel);
+        setT('typeGiveawayLabel', lang.typeGiveawayLabel);
+        setT('typeWishLabel', lang.typeWishLabel);
         setT('photoLabel', lang.photo);
         setT('uploadPhotoText', lang.uploadPhoto);
         setT('nameLabel', lang.name);
@@ -445,9 +464,10 @@ async function loadUser() {
 
 async function loadItems() {
     try {
-        let url = `/api/items?user_id=${userId}`;
+        let url = `/api/items?user_id=${userId}&type=${currentFeedType}`;
         if (!isGlobalView && currentCountry) url += `&country=${currentCountry}`;
         if (!isGlobalView && currentCity) url += `&city=${encodeURIComponent(currentCity)}`;
+        
         const res = await fetch(url);
         allItems = await res.json();
         filterAndRenderItems();
@@ -492,14 +512,26 @@ function renderItems() {
         return;
     }
 
-    grid.innerHTML = filteredItems.map((item, i) => `
-        <div class="item-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 card-hover cursor-pointer"
+    grid.innerHTML = filteredItems.map((item, i) => {
+        const isWish = item.item_type === 'wish';
+        const cardBg = isWish ? 'bg-cyan-50/50' : 'bg-white';
+        const borderColor = isWish ? 'border-cyan-100' : 'border-gray-100';
+        
+        return `
+        <div class="item-card ${cardBg} rounded-2xl overflow-hidden shadow-sm border ${borderColor} card-hover cursor-pointer"
              style="animation-delay: ${i * 0.05}s" onclick="openItemModal(${item.id})">
             <div class="relative">
-                <img src="${item.image_url || 'https://placehold.co/400x300/e0f2fe/0d9488?text=' + encodeURIComponent(item.title)}"
-                     alt="${item.title}" class="w-full h-32 object-cover" loading="lazy"
-                     onerror="this.src='https://placehold.co/400x300/e0f2fe/0d9488?text=${encodeURIComponent(item.title)}'">
-                ${item.owner_id == userId ? `<span class="absolute top-2 left-2 px-2 py-1 bg-teal-500 text-white text-xs font-medium rounded-full">${t('myItem')}</span>` : ''}
+                ${isWish ? `
+                    <div class="w-full h-32 bg-gradient-to-br from-cyan-100 to-teal-50 flex items-center justify-center">
+                        <i class="fas fa-bullhorn text-cyan-400 text-4xl opacity-30"></i>
+                    </div>
+                    <span class="absolute top-2 left-2 px-2 py-1 bg-cyan-500 text-white text-[9px] font-black rounded-lg shadow-sm z-10 uppercase tracking-wider">${t('wishBadge')}</span>
+                ` : `
+                    <img src="${item.image_url || 'https://placehold.co/400x300/e0f2fe/0d9488?text=' + encodeURIComponent(item.title)}"
+                         alt="${item.title}" class="w-full h-32 object-cover" loading="lazy"
+                         onerror="this.src='https://placehold.co/400x300/e0f2fe/0d9488?text=${encodeURIComponent(item.title)}'">
+                    ${item.owner_id == userId ? `<span class="absolute top-2 left-2 px-2 py-1 bg-teal-500 text-white text-xs font-medium rounded-full">${t('myItem')}</span>` : ''}
+                `}
                 
                 <!-- Like Button -->
                 <div onclick="event.stopPropagation(); toggleLike(${item.id})" 
@@ -515,7 +547,7 @@ function renderItems() {
                     <span>${item.city || t('cityNotSet')}${item.district ? ', ' + item.district : ''}</span>
                 </div>
             </div>
-        </div>`).join('');
+        </div>`}).join('');
 }
 
 async function toggleLike(itemId) {
@@ -530,7 +562,7 @@ async function toggleLike(itemId) {
     if (isLiked) {
         likeIcon.classList.replace('fas', 'far');
         likeIcon.classList.replace('text-red-500', 'text-gray-400');
-        likeCounter.textContent = currentCount - 1;
+        likeCounter.textContent = Math.max(0, currentCount - 1);
     } else {
         likeIcon.classList.replace('far', 'fas');
         likeIcon.classList.replace('text-gray-400', 'text-red-500');
@@ -566,6 +598,38 @@ async function toggleLike(itemId) {
             likeIcon.classList.replace('text-red-500', 'text-gray-400');
             likeCounter.textContent = currentCount;
         }
+    }
+}
+
+function switchFeedType(type) {
+    currentFeedType = type;
+    const btnGiveaway = document.getElementById('tabGiveaway');
+    const btnWish = document.getElementById('tabWish');
+    
+    if (type === 'giveaway') {
+        btnGiveaway.className = "flex-1 py-2 text-sm font-bold rounded-xl transition-all bg-white text-teal-600 shadow-sm";
+        btnWish.className = "flex-1 py-2 text-sm font-bold rounded-xl transition-all text-gray-500";
+    } else {
+        btnGiveaway.className = "flex-1 py-2 text-sm font-bold rounded-xl transition-all text-gray-500";
+        btnWish.className = "flex-1 py-2 text-sm font-bold rounded-xl transition-all bg-white text-teal-600 shadow-sm";
+    }
+    loadItems();
+}
+
+function setItemType(type) {
+    newItemType = type;
+    const btnGiveaway = document.getElementById('typeBtnGiveaway');
+    const btnWish = document.getElementById('typeBtnWish');
+    
+    if (type === 'giveaway') {
+        btnGiveaway.className = "flex-1 py-3 px-2 rounded-xl border-2 border-teal-500 bg-teal-50 text-teal-700 font-bold transition-all text-xs";
+        btnWish.className = "flex-1 py-3 px-2 rounded-xl border-2 border-gray-100 bg-white text-gray-500 font-bold transition-all text-xs";
+        document.getElementById('photoUpload').parentElement.classList.remove('hidden');
+    } else {
+        btnGiveaway.className = "flex-1 py-3 px-2 rounded-xl border-2 border-gray-100 bg-white text-gray-500 font-bold transition-all text-xs";
+        btnWish.className = "flex-1 py-3 px-2 rounded-xl border-2 border-teal-500 bg-teal-50 text-teal-700 font-bold transition-all text-xs";
+        // Wishes don't necessarily need a photo, but we can keep it optional
+        // For now, let's just leave it as it is or hide it if it's annoying
     }
 }
 
@@ -751,6 +815,7 @@ async function compressImage(dataUrl, maxWidth = 800, maxHeight = 800) {
 }
 
 function openAddModal() { 
+    setItemType('giveaway'); // Reset to default
     document.getElementById('addModal').classList.remove('hidden'); 
     updateDistrictPlaceholder();
 }
@@ -796,7 +861,8 @@ async function submitItem(event) {
         city: document.getElementById('itemCity').value,
         district: document.getElementById('itemDistrict').value,
         contact: document.getElementById('itemContact').value,
-        image: uploadedPhoto
+        image: uploadedPhoto,
+        item_type: newItemType
     };
 
     try {

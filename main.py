@@ -58,6 +58,9 @@ async def init_db():
         try:
             await db.execute("ALTER TABLE items ADD COLUMN receiver_id INTEGER")
         except: pass
+        try:
+            await db.execute("ALTER TABLE items ADD COLUMN item_type TEXT DEFAULT 'giveaway'")
+        except: pass
         
         await db.execute('''CREATE TABLE IF NOT EXISTS favorites 
                             (user_id INTEGER, item_id INTEGER, 
@@ -202,14 +205,16 @@ async def api_get_items(request):
     search = request.query.get('search', '')
     user_id = request.query.get('user_id')
     
+    item_type = request.query.get('type', 'giveaway')
+    
     query = """
         SELECT i.*, 
                (SELECT COUNT(*) FROM likes WHERE item_id = i.id) as likes_count,
                (SELECT 1 FROM likes WHERE item_id = i.id AND user_id = ?) as is_liked
         FROM items i 
-        WHERE i.status = 'active'
+        WHERE i.status = 'active' AND i.item_type = ?
     """
-    params = [user_id]
+    params = [user_id, item_type]
     
     if country:
         query += " AND i.country = ?"
@@ -245,10 +250,11 @@ async def api_add_item(request):
     data = await request.json()
     async with aiosqlite.connect('swap_global.db') as db:
         cursor = await db.execute(
-            """INSERT INTO items (owner_id, title, country, city, category, district, contact, image_url) 
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+            """INSERT INTO items (owner_id, title, country, city, category, district, contact, image_url, item_type) 
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (data['user_id'], data['title'], data.get('country', ''), data.get('city', ''),
-             data['category'], data.get('district', ''), data['contact'], data.get('image', ''))
+             data['category'], data.get('district', ''), data['contact'], data.get('image', ''),
+             data.get('item_type', 'giveaway'))
         )
         await db.commit()
         return web.json_response({'ok': True, 'id': cursor.lastrowid})
