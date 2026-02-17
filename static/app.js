@@ -226,20 +226,28 @@ const DISTRICT_EXAMPLES = {
 
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
-    populateCountrySelects();
-    document.getElementById('langSelector').value = currentLang;
-    applyTranslations();
-    loadUser();
-    loadItems();
-    setupEventListeners();
+    try {
+        populateCountrySelects();
+        const langSel = document.getElementById('langSelector');
+        if (langSel) langSel.value = currentLang;
+        
+        applyTranslations();
+        loadUser();
+        loadItems();
+        setupEventListeners();
 
-    if (currentCountry && currentCity) {
-        document.getElementById('welcomeMessage').style.display = 'none';
+        const welcome = document.getElementById('welcomeMessage');
+        if (welcome && currentCountry && currentCity) {
+            welcome.style.display = 'none';
+        }
+
+        const iCountry = document.getElementById('itemCountry');
+        const iCity = document.getElementById('itemCity');
+        if (iCountry && currentCountry) iCountry.value = currentCountry;
+        if (iCity && currentCity) iCity.value = currentCity;
+    } catch (e) {
+        console.error('Initialization error:', e);
     }
-
-    // Pre-fill add form with saved location
-    if (currentCountry) document.getElementById('itemCountry').value = currentCountry;
-    if (currentCity) document.getElementById('itemCity').value = currentCity;
 });
 
 function populateCountrySelects() {
@@ -255,77 +263,93 @@ function t(key) {
 }
 
 function applyTranslations() {
-    const lang = texts[currentLang] || texts['ru'];
+    try {
+        const lang = texts[currentLang] || texts['ru'];
+        const setT = (id, text) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = text;
+        };
 
-    document.getElementById('appSubtitle').textContent = lang.appSubtitle;
-    document.getElementById('searchInput').placeholder = lang.search;
+        setT('appSubtitle', lang.appSubtitle);
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) searchInput.placeholder = lang.search;
 
-    // Categories
-    const catBtns = document.querySelectorAll('.category-btn');
-    catBtns[0].textContent = lang.all;
-    catBtns[1].innerHTML = '<i class="fas fa-tshirt mr-1"></i>' + lang.clothes;
-    catBtns[2].innerHTML = '<i class="fas fa-gamepad mr-1"></i>' + lang.toys;
-    catBtns[3].innerHTML = '<i class="fas fa-baby-carriage mr-1"></i>' + lang.gear;
-    catBtns[4].innerHTML = '<i class="fas fa-chair mr-1"></i>' + lang.seats;
+        // Categories
+        const catBtns = document.querySelectorAll('.category-btn');
+        if (catBtns.length >= 5) {
+            catBtns[0].textContent = lang.all;
+            catBtns[1].innerHTML = '<i class="fas fa-tshirt mr-1"></i>' + lang.clothes;
+            catBtns[2].innerHTML = '<i class="fas fa-gamepad mr-1"></i>' + lang.toys;
+            catBtns[3].innerHTML = '<i class="fas fa-baby-carriage mr-1"></i>' + lang.gear;
+            catBtns[4].innerHTML = '<i class="fas fa-chair mr-1"></i>' + lang.seats;
+        }
 
-    document.getElementById('feedTitle').textContent = lang.feedTitle;
-    document.getElementById('welcomeTitle').textContent = lang.welcomeTitle;
-    document.getElementById('welcomeSubtitle').textContent = lang.welcomeSubtitle;
-    document.getElementById('welcomeText').textContent = lang.welcomeText;
-    document.getElementById('selectLocationBtnText').textContent = lang.selectLocation;
-    document.getElementById('changeLocationBtn').textContent = lang.changeLocation;
-    document.getElementById('locationModalTitle').textContent = lang.locationModalTitle;
-    document.getElementById('countryLabel').textContent = lang.countryLabel;
-    document.getElementById('cityLabel').textContent = lang.cityLabel;
-    document.getElementById('cityInput').placeholder = lang.enterCity;
-    document.getElementById('applyBtn').textContent = lang.apply;
+        setT('feedTitle', lang.feedTitle);
+        setT('welcomeTitle', lang.welcomeTitle);
+        setT('welcomeSubtitle', lang.welcomeSubtitle);
+        setT('welcomeText', lang.welcomeText);
+        setT('selectLocationBtnText', lang.selectLocation);
+        setT('changeLocationBtn', lang.changeLocation);
+        setT('locationModalTitle', lang.locationModalTitle);
+        setT('countryLabel', lang.countryLabel);
+        setT('cityLabel', lang.cityLabel);
+        const cityInput = document.getElementById('cityInput');
+        if (cityInput) cityInput.placeholder = lang.enterCity;
+        setT('applyBtn', lang.apply);
 
-    // Add item form
-    document.getElementById('addItemTitle').textContent = lang.addItem;
-    document.getElementById('photoLabel').textContent = lang.photo;
-    document.getElementById('uploadPhotoText').textContent = lang.uploadPhoto;
-    document.getElementById('nameLabel').textContent = lang.name;
-    document.getElementById('itemTitle').placeholder = lang.namePlaceholder;
-    document.getElementById('categoryLabel').textContent = lang.category;
-    document.getElementById('selectCategoryOpt').textContent = lang.selectCategory;
-    document.getElementById('optClothes').textContent = lang.clothesCat;
-    document.getElementById('optToys').textContent = lang.toysCat;
-    document.getElementById('optGear').textContent = lang.gearCat;
-    document.getElementById('optSeats').textContent = lang.seatsCat;
-    document.getElementById('optOther').textContent = lang.otherCat;
-    document.getElementById('countryFormLabel').textContent = lang.country;
-    document.getElementById('cityFormLabel').textContent = lang.city;
-    document.getElementById('itemCity').placeholder = lang.cityPlaceholder;
-    document.getElementById('districtLabel').textContent = lang.district;
-    document.getElementById('itemDistrict').placeholder = lang.districtPlaceholder;
-    document.getElementById('contactFormLabel').textContent = lang.contact;
-    document.getElementById('itemContact').placeholder = lang.contactPlaceholder;
-    document.getElementById('publishBtn').textContent = lang.publish;
+        // Add item form
+        setT('addItemTitle', lang.addItem);
+        setT('photoLabel', lang.photo);
+        setT('uploadPhotoText', lang.uploadPhoto);
+        setT('nameLabel', lang.name);
+        const itemTitle = document.getElementById('itemTitle');
+        if (itemTitle) itemTitle.placeholder = lang.namePlaceholder;
+        setT('categoryLabel', lang.category);
+        setT('selectCategoryOpt', lang.selectCategory);
+        setT('optClothes', lang.clothesCat);
+        setT('optToys', lang.toysCat);
+        setT('optGear', lang.gearCat);
+        setT('optSeats', lang.seatsCat);
+        setT('optOther', lang.otherCat);
+        setT('countryFormLabel', lang.country);
+        setT('cityFormLabel', lang.city);
+        const itemCity = document.getElementById('itemCity');
+        if (itemCity) itemCity.placeholder = lang.cityPlaceholder;
+        setT('districtLabel', lang.district);
+        const itemDistrict = document.getElementById('itemDistrict');
+        if (itemDistrict) itemDistrict.placeholder = lang.districtPlaceholder;
+        setT('contactFormLabel', lang.contact);
+        const itemContact = document.getElementById('itemContact');
+        if (itemContact) itemContact.placeholder = lang.contactPlaceholder;
+        setT('publishBtn', lang.publish);
 
-    // Premium modal
-    document.getElementById('premiumTitle').textContent = lang.premiumTitle;
-    document.getElementById('premiumDesc').textContent = lang.premiumDesc;
-    document.getElementById('payButtonText').textContent = lang.pay;
-    document.getElementById('premiumCancelBtn').textContent = lang.cancel;
-    document.getElementById('premiumOnetime').textContent = lang.onetime;
+        // Premium modal
+        setT('premiumTitle', lang.premiumTitle);
+        setT('premiumDesc', lang.premiumDesc);
+        setT('payButtonText', lang.pay);
+        setT('premiumCancelBtn', lang.cancel);
+        setT('premiumOnetime', lang.onetime);
 
-    // Contact modal
-    document.getElementById('contactSellerTitle').textContent = lang.contactSeller;
-    document.getElementById('writeTelegramText').textContent = lang.writeTelegram;
-    document.getElementById('closeContactBtn').textContent = lang.close;
+        // Contact modal
+        setT('contactSellerTitle', lang.contactSeller);
+        setT('writeTelegramText', lang.writeTelegram);
+        setT('closeContactBtn', lang.close);
 
-    // Location display
-    if (currentCountry && currentCity) {
-        const countryName = COUNTRIES.find(c => c[0] === currentCountry)?.[1] || currentCountry;
-        document.getElementById('locationDisplay').innerHTML =
-            '<i class="fas fa-map-marker-alt text-teal-500 mr-1"></i>📍 ' + countryName + ', ' + currentCity;
-    } else {
-        document.getElementById('locationDisplay').innerHTML =
-            '<i class="fas fa-map-marker-alt text-teal-500 mr-1"></i>' + lang.locationDisplay;
+        // Location display
+        const locDisp = document.getElementById('locationDisplay');
+        if (locDisp) {
+            if (currentCountry && currentCity) {
+                const countryName = COUNTRIES.find(c => c[0] === currentCountry)?.[1] || currentCountry;
+                locDisp.innerHTML = '<i class="fas fa-map-marker-alt text-teal-500 mr-1"></i>📍 ' + countryName + ', ' + currentCity;
+            } else {
+                locDisp.innerHTML = '<i class="fas fa-map-marker-alt text-teal-500 mr-1"></i>' + lang.locationDisplay;
+            }
+        }
+
+        if (allItems.length > 0) renderItems();
+    } catch (e) {
+        console.error('Translation error:', e);
     }
-
-    // Re-render items with new translations
-    if (allItems.length > 0) renderItems();
 }
 
 function changeLanguage() {
