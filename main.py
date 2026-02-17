@@ -68,6 +68,9 @@ async def init_db():
         await db.execute('''CREATE TABLE IF NOT EXISTS messages 
                             (id INTEGER PRIMARY KEY AUTOINCREMENT, chat_id INTEGER, 
                              sender_id INTEGER, text TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
+        await db.execute('''CREATE TABLE IF NOT EXISTS likes 
+                            (user_id INTEGER, item_id INTEGER, 
+                             PRIMARY KEY (user_id, item_id))''')
         await db.commit()
 
 # --- ЛОГИКА ТЕЛЕГРАМ БОТА ---
@@ -199,23 +202,29 @@ async def api_get_items(request):
     search = request.query.get('search', '')
     user_id = request.query.get('user_id')
     
-    query = "SELECT * FROM items WHERE status = 'active'"
-    params = []
+    query = """
+        SELECT i.*, 
+               (SELECT COUNT(*) FROM likes WHERE item_id = i.id) as likes_count,
+               (SELECT 1 FROM likes WHERE item_id = i.id AND user_id = ?) as is_liked
+        FROM items i 
+        WHERE i.status = 'active'
+    """
+    params = [user_id]
     
     if country:
-        query += " AND country = ?"
+        query += " AND i.country = ?"
         params.append(country)
     if city:
-        query += " AND city = ?"
+        query += " AND i.city = ?"
         params.append(city)
     if category and category != 'all':
-        query += " AND category = ?"
+        query += " AND i.category = ?"
         params.append(category)
     if search:
-        query += " AND (title LIKE ? OR district LIKE ?)"
+        query += " AND (i.title LIKE ? OR i.district LIKE ?)"
         params.extend([f'%{search}%', f'%{search}%'])
     
-    query += " ORDER BY id DESC"
+    query += " ORDER BY i.id DESC"
     
     async with aiosqlite.connect('swap_global.db') as db:
         db.row_factory = aiosqlite.Row
@@ -376,13 +385,39 @@ async def api_create_invoice(request):
         return web.json_response({'ok': False, 'error': str(e)})
 
 async def api_get_my_items(request):
-    """Получить мои объявления"""
+    """Получить мои объявления со статистикой лайков"""
     user_id = request.query.get('user_id')
     async with aiosqlite.connect('swap_global.db') as db:
         db.row_factory = aiosqlite.Row
-        async with db.execute("SELECT * FROM items WHERE owner_id = ? ORDER BY id DESC", (user_id,)) as cur:
+        async with db.execute("""
+            SELECT *, (SELECT COUNT(*) FROM likes WHERE item_id = items.id) as likes_count
+            FROM items 
+            WHERE owner_id = ? 
+            ORDER BY id DESC""", (user_id,)) as cur:
             rows = await cur.fetchall()
             return web.json_response([dict(row) for row in rows])
+
+async def api_toggle_like(request):
+    """Поставить или убрать лайк"""
+    data = await request.json()
+    user_id = data.get('user_id')
+    item_id = data.get('item_id')
+    
+    async with aiosqlite.connect('swap_global.db') as db:
+        async with db.execute("SELECT 1 FROM likes WHERE user_id = ? AND item_id = ?", (user_id, item_id)) as cur:
+            if await cur.fetchone():
+                await db.execute("DELETE FROM likes WHERE user_id = ? AND item_id = ?", (user_id, item_id))
+                action = 'removed'
+            else:
+                await db.execute("INSERT INTO likes (user_id, item_id) VALUES (?, ?)", (user_id, item_id))
+                action = 'added'
+        await db.commit()
+        
+        async with db.execute("SELECT COUNT(*) FROM likes WHERE item_id = ?", (item_id,)) as cur:
+            row = await cur.fetchone()
+            count = row[0] if row else 0
+            
+        return web.json_response({'ok': True, 'action': action, 'likes_count': count})
 
 async def api_get_chats(request):
     """Получить список чатов пользователя"""
@@ -489,6 +524,7 @@ async def main():
     app.router.add_get('/api/my-items', api_get_my_items)
     app.router.add_post('/api/items/mark_given', api_mark_item_given)
     app.router.add_get('/api/user/stats', api_get_user_stats)
+    app.router.add_post('/api/items/toggle_like', api_toggle_like)
     app.router.add_get('/api/chats', api_get_chats)
     app.router.add_get('/api/messages', api_get_messages)
     app.router.add_post('/api/messages', api_send_message)

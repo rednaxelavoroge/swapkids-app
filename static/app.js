@@ -500,6 +500,13 @@ function renderItems() {
                      alt="${item.title}" class="w-full h-32 object-cover" loading="lazy"
                      onerror="this.src='https://placehold.co/400x300/e0f2fe/0d9488?text=${encodeURIComponent(item.title)}'">
                 ${item.owner_id == userId ? `<span class="absolute top-2 left-2 px-2 py-1 bg-teal-500 text-white text-xs font-medium rounded-full">${t('myItem')}</span>` : ''}
+                
+                <!-- Like Button -->
+                <div onclick="event.stopPropagation(); toggleLike(${item.id})" 
+                     class="absolute bottom-2 right-2 flex items-center gap-1 bg-white/80 backdrop-blur px-2 py-1 rounded-full shadow-sm">
+                    <i class="${item.is_liked ? 'fas' : 'far'} fa-heart ${item.is_liked ? 'text-red-500' : 'text-gray-400'} text-xs"></i>
+                    <span class="text-[10px] font-bold text-gray-700" id="likeCount-${item.id}">${item.likes_count || 0}</span>
+                </div>
             </div>
             <div class="p-3">
                 <h3 class="font-semibold text-gray-800 text-sm mb-1 line-clamp-1">${item.title}</h3>
@@ -509,6 +516,57 @@ function renderItems() {
                 </div>
             </div>
         </div>`).join('');
+}
+
+async function toggleLike(itemId) {
+    const likeIcon = document.querySelector(`div[onclick*="toggleLike(${itemId})"] i`);
+    const likeCounter = document.getElementById(`likeCount-${itemId}`);
+    if (!likeIcon || !likeCounter) return;
+
+    // Optimistic UI update
+    const isLiked = likeIcon.classList.contains('fas');
+    const currentCount = parseInt(likeCounter.textContent);
+    
+    if (isLiked) {
+        likeIcon.classList.replace('fas', 'far');
+        likeIcon.classList.replace('text-red-500', 'text-gray-400');
+        likeCounter.textContent = currentCount - 1;
+    } else {
+        likeIcon.classList.replace('far', 'fas');
+        likeIcon.classList.replace('text-gray-400', 'text-red-500');
+        likeCounter.textContent = currentCount + 1;
+    }
+
+    try {
+        const res = await fetch('/api/items/toggle_like', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ item_id: itemId, user_id: userId })
+        });
+        const data = await res.json();
+        if (data.ok) {
+            // Update with real count from server just in case
+            likeCounter.textContent = data.likes_count;
+            // Also update the local state for this item so it persists during current session filtering
+            const item = allItems.find(it => it.id === itemId);
+            if (item) {
+                item.likes_count = data.likes_count;
+                item.is_liked = data.action === 'added';
+            }
+        }
+    } catch (e) {
+        console.error("Like toggle error", e);
+        // Rollback on error
+        if (isLiked) {
+            likeIcon.classList.replace('far', 'fas');
+            likeIcon.classList.replace('text-gray-400', 'text-red-500');
+            likeCounter.textContent = currentCount;
+        } else {
+            likeIcon.classList.replace('fas', 'far');
+            likeIcon.classList.replace('text-red-500', 'text-gray-400');
+            likeCounter.textContent = currentCount;
+        }
+    }
 }
 
 function getCategoryName(cat) {
@@ -819,7 +877,12 @@ async function loadProfile() {
                 <img src="${item.image_url}" class="w-16 h-16 rounded-xl object-cover ${isGiven ? 'grayscale opacity-50' : ''}">
                 <div class="flex-1 min-w-0">
                     <h5 class="font-bold text-gray-800 truncate">${item.title}</h5>
-                    <p class="text-xs text-gray-500">${item.city || ''}</p>
+                    <div class="flex items-center gap-2 text-xs text-gray-500">
+                        <span>${item.city || ''}</span>
+                        <span class="flex items-center gap-1 text-teal-600 font-bold">
+                            <i class="fas fa-heart text-[10px]"></i> ${item.likes_count || 0}
+                        </span>
+                    </div>
                 </div>
                 ${!isGiven ? `
                     <button onclick="markAsGiven(${item.id})" class="px-3 py-2 bg-teal-50 text-teal-600 rounded-xl text-xs font-bold whitespace-nowrap">
