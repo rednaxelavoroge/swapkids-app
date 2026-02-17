@@ -155,9 +155,12 @@
               <option value="ka" class="text-gray-800">🇬🇪 KA</option>
             </select>
             <div
-              class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur"
+              id="profileEntry"
+              onclick="switchView('profile')"
+              class="w-10 h-10 rounded-full border-2 border-white/30 overflow-hidden flex items-center justify-center backdrop-blur cursor-pointer hover:scale-105 transition-transform"
             >
-              <i class="fas fa-gift text-white text-lg"></i>
+              <img id="userAvatar" src="" alt="" class="w-full h-full object-cover hidden" />
+              <i id="userAvatarIcon" class="fas fa-user-circle text-white text-2xl"></i>
             </div>
           </div>
         </div>
@@ -273,6 +276,7 @@
           </div>
         </div>
 
+
         <!-- Items Grid -->
         <div
           class="px-4 py-4 pb-24 overflow-y-auto"
@@ -288,60 +292,62 @@
         </div>
       </div>
 
-      <!-- Profile View -->
-      <div id="profileView" class="view-content hidden min-h-[60vh] px-4 py-6">
-          <div class="bg-gradient-to-br from-teal-500 to-teal-600 rounded-3xl p-6 text-white mb-6 shadow-lg shadow-teal-500/20">
-              <div class="flex items-center gap-4 mb-6">
-                  <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur">
-                      <i class="fas fa-user text-3xl"></i>
-                  </div>
-                  <div>
-                      <h3 class="text-xl font-bold" id="profileName">User Name</h3>
-                      <p class="text-teal-100 text-sm" id="profileStatsLabel">Ваша статистика</p>
-                  </div>
+      <!-- Profile View (Modal Overlay) -->
+      <div id="profileView" class="fixed inset-0 z-50 hidden">
+          <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="switchView('home')"></div>
+          <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-w-md mx-auto h-[90vh] overflow-y-auto slide-up p-6">
+              <div class="flex items-center justify-between mb-6">
+                  <h3 class="text-xl font-bold text-gray-800" id="profileTitle">Профиль</h3>
+                  <button onclick="switchView('home')" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600">
+                      <i class="fas fa-times"></i>
+                  </button>
               </div>
-              <div class="grid grid-cols-2 gap-3">
-                  <div class="bg-white/10 rounded-2xl p-4 backdrop-blur">
-                      <div class="text-2xl font-bold" id="statsGivenCount">0</div>
-                      <div class="text-xs text-teal-100 uppercase tracking-wider mt-1" id="statsGivenLabel">Отдано вещей</div>
-                  </div>
-                  <div class="bg-white/10 rounded-2xl p-4 backdrop-blur">
-                      <div class="text-2xl font-bold" id="statsRank">Hero</div>
-                      <div class="text-xs text-teal-100 uppercase tracking-wider mt-1" id="statsRankLabel">Статус</div>
-                  </div>
-              </div>
-          </div>
 
-          <div class="mb-6">
-              <h4 class="text-lg font-bold text-gray-800 mb-4" id="myItemsTitle">Мои объявления</h4>
-              <div id="myItemsList" class="space-y-3">
-                  <!-- My items here -->
+              <div class="bg-gradient-to-br from-teal-500 to-teal-600 rounded-3xl p-6 text-white mb-6 shadow-lg shadow-teal-500/20">
+                  <div class="flex items-center gap-4 mb-6">
+                      <div class="w-16 h-16 bg-white/20 rounded-2xl overflow-hidden flex items-center justify-center backdrop-blur">
+                          <img id="profilePhoto" src="" alt="" class="w-full h-full object-cover hidden" />
+                          <i id="profilePhotoIcon" class="fas fa-user text-3xl"></i>
+                      </div>
+                      <div>
+                          <h3 class="text-xl font-bold" id="profileName">User Name</h3>
+                          <p class="text-teal-100 text-sm" id="profileStatsLabel">Ваша статистика</p>
+                      </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-3">
+                      <div class="bg-white/10 rounded-2xl p-4 backdrop-blur">
+                          <div class="text-2xl font-bold" id="statsGivenCount">0</div>
+                          <div class="text-xs text-teal-100 uppercase tracking-wider mt-1" id="statsGivenLabel">Отдано вещей</div>
+                      </div>
+                      <div class="bg-white/10 rounded-2xl p-4 backdrop-blur">
+                          <div class="text-2xl font-bold" id="statsRank">Hero</div>
+                          <div class="text-xs text-teal-100 uppercase tracking-wider mt-1" id="statsRankLabel">Статус</div>
+                      </div>
+                  </div>
               </div>
+
+              <div class="mb-6">
+                  <h4 class="text-lg font-bold text-gray-800 mb-4" id="myItemsTitle">Мои объявления</h4>
+                  <div id="myItemsList" class="space-y-3">
+                      <!-- My items here -->
+                  </div>
+              </div>
+              
+              <button onclick="showFavorites()" class="w-full py-4 bg-gray-50 border border-gray-200 text-gray-700 rounded-2xl font-semibold flex items-center justify-center gap-2 hover:bg-gray-100 transition-all">
+                  <i class="fas fa-heart text-teal-500"></i>
+                  <span id="openFavoritesBtn">Избранное</span>
+              </button>
           </div>
-          
-          <button onclick="showFavorites()" class="w-full py-4 bg-gray-50 border border-gray-200 text-gray-700 rounded-2xl font-semibold flex items-center justify-center gap-2 hover:bg-gray-100 transition-all">
-              <i class="fas fa-heart text-teal-500"></i>
-              <span id="openFavoritesBtn">Избранное</span>
-          </button>
       </div>
 
-      <!-- Bottom Navigation -->
-      <div class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-gray-100 px-6 py-3 flex items-center justify-between z-50 max-w-md mx-auto rounded-t-[2rem]">
-          <button id="navHome" onclick="switchView('home')" class="flex flex-col items-center gap-1 text-teal-500 w-16">
-              <i class="fas fa-home text-xl"></i>
-              <span class="text-[10px] font-bold uppercase tracking-wider" id="navHomeLabel">Лента</span>
-          </button>
-          
-          <!-- Central FAB -->
-          <button id="fabAdd" onclick="openAddModal()" class="w-14 h-14 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full shadow-lg shadow-teal-500/40 flex items-center justify-center text-white text-2xl -mt-12 border-4 border-white transition-transform hover:scale-110">
-              <i class="fas fa-plus"></i>
-          </button>
-
-          <button id="navProfile" onclick="switchView('profile')" class="flex flex-col items-center gap-1 text-gray-400 w-16">
-              <i class="fas fa-user-circle text-xl"></i>
-              <span class="text-[10px] font-bold uppercase tracking-wider" id="navProfileLabel">Профиль</span>
-          </button>
-      </div>
+      <!-- FAB (Restored to original position) -->
+      <button
+        id="fabAdd"
+        onclick="openAddModal()"
+        class="fixed bottom-8 right-6 w-14 h-14 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full shadow-lg shadow-teal-500/40 flex items-center justify-center text-white text-2xl z-40 transition-transform hover:scale-110"
+      >
+        <i class="fas fa-plus"></i>
+      </button>
     </div>
 
     <!-- Location Modal -->

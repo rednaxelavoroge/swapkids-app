@@ -359,11 +359,8 @@ function applyTranslations() {
         if (itemContact) itemContact.placeholder = lang.contactPlaceholder;
         setT('publishBtn', lang.publish);
 
-        // Bottom Nav
-        setT('navHomeLabel', lang.navHome);
-        setT('navProfileLabel', lang.navProfile);
-
         // Profile View
+        setT('profileTitle', lang.profileTitle);
         setT('profileStatsLabel', lang.statsGiven);
         setT('statsGivenLabel', lang.statsGiven);
         setT('statsRankLabel', lang.statsRank);
@@ -771,27 +768,14 @@ function showToast(message) {
 
 // ==================== VIEW SWITCHING ====================
 function switchView(view) {
-    const homeView = document.getElementById('homeView');
     const profileView = document.getElementById('profileView');
-    const navHome = document.getElementById('navHome');
-    const navProfile = document.getElementById('navProfile');
     const fab = document.getElementById('fabAdd');
 
     if (view === 'home') {
-        homeView.classList.remove('hidden');
         profileView.classList.add('hidden');
-        navHome.classList.add('text-teal-500');
-        navHome.classList.remove('text-gray-400');
-        navProfile.classList.add('text-gray-400');
-        navProfile.classList.remove('text-teal-500');
         if (fab) fab.classList.remove('hidden');
-    } else {
-        homeView.classList.add('hidden');
+    } else if (view === 'profile') {
         profileView.classList.remove('hidden');
-        navHome.classList.add('text-gray-400');
-        navHome.classList.remove('text-teal-500');
-        navProfile.classList.add('text-teal-500');
-        navProfile.classList.remove('text-gray-400');
         if (fab) fab.classList.add('hidden');
         loadProfile();
     }
