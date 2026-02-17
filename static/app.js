@@ -63,7 +63,12 @@ const texts = {
         karmaLabel: 'Карма', karmaPoints: 'очков',
         referralTitle: 'Пригласи друзей', referralDesc: 'Пригласи 3 друзей и получи Premium навсегда!',
         referralCopy: 'Скопировать ссылку', referralCopied: 'Скопировано! ✅',
-        referralProgress: 'из', needMoreKarma: 'Нужно больше кармы для бронирования'
+        referralProgress: 'из', needMoreKarma: 'Нужно больше кармы для бронирования',
+        karmaInfoTitle: 'Как работает Карма?',
+        karmaRule1: 'Опубликуй вещь — +10 кармы',
+        karmaRule2: 'Отдай вещь — +50 кармы',
+        karmaRule3: 'Пригласи друга — +30 кармы',
+        karmaBookingTeaser: '💡 Скоро: карма даст приоритет при бронировании популярных вещей!'
     },
     'en': {
         appSubtitle:'Exchange kids items', search:'Search items...',
@@ -107,7 +112,12 @@ const texts = {
         karmaLabel: 'Karma', karmaPoints: 'points',
         referralTitle: 'Invite friends', referralDesc: 'Invite 3 friends and get Premium forever!',
         referralCopy: 'Copy link', referralCopied: 'Copied! ✅',
-        referralProgress: 'of', needMoreKarma: 'Need more karma to book'
+        referralProgress: 'of', needMoreKarma: 'Need more karma to book',
+        karmaInfoTitle: 'How does Karma work?',
+        karmaRule1: 'Post an item — +10 karma',
+        karmaRule2: 'Give away an item — +50 karma',
+        karmaRule3: 'Invite a friend — +30 karma',
+        karmaBookingTeaser: '💡 Coming soon: karma gives priority when booking popular items!'
     },
     'es': {
         appSubtitle:'Intercambio infantil', search:'Buscar artículos...',
@@ -151,7 +161,12 @@ const texts = {
         karmaLabel: 'Karma', karmaPoints: 'puntos',
         referralTitle: 'Invita amigos', referralDesc: '¡Invita 3 amigos y obtén Premium para siempre!',
         referralCopy: 'Copiar enlace', referralCopied: '¡Copiado! ✅',
-        referralProgress: 'de', needMoreKarma: 'Necesitas más karma para reservar'
+        referralProgress: 'de', needMoreKarma: 'Necesitas más karma para reservar',
+        karmaInfoTitle: '¿Cómo funciona el Karma?',
+        karmaRule1: 'Publica un artículo — +10 karma',
+        karmaRule2: 'Regala un artículo — +50 karma',
+        karmaRule3: 'Invita a un amigo — +30 karma',
+        karmaBookingTeaser: '💡 Próximamente: el karma dará prioridad al reservar artículos populares!'
     },
     'pt': {
         appSubtitle:'Troca infantil', search:'Procurar itens...',
@@ -195,7 +210,12 @@ const texts = {
         karmaLabel: 'Karma', karmaPoints: 'pontos',
         referralTitle: 'Convide amigos', referralDesc: 'Convide 3 amigos e ganhe Premium para sempre!',
         referralCopy: 'Copiar link', referralCopied: 'Copiado! ✅',
-        referralProgress: 'de', needMoreKarma: 'Precisa de mais karma para reservar'
+        referralProgress: 'de', needMoreKarma: 'Precisa de mais karma para reservar',
+        karmaInfoTitle: 'Como funciona o Karma?',
+        karmaRule1: 'Publique um item — +10 karma',
+        karmaRule2: 'Doe um item — +50 karma',
+        karmaRule3: 'Convide um amigo — +30 karma',
+        karmaBookingTeaser: '💡 Em breve: karma dá prioridade ao reservar itens populares!'
     },
     'uk': {
         appSubtitle:'Обмін дитячими речами', search:'Пошук речей...',
@@ -239,7 +259,12 @@ const texts = {
         karmaLabel: 'Карма', karmaPoints: 'очків',
         referralTitle: 'Запроси друзів', referralDesc: 'Запроси 3 друзів та отримай Premium назавжди!',
         referralCopy: 'Скопіювати посилання', referralCopied: 'Скопійовано! ✅',
-        referralProgress: 'з', needMoreKarma: 'Потрібно більше карми для бронювання'
+        referralProgress: 'з', needMoreKarma: 'Потрібно більше карми для бронювання',
+        karmaInfoTitle: 'Як працює Карма?',
+        karmaRule1: 'Опублікуй річ — +10 карми',
+        karmaRule2: 'Віддай річ — +50 карми',
+        karmaRule3: 'Запроси друга — +30 карми',
+        karmaBookingTeaser: '💡 Скоро: карма дасть пріоритет при бронюванні популярних речей!'
     },
     'ka': {
         appSubtitle:'ბავშვთა ნივთების გაცვლა', search:'ნივთების ძიება...',
@@ -281,7 +306,12 @@ const texts = {
         karmaLabel: 'კარმა', karmaPoints: 'ქულა',
         referralTitle: 'მეგობრების მოწვევა', referralDesc: 'მოიწვიე 3 მეგობარი და მიიღე Premium სამუდამოდ!',
         referralCopy: 'ბმულის კოპირება', referralCopied: 'კოპირებულია! ✅',
-        referralProgress: '-დან', needMoreKarma: 'საჭიროა მეტი კარმა დასაჯავშნად'
+        referralProgress: '-დან', needMoreKarma: 'საჭიროა მეტი კარმა დასაჯავშნად',
+        karmaInfoTitle: 'როგორ მუშაობს კარმა?',
+        karmaRule1: 'გამოაქვეყნე ნივთი — +10 კარმა',
+        karmaRule2: 'გასცე ნივთი — +50 კარმა',
+        karmaRule3: 'მოიწვიე მეგობარი — +30 კარმა',
+        karmaBookingTeaser: '💡 მალე: კარმა მოგცემს პრიორიტეტს პოპულარული ნივთების დაჯავშნისას!'
     }
 };
 
@@ -433,6 +463,12 @@ function applyTranslations() {
         setT('statsRankLabel', lang.statsRank);
         setT('myItemsTitle', lang.myItems);
         setT('openFavoritesBtn', lang.openFavorites || 'Favorites');
+        setT('karmaLabel', lang.karmaLabel);
+        setT('karmaInfoTitle', lang.karmaInfoTitle);
+        setT('karmaRule1', lang.karmaRule1);
+        setT('karmaRule2', lang.karmaRule2);
+        setT('karmaRule3', lang.karmaRule3);
+        setT('karmaBookingTeaser', lang.karmaBookingTeaser);
 
         // Premium modal
         setT('premiumTitle', lang.premiumTitle);
