@@ -50,7 +50,9 @@ async def init_db():
         await db.execute('''CREATE TABLE IF NOT EXISTS users 
                             (user_id INTEGER PRIMARY KEY, is_premium BOOLEAN DEFAULT 0,
                              username TEXT, first_name TEXT, last_name TEXT,
-                             given_count INTEGER DEFAULT 0)''')
+                             given_count INTEGER DEFAULT 0,
+                             karma INTEGER DEFAULT 0,
+                             referred_by INTEGER)''')
         await db.execute('''CREATE TABLE IF NOT EXISTS items 
                             (id INTEGER PRIMARY KEY AUTOINCREMENT, owner_id INTEGER, title TEXT, 
                              country TEXT, city TEXT, category TEXT, district TEXT,
@@ -72,6 +74,12 @@ async def init_db():
         try:
             await db.execute("ALTER TABLE users ADD COLUMN given_count INTEGER DEFAULT 0")
         except: pass
+        try:
+            await db.execute("ALTER TABLE users ADD COLUMN karma INTEGER DEFAULT 0")
+        except: pass
+        try:
+            await db.execute("ALTER TABLE users ADD COLUMN referred_by INTEGER")
+        except: pass
         
         await db.execute('''CREATE TABLE IF NOT EXISTS favorites 
                             (user_id INTEGER, item_id INTEGER, 
@@ -90,6 +98,11 @@ async def init_db():
         await db.execute('''CREATE TABLE IF NOT EXISTS likes 
                             (user_id INTEGER, item_id INTEGER, 
                              PRIMARY KEY (user_id, item_id))''')
+        await db.execute('''CREATE TABLE IF NOT EXISTS referrals 
+                            (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                             referrer_id INTEGER, referred_id INTEGER,
+                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                             UNIQUE(referred_id))''')
         await db.commit()
 
 # --- ЛОГИКА ТЕЛЕГРАМ БОТА ---
@@ -97,10 +110,61 @@ async def init_db():
 async def command_start(message: types.Message):
     user = message.from_user
     async with aiosqlite.connect('swap_global.db') as db:
-        await db.execute("""INSERT OR REPLACE INTO users 
-                           (user_id, username, first_name, last_name) 
-                           VALUES (?, ?, ?, ?)""", 
-                        (user.id, user.username, user.first_name, user.last_name))
+        # Проверяем, существует ли пользователь уже
+        async with db.execute("SELECT user_id FROM users WHERE user_id = ?", (user.id,)) as cur:
+            existing = await cur.fetchone()
+        
+        if not existing:
+            await db.execute("""INSERT INTO users 
+                               (user_id, username, first_name, last_name) 
+                               VALUES (?, ?, ?, ?)""", 
+                            (user.id, user.username, user.first_name, user.last_name))
+        else:
+            await db.execute("""UPDATE users SET username = ?, first_name = ?, last_name = ?
+                               WHERE user_id = ?""",
+                            (user.username, user.first_name, user.last_name, user.id))
+        
+        # Обработка реферального deep link: /start ref_123456
+        args = message.text.split(maxsplit=1)
+        if len(args) > 1 and args[1].startswith('ref_'):
+            try:
+                referrer_id = int(args[1][4:])
+                # Нельзя реферить самого себя, и только для новых пользователей
+                if referrer_id != user.id and not existing:
+                    # Записываем реферал
+                    try:
+                        await db.execute(
+                            "INSERT INTO referrals (referrer_id, referred_id) VALUES (?, ?)",
+                            (referrer_id, user.id))
+                        await db.execute(
+                            "UPDATE users SET referred_by = ? WHERE user_id = ?",
+                            (referrer_id, user.id))
+                        # +30 кармы рефереру
+                        await db.execute(
+                            "UPDATE users SET karma = karma + 30 WHERE user_id = ?",
+                            (referrer_id,))
+                        
+                        # Проверяем: если 3+ рефералов — Premium навсегда
+                        async with db.execute(
+                            "SELECT COUNT(*) FROM referrals WHERE referrer_id = ?",
+                            (referrer_id,)) as ref_cur:
+                            ref_count = (await ref_cur.fetchone())[0]
+                        if ref_count >= 3:
+                            await db.execute(
+                                "UPDATE users SET is_premium = 1 WHERE user_id = ?",
+                                (referrer_id,))
+                            # Уведомляем реферера
+                            try:
+                                await bot.send_message(
+                                    referrer_id,
+                                    "🎉 <b>Поздравляем!</b>\n\n"
+                                    "Вы пригласили 3 друзей и получили <b>Premium навсегда</b>! 🌟\n"
+                                    "Теперь все контакты продавцов доступны вам бесплатно.",
+                                    parse_mode="HTML")
+                            except: pass
+                    except: pass  # UNIQUE constraint — уже реферил
+            except ValueError: pass
+        
         await db.commit()
     
     # Determine user language
@@ -311,6 +375,9 @@ async def api_add_item(request):
             (data['user_id'], item_id, activity_type, data['title'], user_name)
         )
         
+        # Начисляем +10 кармы за публикацию
+        await db.execute("UPDATE users SET karma = karma + 10 WHERE user_id = ?", (data['user_id'],))
+        
         await db.commit()
         return web.json_response({'ok': True, 'id': item_id})
 
@@ -344,6 +411,8 @@ async def api_mark_item_given(request):
                 "INSERT INTO activities (user_id, item_id, activity_type, item_title, user_name) VALUES (?, ?, ?, ?, ?)",
                 (user_id, item_id, 'item_given', title, u_name)
             )
+            # Начисляем +50 кармы за отданную вещь
+            await db.execute("UPDATE users SET karma = karma + 50 WHERE user_id = ?", (user_id,))
             
         await db.commit()
         return web.json_response({'ok': True})
@@ -569,6 +638,48 @@ async def api_create_chat(request):
         await db.commit()
         return web.json_response({'ok': True, 'chat_id': cursor.lastrowid, 'exists': False})
 
+
+async def api_get_karma(request):
+    """Получить баланс кармы пользователя"""
+    user_id = request.query.get('user_id')
+    async with aiosqlite.connect('swap_global.db') as db:
+        async with db.execute("SELECT karma FROM users WHERE user_id = ?", (user_id,)) as cur:
+            row = await cur.fetchone()
+            karma = row[0] if row else 0
+    return web.json_response({'karma': karma})
+
+async def api_get_referral(request):
+    """Получить реферальную ссылку и счётчик"""
+    user_id = request.query.get('user_id')
+    bot_info = None
+    bot_username = 'SwapKidsBot'
+    try:
+        if bot:
+            bot_info = await bot.get_me()
+            bot_username = bot_info.username
+    except: pass
+    
+    ref_link = f"https://t.me/{bot_username}?start=ref_{user_id}"
+    
+    async with aiosqlite.connect('swap_global.db') as db:
+        async with db.execute(
+            "SELECT COUNT(*) FROM referrals WHERE referrer_id = ?", (user_id,)
+        ) as cur:
+            row = await cur.fetchone()
+            ref_count = row[0] if row else 0
+        async with db.execute(
+            "SELECT is_premium FROM users WHERE user_id = ?", (user_id,)
+        ) as cur:
+            row = await cur.fetchone()
+            is_premium = bool(row[0]) if row else False
+    
+    return web.json_response({
+        'ref_link': ref_link,
+        'ref_count': ref_count,
+        'ref_needed': 3,
+        'premium_earned': is_premium and ref_count >= 3
+    })
+
 # --- STATIC FILES ---
 async def handle_static(request):
     """Отдавать статические файлы"""
@@ -611,6 +722,8 @@ async def main():
     app.router.add_get('/api/messages', api_get_messages)
     app.router.add_post('/api/messages', api_send_message)
     app.router.add_post('/api/chats', api_create_chat)
+    app.router.add_get('/api/karma', api_get_karma)
+    app.router.add_get('/api/referral', api_get_referral)
     
     runner = web.AppRunner(app)
     await runner.setup()

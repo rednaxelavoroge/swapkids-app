@@ -365,7 +365,7 @@
                           <p class="text-teal-100 text-sm" id="profileStatsLabel">Ваша статистика</p>
                       </div>
                   </div>
-                  <div class="grid grid-cols-2 gap-3">
+                  <div class="grid grid-cols-3 gap-3">
                       <div class="bg-white/10 rounded-2xl p-4 backdrop-blur">
                           <div class="text-2xl font-bold" id="statsGivenCount">0</div>
                           <div class="text-xs text-teal-100 uppercase tracking-wider mt-1" id="statsGivenLabel">Отдано вещей</div>
@@ -374,7 +374,18 @@
                           <div class="text-2xl font-bold" id="statsRank">Hero</div>
                           <div class="text-xs text-teal-100 uppercase tracking-wider mt-1" id="statsRankLabel">Статус</div>
                       </div>
+                      <div class="bg-white/10 rounded-2xl p-4 backdrop-blur">
+                          <div class="text-2xl font-bold flex items-center gap-1">
+                              <span id="karmaCount">0</span>
+                              <i class="fas fa-bolt text-yellow-300 text-lg"></i>
+                          </div>
+                          <div class="text-xs text-teal-100 uppercase tracking-wider mt-1" id="karmaLabel">Карма</div>
+                      </div>
                   </div>
+              </div>
+
+              <div class="mb-6" id="referralSection">
+                  <!-- Referral data loaded by JS -->
               </div>
 
               <div class="mb-6">
@@ -800,6 +811,6 @@
       </div>
     </div>
 
-    <script src="/static/app.js?v=3.1"></script>
+    <script src="/static/app.js?v=3.2"></script>
   </body>
 </html>

@@ -59,7 +59,11 @@ const texts = {
         leaderboardTitle: 'Топ Героев', topHeroes: 'Лучшие дарители',
         heroicDeeds: 'добрых дел',
         activityNewItem: 'добавил(а) вещь:', activityNewWish: 'ищет:',
-        activityGiven: 'только что отдал(а):'
+        activityGiven: 'только что отдал(а):',
+        karmaLabel: 'Карма', karmaPoints: 'очков',
+        referralTitle: 'Пригласи друзей', referralDesc: 'Пригласи 3 друзей и получи Premium навсегда!',
+        referralCopy: 'Скопировать ссылку', referralCopied: 'Скопировано! ✅',
+        referralProgress: 'из', needMoreKarma: 'Нужно больше кармы для бронирования'
     },
     'en': {
         appSubtitle:'Exchange kids items', search:'Search items...',
@@ -99,7 +103,11 @@ const texts = {
         leaderboardTitle: 'Top Heroes', topHeroes: 'Best Givers',
         heroicDeeds: 'heroic deeds',
         activityNewItem: 'added an item:', activityNewWish: 'is looking for:',
-        activityGiven: 'just gave away:'
+        activityGiven: 'just gave away:',
+        karmaLabel: 'Karma', karmaPoints: 'points',
+        referralTitle: 'Invite friends', referralDesc: 'Invite 3 friends and get Premium forever!',
+        referralCopy: 'Copy link', referralCopied: 'Copied! ✅',
+        referralProgress: 'of', needMoreKarma: 'Need more karma to book'
     },
     'es': {
         appSubtitle:'Intercambio infantil', search:'Buscar artículos...',
@@ -139,7 +147,11 @@ const texts = {
         leaderboardTitle: 'Top Héroes', topHeroes: 'Mejores donantes',
         heroicDeeds: 'actos heroicos',
         activityNewItem: 'agregó un artículo:', activityNewWish: 'está buscando:',
-        activityGiven: 'acaba de dar:'
+        activityGiven: 'acaba de dar:',
+        karmaLabel: 'Karma', karmaPoints: 'puntos',
+        referralTitle: 'Invita amigos', referralDesc: '¡Invita 3 amigos y obtén Premium para siempre!',
+        referralCopy: 'Copiar enlace', referralCopied: '¡Copiado! ✅',
+        referralProgress: 'de', needMoreKarma: 'Necesitas más karma para reservar'
     },
     'pt': {
         appSubtitle:'Troca infantil', search:'Procurar itens...',
@@ -179,7 +191,11 @@ const texts = {
         leaderboardTitle: 'Top Heróis', topHeroes: 'Melhores doadores',
         heroicDeeds: 'atos heroicos',
         activityNewItem: 'adicionou um item:', activityNewWish: 'está procurando:',
-        activityGiven: 'acabou de doar:'
+        activityGiven: 'acabou de doar:',
+        karmaLabel: 'Karma', karmaPoints: 'pontos',
+        referralTitle: 'Convide amigos', referralDesc: 'Convide 3 amigos e ganhe Premium para sempre!',
+        referralCopy: 'Copiar link', referralCopied: 'Copiado! ✅',
+        referralProgress: 'de', needMoreKarma: 'Precisa de mais karma para reservar'
     },
     'uk': {
         appSubtitle:'Обмін дитячими речами', search:'Пошук речей...',
@@ -219,7 +235,11 @@ const texts = {
         leaderboardTitle: 'Топ Героїв', topHeroes: 'Найкращі дарувальники',
         heroicDeeds: 'добрих справ',
         activityNewItem: 'додав(ла) річ:', activityNewWish: 'шукає:',
-        activityGiven: 'щойно віддав(ла):'
+        activityGiven: 'щойно віддав(ла):',
+        karmaLabel: 'Карма', karmaPoints: 'очків',
+        referralTitle: 'Запроси друзів', referralDesc: 'Запроси 3 друзів та отримай Premium назавжди!',
+        referralCopy: 'Скопіювати посилання', referralCopied: 'Скопійовано! ✅',
+        referralProgress: 'з', needMoreKarma: 'Потрібно більше карми для бронювання'
     },
     'ka': {
         appSubtitle:'ბავშვთა ნივთების გაცვლა', search:'ნივთების ძიება...',
@@ -257,7 +277,11 @@ const texts = {
         leaderboardTitle: 'გმირების სია', topHeroes: 'საუკეთესო გამცემები',
         heroicDeeds: 'გმირული საქმე',
         activityNewItem: 'დაამატა ნივთი:', activityNewWish: 'ეძებს:',
-        activityGiven: 'ახლახანს გასცა:'
+        activityGiven: 'ახლახანს გასცა:',
+        karmaLabel: 'კარმა', karmaPoints: 'ქულა',
+        referralTitle: 'მეგობრების მოწვევა', referralDesc: 'მოიწვიე 3 მეგობარი და მიიღე Premium სამუდამოდ!',
+        referralCopy: 'ბმულის კოპირება', referralCopied: 'კოპირებულია! ✅',
+        referralProgress: '-დან', needMoreKarma: 'საჭიროა მეტი კარმა დასაჯავშნად'
     }
 };
 
@@ -935,18 +959,74 @@ async function loadProfile() {
     const user = tg.initDataUnsafe?.user || { id: 12345, first_name: 'Local Test' };
     document.getElementById('profileName').textContent = user.first_name + (user.last_name ? ' ' + user.last_name : '');
     
-    // Load Stats
+    // Load Stats + Karma
     try {
-        const statsRes = await fetch(`/api/user/stats?user_id=${user.id}`);
+        const [statsRes, karmaRes] = await Promise.all([
+            fetch(`/api/user/stats?user_id=${user.id}`),
+            fetch(`/api/karma?user_id=${user.id}`)
+        ]);
         const stats = await statsRes.json();
+        const karmaData = await karmaRes.json();
         const count = stats.given_count || 0;
+        const karma = karmaData.karma || 0;
         document.getElementById('statsGivenCount').textContent = count;
         
         let rank = texts[currentLang].rankBeginner;
         if (count >= 5) rank = texts[currentLang].rankMaster;
         if (count >= 10) rank = texts[currentLang].rankHero;
         document.getElementById('statsRank').textContent = rank;
+        
+        // Karma stat
+        const karmaEl = document.getElementById('karmaCount');
+        if (karmaEl) karmaEl.textContent = karma;
     } catch (e) { console.error("Stats load error", e); }
+
+    // Load Referral Data
+    try {
+        const refRes = await fetch(`/api/referral?user_id=${user.id}`);
+        const refData = await refRes.json();
+        const refSection = document.getElementById('referralSection');
+        if (refSection) {
+            const progress = Math.min(refData.ref_count, refData.ref_needed);
+            const pct = Math.round((progress / refData.ref_needed) * 100);
+            const lang = texts[currentLang];
+            
+            refSection.innerHTML = `
+                <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl p-4 border border-purple-100">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 bg-purple-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-user-plus text-white text-sm"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-800">${lang.referralTitle}</h4>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3">${lang.referralDesc}</p>
+                    <div class="mb-3">
+                        <div class="flex justify-between text-xs text-gray-500 mb-1">
+                            <span>${progress} ${lang.referralProgress} ${refData.ref_needed}</span>
+                            <span>${pct}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-purple-500 to-indigo-500 h-2 rounded-full transition-all" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                    ${refData.premium_earned ? `
+                        <div class="text-center py-2 bg-green-50 rounded-xl text-green-600 text-sm font-bold">
+                            🎉 Premium активирован!
+                        </div>
+                    ` : `
+                        <div class="flex gap-2">
+                            <input type="text" value="${refData.ref_link}" readonly 
+                                   class="flex-1 px-3 py-2 bg-white rounded-xl text-xs text-gray-600 border border-gray-200 truncate" id="refLinkInput">
+                            <button onclick="copyRefLink()" 
+                                    class="px-4 py-2 bg-purple-500 text-white rounded-xl text-xs font-bold hover:bg-purple-600 transition-all whitespace-nowrap" id="copyRefBtn">
+                                <i class="fas fa-copy mr-1"></i>${lang.referralCopy}
+                            </button>
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+    } catch (e) { console.error("Referral load error", e); }
 
     // Load My Items
     try {
@@ -989,6 +1069,23 @@ async function loadProfile() {
             listContainer.appendChild(card);
         });
     } catch (e) { console.error("My items load error", e); }
+}
+
+function copyRefLink() {
+    const input = document.getElementById('refLinkInput');
+    const btn = document.getElementById('copyRefBtn');
+    if (input) {
+        navigator.clipboard.writeText(input.value).then(() => {
+            const lang = texts[currentLang];
+            btn.innerHTML = `<i class="fas fa-check mr-1"></i>${lang.referralCopied}`;
+            setTimeout(() => {
+                btn.innerHTML = `<i class="fas fa-copy mr-1"></i>${lang.referralCopy}`;
+            }, 2000);
+        }).catch(() => {
+            input.select();
+            document.execCommand('copy');
+        });
+    }
 }
 
 async function markAsGiven(itemId) {
