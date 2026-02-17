@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swap Kids — Круговорот добра в мире родителей</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'display': ['Nunito', 'sans-serif'],
+                        'body': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand': {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        'warm': {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 2s infinite',
+                        'float-slow': 'float 8s ease-in-out 1s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-20px) rotate(2deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-display { font-family: 'Nunito', sans-serif; }
+        .gradient-text {
+            background: linear-gradient(135deg, #16a34a 0%, #22c55e 50%, #4ade80 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .blob { border-radius: 50%; filter: blur(40px); opacity: 0.4; }
+        .card-hover { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-8px); box-shadow: 0 25px 50px -12px rgba(22, 163, 74, 0.25); }
+        .emoji-bounce { display: inline-block; animation: emojiBounce 2s ease-in-out infinite; }
+        @keyframes emojiBounce { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.1); } }
+        .scroll-reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+        .telegram-btn { background: linear-gradient(135deg, #0088cc 0%, #00a8e6 100%); box-shadow: 0 10px 30px -5px rgba(0, 136, 204, 0.4); }
+        .telegram-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 40px -5px rgba(0, 136, 204, 0.5); }
+        .lang-btn { transition: all 0.3s ease; }
+        .lang-btn.active { background-color: #16a34a; color: white; }
+        .lang-btn:not(.active):hover { background-color: #f3f4f6; }
+        .lang-dropdown { display: none; }
+        .lang-dropdown.show { display: block; }
+    </style>
+</head>
+<body class="bg-white overflow-x-hidden">
+    <!-- Animated Background -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="blob absolute top-20 left-10 w-96 h-96 bg-brand-300 animate-float"></div>
+        <div class="blob absolute top-40 right-20 w-72 h-72 bg-warm-300 animate-float-delayed"></div>
+        <div class="blob absolute bottom-40 left-1/3 w-80 h-80 bg-brand-200 animate-float-slow"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="relative z-50 px-6 py-4">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-brand-500 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-500/30">
+                    <i class="fas fa-exchange-alt text-white text-xl"></i>
+                </div>
+                <span class="font-display font-bold text-2xl text-gray-800">Swap Kids</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <!-- Desktop Language Switcher -->
+                <div class="hidden lg:flex items-center gap-1 bg-gray-100 rounded-full p-1">
+                    <button onclick="setLanguage('ru')" class="lang-btn active px-3 py-1.5 rounded-full text-xs font-semibold" data-lang="ru">RU</button>
+                    <button onclick="setLanguage('en')" class="lang-btn px-3 py-1.5 rounded-full text-xs font-semibold text-gray-600" data-lang="en">EN</button>
+                    <button onclick="setLanguage('es')" class="lang-btn px-3 py-1.5 rounded-full text-xs font-semibold text-gray-600" data-lang="es">ES</button>
+                    <button onclick="setLanguage('pt')" class="lang-btn px-3 py-1.5 rounded-full text-xs font-semibold text-gray-600" data-lang="pt">PT</button>
+                    <button onclick="setLanguage('fr')" class="lang-btn px-3 py-1.5 rounded-full text-xs font-semibold text-gray-600" data-lang="fr">FR</button>
+                    <button onclick="setLanguage('de')" class="lang-btn px-3 py-1.5 rounded-full text-xs font-semibold text-gray-600" data-lang="de">DE</button>
+                    <button onclick="setLanguage('uk')" class="lang-btn px-3 py-1.5 rounded-full text-xs font-semibold text-gray-600" data-lang="uk">UK</button>
+                    <button onclick="setLanguage('ka')" class="lang-btn px-3 py-1.5 rounded-full text-xs font-semibold text-gray-600" data-lang="ka">KA</button>
+                    <button onclick="setLanguage('am')" class="lang-btn px-3 py-1.5 rounded-full text-xs font-semibold text-gray-600" data-lang="am">AM</button>
+                </div>
+                
+                <!-- Mobile Language Dropdown -->
+                <div class="lg:hidden relative">
+                    <button onclick="toggleLangDropdown()" class="bg-gray-100 px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2">
+                        <span id="currentLang">RU</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div id="langDropdown" class="lang-dropdown absolute right-0 top-full mt-2 bg-white rounded-xl shadow-xl p-2 min-w-[120px]">
+                        <button onclick="setLanguage('ru')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-sm" data-lang="ru">RU - Русский</button>
+                        <button onclick="setLanguage('en')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-sm" data-lang="en">EN - English</button>
+                        <button onclick="setLanguage('es')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-sm" data-lang="es">ES - Español</button>
+                        <button onclick="setLanguage('pt')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-sm" data-lang="pt">PT - Português</button>
+                        <button onclick="setLanguage('fr')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-sm" data-lang="fr">FR - Français</button>
+                        <button onclick="setLanguage('de')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-sm" data-lang="de">DE - Deutsch</button>
+                        <button onclick="setLanguage('uk')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-sm" data-lang="uk">UK - Українська</button>
+                        <button onclick="setLanguage('ka')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-sm" data-lang="ka">KA - ქართული</button>
+                        <button onclick="setLanguage('am')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-100 text-sm" data-lang="am">AM - Հայերեն</button>
+                    </div>
+                </div>
+                
+                <a href="https://t.me/SwapKidsBot" class="telegram-btn text-white px-4 py-2 rounded-full font-semibold text-sm transition-all flex items-center gap-2">
+                    <i class="fab fa-telegram"></i>
+                    <span data-i18n="login">Войти</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative z-10 pt-12 pb-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 bg-brand-100 text-brand-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+                        <span class="emoji-bounce">🌟</span>
+                        <span data-i18n="hero-badge">Уже 50+ стран</span>
+                    </div>
+                    <h1 class="font-display font-extrabold text-4xl lg:text-6xl text-gray-900 leading-tight mb-6">
+                        <span data-i18n="hero-title-1">Круговорот</span><br>
+                        <span class="gradient-text" data-i18n="hero-title-2">добра</span> <span data-i18n="hero-title-3">в мире</span><br>
+                        <span data-i18n="hero-title-4">родителей</span>
+                    </h1>
+                    <p class="text-lg text-gray-600 leading-relaxed mb-8 max-w-lg" data-i18n="hero-text">
+                        Дети растут быстрее, чем мы успеваем обновлять корзину в интернет-магазинах. Те самые кроссовки, надетые один раз, и горы игрушек могут стать огромной радостью для другой семьи.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <a href="https://t.me/SwapKidsBot" class="telegram-btn text-white px-6 py-3 rounded-2xl font-bold transition-all flex items-center justify-center gap-2">
+                            <i class="fab fa-telegram text-xl"></i>
+                            <span data-i18n="join">Присоединиться</span>
+                        </a>
+                        <div class="flex items-center gap-2 text-gray-500 justify-center">
+                            <i class="fas fa-shield-alt text-brand-500"></i>
+                            <span class="text-sm" data-i18n="safe-simple">Безопасно и просто</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-brand-200 to-brand-400 rounded-[3rem] transform rotate-3 opacity-30"></div>
+                        <div class="relative bg-white rounded-[2.5rem] p-6 shadow-2xl shadow-brand-500/20">
+                            <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=600&h=400&fit=crop" 
+                                 alt="Happy parents with kids" 
+                                 class="w-full h-64 object-cover rounded-2xl mb-4">
+                            <div class="flex items-center gap-4">
+                                <div class="flex -space-x-3">
+                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" class="w-8 h-8 rounded-full border-2 border-white" alt="">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" class="w-8 h-8 rounded-full border-2 border-white" alt="">
+                                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop" class="w-8 h-8 rounded-full border-2 border-white" alt="">
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-800 text-sm" data-i18n="parents-count">+10 000 родителей</p>
+                                    <p class="text-xs text-gray-500" data-i18n="already-swap">уже обмениваются</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute -top-4 -right-4 bg-white rounded-2xl p-3 shadow-xl animate-float">
+                            <div class="flex items-center gap-2">
+                                <div class="w-10 h-10 bg-warm-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-baby text-warm-500"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-800 text-sm" data-i18n="clothes">Одежда</p>
+                                    <p class="text-xs text-gray-500" data-i18n="age-range">0-12 лет</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute -bottom-2 -left-4 bg-white rounded-2xl p-3 shadow-xl animate-float-delayed">
+                            <div class="flex items-center gap-2">
+                                <div class="w-10 h-10 bg-brand-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-gamepad text-brand-500"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-800 text-sm" data-i18n="toys">Игрушки</p>
+                                    <p class="text-xs text-gray-500" data-i18n="all-cats">Все категории</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What is Swap Kids -->
+    <section class="relative z-10 py-16 px-6">
+        <div class="max-w-4xl mx-auto text-center scroll-reveal">
+            <h2 class="font-display font-bold text-3xl lg:text-5xl text-gray-900 mb-6">
+                <span data-i18n="what-is">Что такое</span> <span class="gradient-text">Swap Kids?</span>
+            </h2>
+            <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-6 lg:p-12 shadow-xl shadow-brand-500/10">
+                <p class="text-xl text-gray-700 leading-relaxed mb-4" data-i18n="what-text-1">
+                    Это не просто сервис объявлений. Это экосистема доверия.
+                </p>
+                <p class="text-lg text-gray-600 leading-relaxed" data-i18n="what-text-2">
+                    Место, где вещи не продаются, а передаются из рук в руки. В сообществе родителей всё необходимое уже существует — нам просто нужно этим делиться.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits -->
+    <section class="relative z-10 py-16 px-6 bg-gradient-to-b from-white to-brand-50">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12 scroll-reveal">
+                <div class="inline-flex items-center gap-2 bg-warm-100 text-warm-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                    <span class="emoji-bounce">❤️</span>
+                    <span data-i18n="why-parents">Почему родители выбирают нас</span>
+                </div>
+                <h2 class="font-display font-bold text-3xl lg:text-5xl text-gray-900" data-i18n="choose-swapkids">Выбирают Swap Kids</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-white rounded-3xl p-6 shadow-lg card-hover scroll-reveal">
+                    <div class="w-14 h-14 bg-brand-100 rounded-2xl flex items-center justify-center mb-4">
+                        <i class="fas fa-leaf text-brand-600 text-xl"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-lg text-gray-900 mb-2" data-i18n="benefit-1-title">Осознанность вместо потребления</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed" data-i18n="benefit-1-text">Даём вещам вторую, третью, четвёртую жизнь. Наш вклад в будущее планеты, где будут расти наши дети.</p>
+                </div>
+
+                <div class="bg-white rounded-3xl p-6 shadow-lg card-hover scroll-reveal" style="transition-delay: 0.1s">
+                    <div class="w-14 h-14 bg-warm-100 rounded-2xl flex items-center justify-center mb-4">
+                        <i class="fas fa-piggy-bank text-warm-600 text-xl"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-lg text-gray-900 mb-2" data-i18n="benefit-2-title">Экономия бюджета</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed" data-i18n="benefit-2-text">Зачем покупать новое, если можно взять отличное у соседа по району? Экономьте семейный бюджет разумно.</p>
+                </div>
+
+                <div class="bg-white rounded-3xl p-6 shadow-lg card-hover scroll-reveal" style="transition-delay: 0.2s">
+                    <div class="w-14 h-14 bg-pink-100 rounded-2xl flex items-center justify-center mb-4">
+                        <i class="fas fa-heart text-pink-500 text-xl"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-lg text-gray-900 mb-2" data-i18n="benefit-3-title">Сообщество своих</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed" data-i18n="benefit-3-text">Никаких перекупов и спама. Только такие же родители, которые понимают ценность каждой погремушки.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="relative z-10 py-16 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-10 scroll-reveal">
+                <h2 class="font-display font-bold text-3xl lg:text-5xl text-gray-900 mb-3" data-i18n="pricing-title">Прозрачная цена</h2>
+                <p class="text-lg text-gray-600" data-i18n="no-hidden">Никаких скрытых платежей и подписок</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-brand-500 to-brand-600 rounded-[2rem] p-6 lg:p-10 text-white shadow-2xl scroll-reveal">
+                <div class="grid lg:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-semibold mb-4">
+                            <i class="fas fa-infinity"></i>
+                            <span data-i18n="access-forever">Доступ навсегда</span>
+                        </div>
+                        <div class="flex items-baseline gap-2 mb-3">
+                            <span class="font-display font-extrabold text-5xl lg:text-6xl">$10</span>
+                            <span class="text-lg opacity-80" data-i18n="onetime">единоразово</span>
+                        </div>
+                        <p class="text-base opacity-90 leading-relaxed mb-5" data-i18n="pricing-text">Swap Kids — некоммерческий проект. Единый взнос идёт на работу платформы и награды «Героям Обмена».</p>
+                        <a href="https://t.me/SwapKidsBot" class="inline-flex items-center gap-2 bg-white text-brand-600 px-6 py-3 rounded-xl font-bold transition-all hover:scale-105">
+                            <i class="fab fa-telegram"></i>
+                            <span data-i18n="start-swap">Начать обмен</span>
+                        </a>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-3">
+                            <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0"><i class="fas fa-server text-sm"></i></div>
+                            <div>
+                                <h4 class="font-bold text-sm" data-i18n="feature-1-title">Работа платформы</h4>
+                                <p class="text-xs opacity-80" data-i18n="feature-1-text">Серверы, безопасность, поддержка</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-3">
+                            <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0"><i class="fas fa-trophy text-sm"></i></div>
+                            <div>
+                                <h4 class="font-bold text-sm" data-i18n="feature-2-title">Герои Обмена</h4>
+                                <p class="text-xs opacity-80" data-i18n="feature-2-text">Награды топ участникам, кто отдаёт больше всего</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 bg-white/10 backdrop-blur-sm rounded-xl p-3">
+                            <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0"><i class="fas fa-check-circle text-sm"></i></div>
+                            <div>
+                                <h4 class="font-bold text-sm" data-i18n="feature-3-title">Один платёж</h4>
+                                <p class="text-xs opacity-80" data-i18n="feature-3-text">Вечный доступ. Вся магия обмена.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="relative z-10 py-16 px-6 bg-gradient-to-b from-brand-50 to-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12 scroll-reveal">
+                <div class="inline-flex items-center gap-2 bg-brand-100 text-brand-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                    <span class="emoji-bounce">🚀</span>
+                    <span data-i18n="simple-title">Просто как раз-два-три</span>
+                </div>
+                <h2 class="font-display font-bold text-3xl lg:text-5xl text-gray-900" data-i18n="how-it-works">Как это работает</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="relative scroll-reveal">
+                    <div class="bg-white rounded-3xl p-6 shadow-lg text-center relative z-10">
+                        <div class="w-16 h-16 bg-gradient-to-br from-brand-400 to-brand-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <span class="font-display font-bold text-2xl text-white">1</span>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fab fa-telegram text-blue-500 text-lg"></i>
+                        </div>
+                        <h3 class="font-display font-bold text-lg text-gray-900 mb-2" data-i18n="step-1-title">Войди</h3>
+                        <p class="text-gray-600 text-sm" data-i18n="step-1-text">Через Telegram и внеси разовый взнос $10</p>
+                    </div>
+                    <div class="hidden md:block absolute top-1/2 -right-3 transform -translate-y-1/2 z-0"><i class="fas fa-arrow-right text-brand-300 text-2xl"></i></div>
+                </div>
+
+                <div class="relative scroll-reveal" style="transition-delay: 0.15s">
+                    <div class="bg-white rounded-3xl p-6 shadow-lg text-center relative z-10">
+                        <div class="w-16 h-16 bg-gradient-to-br from-warm-400 to-warm-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <span class="font-display font-bold text-2xl text-white">2</span>
+                        </div>
+                        <div class="w-12 h-12 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-camera text-brand-500 text-lg"></i>
+                        </div>
+                        <h3 class="font-display font-bold text-lg text-gray-900 mb-2" data-i18n="step-2-title">Выложи</h3>
+                        <p class="text-gray-600 text-sm" data-i18n="step-2-text">Вещь, из которой вырос твой малыш</p>
+                    </div>
+                    <div class="hidden md:block absolute top-1/2 -right-3 transform -translate-y-1/2 z-0"><i class="fas fa-arrow-right text-brand-300 text-2xl"></i></div>
+                </div>
+
+                <div class="relative scroll-reveal" style="transition-delay: 0.3s">
+                    <div class="bg-white rounded-3xl p-6 shadow-lg text-center relative z-10">
+                        <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <span class="font-display font-bold text-2xl text-white">3</span>
+                        </div>
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-gift text-purple-500 text-lg"></i>
+                        </div>
+                        <h3 class="font-display font-bold text-lg text-gray-900 mb-2" data-i18n="step-3-title">Найди</h3>
+                        <p class="text-gray-600 text-sm" data-i18n="step-3-text">То, что нужно вам сейчас</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="relative z-10 py-16 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-gray-900 rounded-[2rem] p-6 lg:p-12 text-center text-white relative overflow-hidden scroll-reveal">
+                <div class="absolute inset-0 opacity-10">
+                    <div class="absolute top-0 left-0 w-40 h-40 bg-brand-500 rounded-full filter blur-3xl"></div>
+                    <div class="absolute bottom-0 right-0 w-60 h-60 bg-warm-500 rounded-full filter blur-3xl"></div>
+                </div>
+                <div class="relative z-10">
+                    <h2 class="font-display font-bold text-2xl lg:text-4xl mb-4" data-i18n="cta-title">Готов отдать первую вещь?</h2>
+                    <p class="text-base text-gray-300 mb-6 max-w-xl mx-auto" data-i18n="cta-text">Присоединяйся к родителям из 50+ стран, которые уже сделали обмен частью своей жизни.</p>
+                    <a href="https://t.me/SwapKidsBot" class="inline-flex items-center gap-2 telegram-btn text-white px-8 py-4 rounded-xl font-bold transition-all">
+                        <i class="fab fa-telegram text-xl"></i>
+                        <span data-i18n="cta-button">Войти через Telegram</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative z-10 py-8 px-6 bg-white border-t border-gray-100">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-exchange-alt text-white"></i>
+                    </div>
+                    <span class="font-display font-bold text-xl text-gray-800">Swap Kids</span>
+                </div>
+                <p class="text-gray-500 text-sm text-center md:text-right" data-i18n="footer-text">Дети растут. Вещи остаются. Давай растить их вместе.</p>
+            </div>
+            <div class="mt-6 pt-6 border-t border-gray-100 text-center text-gray-400 text-xs" data-i18n="copyright">© 2026 Swap Kids. Некоммерческий проект для родителей.</div>
+        </div>
+    </footer>
+
+    <script>
+        const translations = {
+            ru: {
+                'login': 'Войти', 'hero-badge': 'Уже 50+ стран', 'hero-title-1': 'Круговорот', 'hero-title-2': 'добра', 'hero-title-3': 'в мире', 'hero-title-4': 'родителей',
+                'hero-text': 'Дети растут быстрее, чем мы успеваем обновлять корзину в интернет-магазинах. Те самые кроссовки, надетые один раз, и горы игрушек могут стать огромной радостью для другой семьи.',
+                'join': 'Присоединиться', 'safe-simple': 'Безопасно и просто', 'parents-count': '+10 000 родителей', 'already-swap': 'уже обмениваются', 'clothes': 'Одежда', 'age-range': '0-12 лет', 'toys': 'Игрушки', 'all-cats': 'Все категории',
+                'what-is': 'Что такое', 'what-text-1': 'Это не просто сервис объявлений. Это экосистема доверия.', 'what-text-2': 'Место, где вещи не продаются, а передаются из рук в руки. В сообществе родителей всё необходимое уже существует — нам просто нужно этим делиться.',
+                'why-parents': 'Почему родители выбирают нас', 'choose-swapkids': 'Выбирают Swap Kids',
+                'benefit-1-title': 'Осознанность вместо потребления', 'benefit-1-text': 'Даём вещам вторую, третью, четвёртую жизнь. Наш вклад в будущее планеты, где будут расти наши дети.',
+                'benefit-2-title': 'Экономия бюджета', 'benefit-2-text': 'Зачем покупать новое, если можно взять отличное у соседа по району? Экономьте семейный бюджет разумно.',
+                'benefit-3-title': 'Сообщество своих', 'benefit-3-text': 'Никаких перекупов и спама. Только такие же родители, которые понимают ценность каждой погремушки.',
+                'pricing-title': 'Прозрачная цена', 'no-hidden': 'Никаких скрытых платежей и подписок', 'access-forever': 'Доступ навсегда', 'onetime': 'единоразово',
+                'pricing-text': 'Swap Kids — некоммерческий проект. Единый взнос идёт на работу платформы и награды «Героям Обмена».',
+                'start-swap': 'Начать обмен', 'feature-1-title': 'Работа платформы', 'feature-1-text': 'Серверы, безопасность, поддержка',
+                'feature-2-title': 'Герои Обмена', 'feature-2-text': 'Награды топ участникам, кто отдаёт больше всего', 'feature-3-title': 'Один платёж', 'feature-3-text': 'Вечный доступ. Вся магия обмена.',
+                'simple-title': 'Просто как раз-два-три', 'how-it-works': 'Как это работает', 'step-1-title': 'Войди', 'step-1-text': 'Через Telegram и внеси разовый взнос $10',
+                'step-2-title': 'Выложи', 'step-2-text': 'Вещь, из которой вырос твой малыш', 'step-3-title': 'Найди', 'step-3-text': 'То, что нужно вам сейчас',
+                'cta-title': 'Готов отдать первую вещь?', 'cta-text': 'Присоединяйся к родителям из 50+ стран, которые уже сделали обмен частью своей жизни.',
+                'cta-button': 'Войти через Telegram', 'footer-text': 'Дети растут. Вещи остаются. Давай растить их вместе.', 'copyright': '© 2026 Swap Kids. Некоммерческий проект для родителей.'
+            },
+            en: {
+                'login': 'Login', 'hero-badge': 'Already 50+ countries', 'hero-title-1': 'Circle of', 'hero-title-2': 'Kindness', 'hero-title-3': 'Among', 'hero-title-4': 'Parents',
+                'hero-text': 'Kids grow faster than we can update our online shopping carts. Those sneakers worn just once, and piles of toys taking up space could bring immense joy to another family.',
+                'join': 'Join Now', 'safe-simple': 'Safe & Simple', 'parents-count': '+10,000 parents', 'already-swap': 'already swapping', 'clothes': 'Clothes', 'age-range': '0-12 years', 'toys': 'Toys', 'all-cats': 'All categories',
+                'what-is': 'What is', 'what-text-1': 'This isn\'t just a classifieds service. This is an ecosystem of trust.', 'what-text-2': 'A place where items aren\'t sold but passed from hand to hand. Everything parents need already exists in our community — we just need to share it.',
+                'why-parents': 'Why parents choose us', 'choose-swapkids': 'Choose Swap Kids',
+                'benefit-1-title': 'Mindfulness Over Consumption', 'benefit-1-text': 'We give items a second, third, and fourth life. Our contribution to the planet where our children will grow up.',
+                'benefit-2-title': 'Budget Savings', 'benefit-2-text': 'Why buy new when you can get great quality from a neighbor? Save your family budget wisely.',
+                'benefit-3-title': 'Community of Like-Minded', 'benefit-3-text': 'No resellers or spam. Only fellow parents who understand the value of every rattle.',
+                'pricing-title': 'Transparent Pricing', 'no-hidden': 'No hidden fees or subscriptions', 'access-forever': 'Lifetime Access', 'onetime': 'one-time',
+                'pricing-text': 'Swap Kids is a non-profit project. The one-time fee goes toward platform operations and rewards for "Exchange Heroes".',
+                'start-swap': 'Start Swapping', 'feature-1-title': 'Platform Operations', 'feature-1-text': 'Servers, security, support',
+                'feature-2-title': 'Exchange Heroes', 'feature-2-text': 'Rewards for top givers in the community', 'feature-3-title': 'One Payment', 'feature-3-text': 'Forever access. All the magic of sharing.',
+                'simple-title': 'Easy as 1-2-3', 'how-it-works': 'How It Works', 'step-1-title': 'Join', 'step-1-text': 'Via Telegram and make a one-time $10 contribution',
+                'step-2-title': 'Post', 'step-2-text': 'Items your little one has outgrown', 'step-3-title': 'Find', 'step-3-text': 'What you need right now',
+                'cta-title': 'Ready to Give Your First Item?', 'cta-text': 'Join parents from 50+ countries who\'ve already made swapping part of their lives.',
+                'cta-button': 'Login via Telegram', 'footer-text': 'Kids grow. Items remain. Let\'s raise them together.', 'copyright': '© 2026 Swap Kids. A non-profit project for parents.'
+            },
+            es: {
+                'login': 'Entrar', 'hero-badge': 'Ya 50+ países', 'hero-title-1': 'Círculo de', 'hero-title-2': 'Bondad', 'hero-title-3': 'entre', 'hero-title-4': 'Padres',
+                'hero-text': 'Los niños crecen más rápido de lo que podemos actualizar nuestros carritos de compra. Esas zapatillas usadas una sola vez y montones de juguetes podrían traer inmensa alegría a otra familia.',
+                'join': 'Únete', 'safe-simple': 'Seguro y Simple', 'parents-count': '+10,000 padres', 'already-swap': 'ya intercambiando', 'clothes': 'Ropa', 'age-range': '0-12 años', 'toys': 'Juguetes', 'all-cats': 'Todas las categorías',
+                'what-is': '¿Qué es', 'what-text-1': 'No es solo un servicio de anuncios. Es un ecosistema de confianza.', 'what-text-2': 'Un lugar donde los artículos no se venden, sino que se pasan de mano en mano. Todo lo que los padres necesitan ya existe en nuestra comunidad — solo necesitamos compartirlo.',
+                'why-parents': 'Por qué los padres nos eligen', 'choose-swapkids': 'Eligen Swap Kids',
+                'benefit-1-title': 'Consciencia Sobre Consumo', 'benefit-1-text': 'Damos a los artículos una segunda, tercera y cuarta vida. Nuestra contribución al planeta donde crecerán nuestros hijos.',
+                'benefit-2-title': 'Ahorro de Presupuesto', 'benefit-2-text': '¿Por qué comprar nuevo cuando puedes obtener gran calidad de un vecino? Ahorra el presupuesto familiar sabiamente.',
+                'benefit-3-title': 'Comunidad de Afines', 'benefit-3-text': 'Sin revendedores ni spam. Solo padres que entienden el valor de cada sonajero.',
+                'pricing-title': 'Precio Transparente', 'no-hidden': 'Sin tarifas ocultas ni suscripciones', 'access-forever': 'Acceso de por Vida', 'onetime': 'único pago',
+                'pricing-text': 'Swap Kids es un proyecto sin fines de lucro. La tarifa única se destina a las operaciones de la plataforma y recompensas para los "Héroes del Intercambio".',
+                'start-swap': 'Empezar a Intercambiar', 'feature-1-title': 'Operaciones de Plataforma', 'feature-1-text': 'Servidores, seguridad, soporte',
+                'feature-2-title': 'Héroes del Intercambio', 'feature-2-text': 'Recompensas para los principales donantes', 'feature-3-title': 'Un Pago', 'feature-3-text': 'Acceso para siempre. Toda la magia de compartir.',
+                'simple-title': 'Fácil como 1-2-3', 'how-it-works': 'Cómo Funciona', 'step-1-title': 'Únete', 'step-1-text': 'Vía Telegram y haz una contribución única de $10',
+                'step-2-title': 'Publica', 'step-2-text': 'Artículos que tu pequeño ha superado', 'step-3-title': 'Encuentra', 'step-3-text': 'Lo que necesitas ahora',
+                'cta-title': '¿Listo para Dar Tu Primer Artículo?', 'cta-text': 'Únete a padres de 50+ países que ya han hecho del intercambio parte de sus vidas.',
+                'cta-button': 'Entrar vía Telegram', 'footer-text': 'Los niños crecen. Los artículos permanecen. Crécelos juntos.', 'copyright': '© 2026 Swap Kids. Proyecto sin fines de lucro para padres.'
+            },
+            pt: {
+                'login': 'Entrar', 'hero-badge': 'Já 50+ países', 'hero-title-1': 'Círculo de', 'hero-title-2': 'Bondade', 'hero-title-3': 'entre', 'hero-title-4': 'Pais',
+                'hero-text': 'As crianças crescem mais rápido do que conseguimos atualizar nossos carrinhos de compras. Aqueles tênis usados apenas uma vez e pilhas de brinquedos podem trazer imensa alegria a outra família.',
+                'join': 'Junte-se', 'safe-simple': 'Seguro e Simples', 'parents-count': '+10,000 pais', 'already-swap': 'já trocando', 'clothes': 'Roupas', 'age-range': '0-12 anos', 'toys': 'Brinquedos', 'all-cats': 'Todas as categorias',
+                'what-is': 'O que é', 'what-text-1': 'Não é apenas um serviço de classificados. É um ecossistema de confiança.', 'what-text-2': 'Um lugar onde os itens não são vendidos, mas passados de mão em mão. Tudo que os pais precisam já existe em nossa comunidade — só precisamos compartilhar.',
+                'why-parents': 'Por que os pais nos escolhem', 'choose-swapkids': 'Escolhem Swap Kids',
+                'benefit-1-title': 'Consciência Sobre Consumo', 'benefit-1-text': 'Damos aos itens uma segunda, terceira e quarta vida. Nossa contribuição ao planeta onde nossos filhos crescerão.',
+                'benefit-2-title': 'Economia de Orçamento', 'benefit-2-text': 'Por que comprar novo quando você pode obter ótima qualidade de um vizinho? Economize o orçamento familiar com sabedoria.',
+                'benefit-3-title': 'Comunidade de Iguais', 'benefit-3-text': 'Sem revendedores ou spam. Apenas pais que entendem o valor de cada chocalho.',
+                'pricing-title': 'Preço Transparente', 'no-hidden': 'Sem taxas ocultas ou assinaturas', 'access-forever': 'Acesso Vitalício', 'onetime': 'pagamento único',
+                'pricing-text': 'Swap Kids é um projeto sem fins lucrativos. A taxa única é destinada às operações da plataforma e recompensas para os "Heróis da Troca".',
+                'start-swap': 'Começar a Trocar', 'feature-1-title': 'Operações da Plataforma', 'feature-1-text': 'Servidores, segurança, suporte',
+                'feature-2-title': 'Heróis da Troca', 'feature-2-text': 'Recompensas para os principais doadores', 'feature-3-title': 'Um Pagamento', 'feature-3-text': 'Acesso para sempre. Toda a magia de compartilhar.',
+                'simple-title': 'Fácil como 1-2-3', 'how-it-works': 'Como Funciona', 'step-1-title': 'Junte-se', 'step-1-text': 'Via Telegram e faça uma contribuição única de $10',
+                'step-2-title': 'Publique', 'step-2-text': 'Itens que seu pequeno já cresceu', 'step-3-title': 'Encontre', 'step-3-text': 'O que você precisa agora',
+                'cta-title': 'Pronto para Doar Seu Primeiro Item?', 'cta-text': 'Junte-se a pais de 50+ países que já fizeram da troca parte de suas vidas.',
+                'cta-button': 'Entrar via Telegram', 'footer-text': 'As crianças crescem. Os itens permanecem. Vamos criá-los juntos.', 'copyright': '© 2026 Swap Kids. Projeto sem fins lucrativos para pais.'
+            },
+            fr: {
+                'login': 'Connexion', 'hero-badge': 'Déjà 50+ pays', 'hero-title-1': 'Cercle de', 'hero-title-2': 'Bonté', 'hero-title-3': 'entre', 'hero-title-4': 'Parents',
+                'hero-text': 'Les enfants grandissent plus vite que nous ne pouvons mettre à jour nos paniers d\'achat. Ces baskets portées une seule fois et les piles de jouets pourraient apporter une immense joie à une autre famille.',
+                'join': 'Rejoindre', 'safe-simple': 'Sûr et Simple', 'parents-count': '+10 000 parents', 'already-swap': 'déjà échangent', 'clothes': 'Vêtements', 'age-range': '0-12 ans', 'toys': 'Jouets', 'all-cats': 'Toutes les catégories',
+                'what-is': 'Qu\'est-ce que', 'what-text-1': 'Ce n\'est pas juste un service de petites annonces. C\'est un écosystème de confiance.', 'what-text-2': 'Un endroit où les articles ne sont pas vendus mais transmis de main en main. Tout ce dont les parents ont besoin existe déjà dans notre communauté — nous devons juste le partager.',
+                'why-parents': 'Pourquoi les parents nous choisissent', 'choose-swapkids': 'Choisissent Swap Kids',
+                'benefit-1-title': 'Conscience Plutôt que Consommation', 'benefit-1-text': 'Nous donnons aux articles une deuxième, troisième et quatrième vie. Notre contribution à la planète où nos enfants grandiront.',
+                'benefit-2-title': 'Économies de Budget', 'benefit-1-text': 'Pourquoi acheter neuf quand vous pouvez obtenir une excellente qualité d\'un voisin ? Économisez le budget familial sagement.',
+                'benefit-3-title': 'Communauté de Pareils', 'benefit-3-text': 'Pas de revendeurs ni de spam. Uniquement des parents qui comprennent la valeur de chaque hochet.',
+                'pricing-title': 'Prix Transparent', 'no-hidden': 'Pas de frais cachés ni d\'abonnements', 'access-forever': 'Accès à Vie', 'onetime': 'paiement unique',
+                'pricing-text': 'Swap Kids est un projet à but non lucratif. Les frais uniques vont aux opérations de la plateforme et aux récompenses pour les "Héros de l\'Échange".',
+                'start-swap': 'Commencer à Échanger', 'feature-1-title': 'Opérations de Plateforme', 'feature-1-text': 'Serveurs, sécurité, support',
+                'feature-2-title': 'Héros de l\'Échange', 'feature-2-text': 'Récompenses pour les meilleurs donateurs', 'feature-3-title': 'Un Paiement', 'feature-3-text': 'Accès pour toujours. Toute la magie du partage.',
+                'simple-title': 'Simple comme 1-2-3', 'how-it-works': 'Comment Ça Marche', 'step-1-title': 'Rejoignez', 'step-1-text': 'Via Telegram et faites une contribution unique de $10',
+                'step-2-title': 'Publiez', 'step-2-text': 'Articles dont votre petit a grandi', 'step-3-title': 'Trouvez', 'step-3-text': 'Ce dont vous avez besoin maintenant',
+                'cta-title': 'Prêt à Donner Votre Premier Article?', 'cta-text': 'Rejoignez des parents de 50+ pays qui ont déjà fait de l\'échange une partie de leur vie.',
+                'cta-button': 'Connexion via Telegram', 'footer-text': 'Les enfants grandissent. Les articles restent. Élevons-les ensemble.', 'copyright': '© 2026 Swap Kids. Projet à but non lucratif pour les parents.'
+            },
+            de: {
+                'login': 'Anmelden', 'hero-badge': 'Bereits 50+ Länder', 'hero-title-1': 'Kreis der', 'hero-title-2': 'Freundlichkeit', 'hero-title-3': 'unter', 'hero-title-4': 'Eltern',
+                'hero-text': 'Kinder wachsen schneller, als wir unsere Online-Einkaufswagen aktualisieren können. Diese nur einmal getragenen Sneaker und Stapel von Spielzeug könnten einer anderen Familie immense Freude bereiten.',
+                'join': 'Mitmachen', 'safe-simple': 'Sicher und Einfach', 'parents-count': '+10.000 Eltern', 'already-swap': 'tauschen bereits', 'clothes': 'Kleidung', 'age-range': '0-12 Jahre', 'toys': 'Spielzeug', 'all-cats': 'Alle Kategorien',
+                'what-is': 'Was ist', 'what-text-1': 'Das ist nicht nur ein Kleinanzeigenservice. Das ist ein Ökosystem des Vertrauens.', 'what-text-2': 'Ein Ort, an dem Artikel nicht verkauft, sondern von Hand zu Hand weitergegeben werden. Alles, was Eltern brauchen, existiert bereits in unserer Community — wir müssen es nur teilen.',
+                'why-parents': 'Warum Eltern uns wählen', 'choose-swapkids': 'Wählen Swap Kids',
+                'benefit-1-title': 'Achtsamkeit statt Konsum', 'benefit-1-text': 'Wir geben Artikeln ein zweites, drittes und viertes Leben. Unser Beitrag zum Planeten, auf dem unsere Kinder aufwachsen werden.',
+                'benefit-2-title': 'Budgetersparnis', 'benefit-2-text': 'Warum neu kaufen, wenn Sie großartige Qualität von einem Nachbarn bekommen können? Sparen Sie Ihr Familienbudget weise.',
+                'benefit-3-title': 'Gemeinschaft von Gleichgesinnten', 'benefit-3-text': 'Keine Wiederverkäufer oder Spam. Nur Eltern, die den Wert jeder Rassel verstehen.',
+                'pricing-title': 'Transparente Preise', 'no-hidden': 'Keine versteckten Gebühren oder Abonnements', 'access-forever': 'Lebenslanger Zugang', 'onetime': 'Einmalzahlung',
+                'pricing-text': 'Swap Kids ist ein gemeinnütziges Projekt. Die einmalige Gebühr geht an Plattformbetrieb und Belohnungen für "Austauschhelden".',
+                'start-swap': 'Tauschen Beginnen', 'feature-1-title': 'Plattformbetrieb', 'feature-1-text': 'Server, Sicherheit, Support',
+                'feature-2-title': 'Austauschhelden', 'feature-2-text': 'Belohnungen für Top-Geber', 'feature-3-title': 'Eine Zahlung', 'feature-3-text': 'Ewiger Zugang. Die ganze Magie des Teilens.',
+                'simple-title': 'Einfach wie 1-2-3', 'how-it-works': 'Wie Es Funktioniert', 'step-1-title': 'Beitreten', 'step-1-text': 'Über Telegram und leisten Sie einen einmaligen Beitrag von $10',
+                'step-2-title': 'Veröffentlichen', 'step-2-text': 'Artikel, die Ihr Kleines herausgewachsen ist', 'step-3-title': 'Finden', 'step-3-text': 'Was Sie jetzt brauchen',
+                'cta-title': 'Bereit, Ihren Ersten Artikel zu Geben?', 'cta-text': 'Schließen Sie sich Eltern aus 50+ Ländern an, die das Tauschen bereits zu einem Teil ihres Lebens gemacht haben.',
+                'cta-button': 'Über Telegram Anmelden', 'footer-text': 'Kinder wachsen. Artikel bleiben. Lassen Sie sie zusammen aufwachsen.', 'copyright': '© 2026 Swap Kids. Gemeinnütziges Projekt für Eltern.'
+            },
+            uk: {
+                'login': 'Увійти', 'hero-badge': 'Вже 50+ країн', 'hero-title-1': 'Кругобіг', 'hero-title-2': 'добра', 'hero-title-3': 'у світі', 'hero-title-4': 'батьків',
+                'hero-text': 'Діти ростуть швидше, ніж ми встигаємо оновлювати кошик в інтернет-магазинах. Ті самі кросівки, взуті один раз, і гори іграшок можуть стати величезною радістю для іншої сім\'ї.',
+                'join': 'Приєднатися', 'safe-simple': 'Безпечно і просто', 'parents-count': '+10 000 батьків', 'already-swap': 'вже обмінюються', 'clothes': 'Одяг', 'age-range': '0-12 років', 'toys': 'Іграшки', 'all-cats': 'Всі категорії',
+                'what-is': 'Що таке', 'what-text-1': 'Це не просто сервіс оголошень. Це екосистема довіри.', 'what-text-2': 'Місце, де речі не продаються, а передаються з рук в руки. У спільноті батьків все необхідне вже існує — нам просто потрібно цим ділитися.',
+                'why-parents': 'Чому батьки обирають нас', 'choose-swapkids': 'Об\'єднує Swap Kids',
+                'benefit-1-title': 'Свідомість замість споживання', 'benefit-1-text': 'Даємо речам друге, третє, четверте життя. Наш внесок у майбутнє планети, де будуть рости наші діти.',
+                'benefit-2-title': 'Економія бюджету', 'benefit-2-text': 'Навіщо купувати нове, якщо можна взяти чудове у сусіда по району? Економте сімейний бюджет розумно.',
+                'benefit-3-title': 'Спільнота своїх', 'benefit-3-text': 'Жодних перекупів і спаму. Тільки такі ж батьки, які розуміють цінність кожної погремушки.',
+                'pricing-title': 'Прозора ціна', 'no-hidden': 'Жодних прихованих платежів і підписок', 'access-forever': 'Доступ назавжди', 'onetime': 'одноразово',
+                'pricing-text': 'Swap Kids — некомерційний проект. Єдиний внесок йде на роботу платформи та нагороди «Героям Обміну».',
+                'start-swap': 'Почати обмін', 'feature-1-title': 'Робота платформи', 'feature-1-text': 'Сервери, безпека, підтримка',
+                'feature-2-title': 'Герої Обміну', 'feature-2-text': 'Нагороди топ учасникам, хто віддає найбільше', 'feature-3-title': 'Один платіж', 'feature-3-text': 'Вічний доступ. Вся магія обміну.',
+                'simple-title': 'Просто як раз-два-три', 'how-it-works': 'Як це працює', 'step-1-title': 'Увійди', 'step-1-text': 'Через Telegram та внеси разовий внесок $10',
+                'step-2-title': 'Виклади', 'step-2-text': 'Річ, з якої виріс твій малюк', 'step-3-title': 'Знайди', 'step-3-text': 'Те, що потрібно вам зараз',
+                'cta-title': 'Готовий віддати першу річ?', 'cta-text': 'Приєднуйся до батьків з 50+ країн, які вже зробили обмін частиною свого життя.',
+                'cta-button': 'Увійти через Telegram', 'footer-text': 'Діти ростуть. Речі залишаються. Давай рости їх разом.', 'copyright': '© 2026 Swap Kids. Некомерційний проект для батьків.'
+            },
+            ka: {
+                'login': 'შესვლა', 'hero-badge': 'უკვე 50+ ქვეყანა', 'hero-title-1': 'კეთილობის', 'hero-title-2': 'წრე', 'hero-title-3': 'მშობლების', 'hero-title-4': 'შორის',
+                'hero-text': 'ბავშვები სწრაფად იზრდებიან, ვიდრე ჩვენ შეგვიძლია ონლაინ სავაჭრო კალათების განახლება. იმ ფეხსაცმელები, რომლებიც ერთხელ იყო ნაცვლები, და სათამაშოების გონდოლები შეიძლება მოიტანოს დიდი სიხარული სხვა ოჯახისთვის.',
+                'join': 'შემოგვიერთდი', 'safe-simple': 'უსაფრთხო და მარტივი', 'parents-count': '+10,000 მშობელი', 'already-swap': 'უკვე ცვლის', 'clothes': 'ტანსაცმელი', 'age-range': '0-12 წელი', 'toys': 'სათამაშოები', 'all-cats': 'ყველა კატეგორია',
+                'what-is': 'რა არის', 'what-text-1': 'ეს არ არის უბრალოდ განცხადებების სერვისი. ესაა ნდობის ეკოსისტემა.', 'what-text-2': 'ადგილი, სადაც ნივთები არ იყიდება, არამედ გადაეცემა ხელიდან ხელში. ყველაფერი, რაც მშობლებს სჭირდებათ, უკვე არსებობს ჩვენს თემში — ჩვენ უბრალოდ უნდა გავაზიაროთ.',
+                'why-parents': 'რატომ გვირჩევენ მშობლები', 'choose-swapkids': 'ირჩევენ Swap Kids-ს',
+                'benefit-1-title': 'გონიერება მოხმარებაზე', 'benefit-1-text': 'ნივთებს ვაძლევთ მეორე, მესამე და მეოთხე სიცოცხლეს. ჩვენი წვლილი პლანეტაში, სადაც ჩვენი შვილები გაიზრდებიან.',
+                'benefit-2-title': 'ბიუჯეტის დაზოგვა', 'benefit-2-text': 'რატომ უნდა იყიდო ახალი, როცა მეზობლისგან შეგიძლია მიიღო საუკეთესო ხარისხი? დაზოგე ოჯახის ბიუჯეტი გონივრულად.',
+                'benefit-3-title': 'თავისებური თემა', 'benefit-3-text': 'არანაირი გადამყიდველი და სპამი. მხოლოდ ასეთივე მშობლები, რომლებიც ყოველი ჩხაკუნის ღირებულებას ერკვევიან.',
+                'pricing-title': 'გამჭვირვალე ფასი', 'no-hidden': 'არანაირი დამალული გადასახადი და გამოწერა', 'access-forever': 'მუდმივი წვდომა', 'onetime': 'ერთჯერადი',
+                'pricing-text': 'Swap Kids არის არაკომერციული პროექტი. ერთჯერადი გადასახადი მიდის პლატფორმის მუშაობასა და "გაცვლის გმირების" ჯილდოებზე.',
+                'start-swap': 'გაცვლის დაწყება', 'feature-1-title': 'პლატფორმის მუშაობა', 'feature-1-text': 'სერვერები, უსაფრთხოება, მხარდაჭერა',
+                'feature-2-title': 'გაცვლის გმირები', 'feature-2-text': 'ჯილდოები ტოპ მონაწილეებისთვის, ვინც ყველაზე მეტს აძლევს', 'feature-3-title': 'ერთი გადახდა', 'feature-3-text': 'სამუდამო წვდომა. გაზიარების მთელი მაგია.',
+                'simple-title': 'მარტივია როგორც 1-2-3', 'how-it-works': 'როგორ მუშაობს', 'step-1-title': 'შედი', 'step-1-text': 'Telegram-ის მეშვეობით და შეიტანე ერთჯერადი $10 წვლილი',
+                'step-2-title': 'განათავსე', 'step-2-text': 'ნივთები, რომელშიც შენი პატარა გაიზარდა', 'step-3-title': 'იპოვე', 'step-3-text': 'რაც ახლა გჭირდება',
+                'cta-title': 'მზად ხარ პირველი ნივთის საჩუქრად?', 'cta-text': 'შემოუერთდი მშობლებს 50+ ქვეყნიდან, ვინც უკვე გახადა გაცვლა მათი ცხოვრების ნაწილი.',
+                'cta-button': 'შესვლა Telegram-ით', 'footer-text': 'ბავშვები იზრდებიან. ნივთები რჩება. მოდით, ერთად გავზარდოთ ისინი.', 'copyright': '© 2026 Swap Kids. არაკომერციული პროექტი მშობლებისთვის.'
+            },
+            am: {
+                'login': 'Մուտք', 'hero-badge': 'Արդեն 50+ երկիր', 'hero-title-1': 'Բարության', 'hero-title-2': 'Շրջան', 'hero-title-3': 'Ծնողների', 'hero-title-4': 'Միջև',
+                'hero-text': 'Երեխաները աճում են ավելի արագ, քան մենք կարողանում ենք թարմացնել մեր առցանց առևտրի զամբյուղները: Այդ մեկ անգամ կրած սպորտային կոշիկները և խաղալիքների կույտերը կարող են հսկայական ուրախություն բերել մեկ այլ ընտանիքի:',
+                'join': 'Միացիր', 'safe-simple': 'Անվտանգ և Պարզ', 'parents-count': '+10,000 ծնող', 'already-swap': 'արդեն փոխանակում են', 'clothes': 'Հագուստ', 'age-range': '0-12 տարեկան', 'toys': 'Խաղալիքներ', 'all-cats': 'Բոլոր կատեգորիաները',
+                'what-is': 'Ի՞նչ է', 'what-text-1': 'Սա պարզապես հայտարարությունների ծառայություն չէ: Սա վստահության էկոհամակարգ է:', 'what-text-2': 'Մի վայր, որտեղ իրերը չեն վաճառվում, այլ փոխանցվում են ձեռքից ձեռք: Ամեն ինչ, ինչ ծնողներին պետք է, արդեն գոյություն ունի մեր համայնքում — մենք պարզապես պետք է դա կիսենք:',
+                'why-parents': 'Ինչու են ծնողները մեզ ընտրում', 'choose-swapkids': 'Ընտրում են Swap Kids-ը',
+                'benefit-1-title': 'Գիտակցություն Սպառումից Վեր', 'benefit-1-text': 'Մենք իրերին տալիս ենք երկրորդ, երրորդ և չորրորդ կյանք: Մեր ներդրումը մոլորակին, որտեղ մեր երեխաները կաճեն:',
+                'benefit-2-title': 'Բյուջեի Խնայողություն', 'benefit-2-text': 'Ինչո՞ւ նորը գնել, երբ կարող եք հիանալի որակ ստանալ հարևանից: Խելամիտ խնայեք ձեր ընտանեկան բյուջեն:',
+                'benefit-3-title': 'Նմանամիտների Համայնք', 'benefit-3-text': 'Ոչ մի վերավաճառող կամ սպամ: Միայն այլ ծնողներ, ովքեր հասկանում են յուրաքանչյուր խաղալիքի արժեքը:',
+                'pricing-title': 'Անթաքուկ Գին', 'no-hidden': 'Ոչ մի թաքնված վճար կամ բաժանորդագրություն', 'access-forever': 'Անհատական Մուտք', 'onetime': 'մեկանգամյա',
+                'pricing-text': 'Swap Kids-ը շահույթ չհետապնդող նախագիծ է: Մեկանգամյա վճարը ուղղվում է հարթակի գործունեությանը և "Փոխանակման Հերոսներ" պարգևատրմանը:',
+                'start-swap': 'Սկսել Փոխանակումը', 'feature-1-title': 'Հարթակի Գործունեություն', 'feature-1-text': 'Սերվերներ, անվտանգություն, աջակցություն',
+                'feature-2-title': 'Փոխանակման Հերոսներ', 'feature-2-text': 'Պարգևատրում լավագույն տվողների համար', 'feature-3-title': 'Մեկ Վճարում', 'feature-3-text': 'Մշտական մուտք: Կիսելու ողջ կախարդանքը:',
+                'simple-title': 'Պարզ Ինչպես 1-2-3', 'how-it-works': 'Ինչպես է Աշխատում', 'step-1-title': 'Միացիր', 'step-1-text': 'Telegram-ի միջոցով և կատարիր $10 մեկանգամյա ներդրում',
+                'step-2-title': 'Տեղադրիր', 'step-2-text': 'Իրեր, որոնցից քո փոքրիկն արդեն մեծացել է', 'step-3-title': 'Գտիր', 'step-3-text': 'Այն, ինչ հիմա պետք է քեզ',
+                'cta-title': 'Պատրա՞ստ ես Քո Առաջին Իրերը Տալու:', 'cta-text': 'Միացիր 50+ երկրների ծնողներին, ովքեր արդեն փոխանակումը դարձրել են իրենց կյանքի մասը:',
+                'cta-button': 'Մուտք Telegram-ով', 'footer-text': 'Երեխաները աճում են: Իրերը մնում են: Եկեք միասին մեծացնենք նրանց:', 'copyright': '© 2026 Swap Kids: Շահույթ չհետապնդող նախագիծ ծնողների համար:'
+            }
+        };
+
+        let currentLang = 'ru';
+
+        function toggleLangDropdown() {
+            document.getElementById('langDropdown').classList.toggle('show');
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('currentLang').textContent = lang.toUpperCase();
+            document.getElementById('langDropdown').classList.remove('show');
+            
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) btn.classList.add('active');
+            });
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                if (translations[lang][key]) {
+                    if (key === 'what-text-1' && (lang === 'fr' || lang === 'en')) {
+                        el.innerHTML = translations[lang][key];
+                    } else {
+                        el.textContent = translations[lang][key];
+                    }
+                }
+            });
+            
+            document.documentElement.lang = lang;
+            
+            const titles = {
+                ru: 'Swap Kids — Круговорот добра в мире родителей',
+                en: 'Swap Kids — Circle of Kindness Among Parents',
+                es: 'Swap Kids — Círculo de Bondad entre Padres',
+                pt: 'Swap Kids — Círculo de Bondade entre Pais',
+                fr: 'Swap Kids — Cercle de Bonté entre Parents',
+                de: 'Swap Kids — Kreis der Freundlichkeit unter Eltern',
+                uk: 'Swap Kids — Кругобіг добра у світі батьків',
+                ka: 'Swap Kids — კეთილობის წრე მშობლების შორის',
+                am: 'Swap Kids — Բարության Շրջան Ծնողների Միջև'
+            };
+            document.title = titles[lang] || titles['en'];
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.lg\\:hidden')) {
+                document.getElementById('langDropdown').classList.remove('show');
+            }
+        });
+
+        // Scroll Reveal Animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+
+        // Auto-detect browser language
+        const browserLang = navigator.language || navigator.userLanguage;
+        if (browserLang) {
+            const langMap = {
+                'en': 'en', 'en-US': 'en', 'en-GB': 'en',
+                'es': 'es', 'es-ES': 'es', 'es-MX': 'es',
+                'pt': 'pt', 'pt-PT': 'pt', 'pt-BR': 'pt',
+                'fr': 'fr', 'fr-FR': 'fr',
+                'de': 'de', 'de-DE': 'de',
+                'uk': 'uk', 'uk-UA': 'uk',
+                'ka': 'ka', 'ka-GE': 'ka',
+                'am': 'am', 'hy': 'am', 'hy-AM': 'am'
+            };
+            const detectedLang = langMap[browserLang];
+            if (detectedLang && detectedLang !== 'ru') {
+                setLanguage(detectedLang);
+            }
+        }
+    </script>
+</body>
+</html>
