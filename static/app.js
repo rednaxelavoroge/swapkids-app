@@ -552,6 +552,29 @@ async function processPayment() {
 }
 
 // ==================== ADD ITEM ====================
+// ==================== IMAGE PROCESSING ====================
+async function compressImage(dataUrl, maxWidth = 800, maxHeight = 800) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.src = dataUrl;
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+            if (width > height) {
+                if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; }
+            } else {
+                if (height > maxHeight) { width *= maxHeight / height; height = maxHeight; }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', 0.7)); // 0.7 quality JPEG
+        };
+    });
+}
+
 function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); }
 
 function closeAddModal() {
@@ -565,12 +588,14 @@ function closeAddModal() {
     if (currentCity) document.getElementById('itemCity').value = currentCity;
 }
 
-function previewPhoto(event) {
+async function previewPhoto(event) {
     const file = event.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = e => {
-        uploadedPhoto = e.target.result;
+    reader.onload = async e => {
+        const rawPhoto = e.target.result;
+        // Compress before preview and storage
+        uploadedPhoto = await compressImage(rawPhoto);
         document.getElementById('uploadPreview').querySelector('img').src = uploadedPhoto;
         document.getElementById('uploadPreview').classList.remove('hidden');
         document.getElementById('uploadPlaceholder').classList.add('hidden');
