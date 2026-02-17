@@ -182,6 +182,21 @@ async def api_get_user(request):
                 })
     return web.json_response({'error': 'User not found'}, status=404)
 
+async def api_get_leaderboard(request):
+    """Топ 10 дарителей"""
+    async with aiosqlite.connect('swap_global.db') as db:
+        db.row_factory = aiosqlite.Row
+        query = """
+            SELECT user_id, username, first_name, last_name, given_count 
+            FROM users 
+            WHERE given_count > 0 
+            ORDER BY given_count DESC 
+            LIMIT 10
+        """
+        async with db.execute(query) as cur:
+            rows = await cur.fetchall()
+            return web.json_response([dict(r) for r in rows])
+
 async def api_register_user(request):
     """Register user from WebApp (if not yet in DB)"""
     data = await request.json()
@@ -530,6 +545,7 @@ async def main():
     app.router.add_get('/api/my-items', api_get_my_items)
     app.router.add_post('/api/items/mark_given', api_mark_item_given)
     app.router.add_get('/api/user/stats', api_get_user_stats)
+    app.router.add_get('/api/leaderboard', api_get_leaderboard)
     app.router.add_post('/api/items/toggle_like', api_toggle_like)
     app.router.add_get('/api/chats', api_get_chats)
     app.router.add_get('/api/messages', api_get_messages)

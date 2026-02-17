@@ -55,7 +55,9 @@ const texts = {
         markAsGiven: 'У меня забрали', givenAway: 'Забрали', openFavorites: 'Избранное',
         rankHero: 'Герой', rankMaster: 'Мастер', rankBeginner: 'Новичок',
         labelGiveaway: 'Отдают', labelWish: 'Ищут', typeLabel: 'Что вы хотите сделать?',
-        typeGiveawayLabel: 'Подарю', typeWishLabel: 'Ищу', wishBadge: 'ИЩУ'
+        typeGiveawayLabel: 'Подарю', typeWishLabel: 'Ищу', wishBadge: 'ИЩУ',
+        leaderboardTitle: 'Топ Героев', topHeroes: 'Лучшие дарители',
+        heroicDeeds: 'добрых дел'
     },
     'en': {
         appSubtitle:'Exchange kids items', search:'Search items...',
@@ -91,7 +93,9 @@ const texts = {
         markAsGiven: 'Mark as given', givenAway: 'Given Away', openFavorites: 'Favorites',
         rankHero: 'Hero', rankMaster: 'Master', rankBeginner: 'Beginner',
         labelGiveaway: 'Offers', labelWish: 'Wishes', typeLabel: 'What do you want to do?',
-        typeGiveawayLabel: 'Gifting', typeWishLabel: 'Searching', wishBadge: 'WISH'
+        typeGiveawayLabel: 'Gifting', typeWishLabel: 'Searching', wishBadge: 'WISH',
+        leaderboardTitle: 'Top Heroes', topHeroes: 'Best Givers',
+        heroicDeeds: 'heroic deeds'
     },
     'es': {
         appSubtitle:'Intercambio infantil', search:'Buscar artículos...',
@@ -127,7 +131,9 @@ const texts = {
         markAsGiven: 'Me lo han quitado', givenAway: 'Entregado', openFavorites: 'Favoritos',
         rankHero: 'Héroe', rankMaster: 'Maestro', rankBeginner: 'Principiante',
         labelGiveaway: 'Regalan', labelWish: 'Buscan', typeLabel: '¿Qué quieres hacer?',
-        typeGiveawayLabel: 'Regalo', typeWishLabel: 'Busco', wishBadge: 'BUSCO'
+        typeGiveawayLabel: 'Regalo', typeWishLabel: 'Busco', wishBadge: 'BUSCO',
+        leaderboardTitle: 'Top Héroes', topHeroes: 'Mejores donantes',
+        heroicDeeds: 'actos heroicos'
     },
     'pt': {
         appSubtitle:'Troca infantil', search:'Procurar itens...',
@@ -163,7 +169,9 @@ const texts = {
         markAsGiven: 'Marcar como entregue', givenAway: 'Entregue', openFavorites: 'Favoritos',
         rankHero: 'Herói', rankMaster: 'Mestre', rankBeginner: 'Iniciante',
         labelGiveaway: 'Doando', labelWish: 'Procurando', typeLabel: 'O que você quer fazer?',
-        typeGiveawayLabel: 'Doar', typeWishLabel: 'Procurar', wishBadge: 'PROCURO'
+        typeGiveawayLabel: 'Doar', typeWishLabel: 'Procurar', wishBadge: 'PROCURO',
+        leaderboardTitle: 'Top Heróis', topHeroes: 'Melhores doadores',
+        heroicDeeds: 'atos heroicos'
     },
     'uk': {
         appSubtitle:'Обмін дитячими речами', search:'Пошук речей...',
@@ -199,7 +207,9 @@ const texts = {
         markAsGiven: 'У мене забрали', givenAway: 'Забрали', openFavorites: 'Обране',
         rankHero: 'Герой', rankMaster: 'Майстер', rankBeginner: 'Новачок',
         labelGiveaway: 'Віддають', labelWish: 'Шукають', typeLabel: 'Що ви хочете зробити?',
-        typeGiveawayLabel: 'Віддаю', typeWishLabel: 'Шукаю', wishBadge: 'ШУКАЮ'
+        typeGiveawayLabel: 'Віддаю', typeWishLabel: 'Шукаю', wishBadge: 'ШУКАЮ',
+        leaderboardTitle: 'Топ Героїв', topHeroes: 'Найкращі дарувальники',
+        heroicDeeds: 'добрих справ'
     },
     'ka': {
         appSubtitle:'ბავშვთა ნივთების გაცვლა', search:'ნივთების ძიება...',
@@ -233,9 +243,9 @@ const texts = {
         navHome: 'ლენტა', navProfile: 'პროფილი', profileTitle: 'პროფილი',
         statsGiven: 'გაცემული ნივთები', statsRank: 'სტატუსი', myItems: 'ჩემი განცხადებები',
         markAsGiven: 'ჩემგან წაიღეს', givenAway: 'გაიცა', openFavorites: 'რჩეულები',
-        rankHero: 'გმირი', rankMaster: 'ოსტატი', rankBeginner: 'დამწყები',
-        labelGiveaway: 'აძლევენ', labelWish: 'ეძებენ', typeLabel: 'რისი გაკეთება გსურთ?',
-        typeGiveawayLabel: 'ვაძლევ', typeWishLabel: 'ვეძებ', wishBadge: 'ვეძებ'
+        typeGiveawayLabel: 'ვაძლევ', typeWishLabel: 'ვეძებ', wishBadge: 'ვეძებ',
+        leaderboardTitle: 'გმირების სია', topHeroes: 'საუკეთესო გამცემები',
+        heroicDeeds: 'გმირული საქმე'
     }
 };
 
@@ -398,6 +408,8 @@ function applyTranslations() {
         setT('writeTelegramText', lang.writeTelegram);
         setT('closeContactBtn', lang.close);
         setT('showEverywhereText', lang.showEverywhere);
+        setT('leaderboardTitle', lang.leaderboardTitle);
+        setT('topHeroesText', lang.topHeroes);
 
         // Location display
         const locDisp = document.getElementById('locationDisplay');
@@ -981,6 +993,57 @@ async function markAsGiven(itemId) {
             loadProfile(); // Refresh
         }
     } catch (e) { showToast(texts[currentLang].errorServer); }
+}
+
+// ==================== LEADERBOARD ====================
+function openLeaderboard() {
+    document.getElementById('leaderboardModal').classList.remove('hidden');
+    loadLeaderboard();
+}
+
+function closeLeaderboard() {
+    document.getElementById('leaderboardModal').classList.add('hidden');
+}
+
+async function loadLeaderboard() {
+    const list = document.getElementById('leaderboardList');
+    list.innerHTML = '<div class="flex justify-center py-8"><div class="loading-spinner"></div></div>';
+    
+    try {
+        const res = await fetch('/api/leaderboard');
+        const data = await res.json();
+        
+        list.innerHTML = '';
+        if (data.length === 0) {
+            list.innerHTML = `<p class="text-center text-gray-400 py-8">${texts[currentLang].noItems}</p>`;
+            return;
+        }
+        
+        data.forEach((user, index) => {
+            const item = document.createElement('div');
+            item.className = 'flex items-center gap-4 p-3 hover:bg-gray-50 rounded-2xl transition-all';
+            
+            const medalColor = index === 0 ? 'text-yellow-400' : index === 1 ? 'text-gray-400' : index === 2 ? 'text-orange-400' : 'text-teal-200';
+            const name = user.first_name + (user.last_name ? ' ' + user.last_name : '') || user.username || 'User';
+            
+            item.innerHTML = `
+                <div class="w-8 h-8 flex items-center justify-center font-bold ${medalColor}">
+                    ${index < 3 ? '<i class="fas fa-medal text-xl"></i>' : (index + 1)}
+                </div>
+                <div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 font-bold">
+                    ${name.charAt(0).toUpperCase()}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="font-bold text-gray-800 truncate">${name}</h4>
+                    <p class="text-xs text-gray-500">${user.given_count} ${texts[currentLang].heroicDeeds}</p>
+                </div>
+            `;
+            list.appendChild(item);
+        });
+    } catch (e) {
+        console.error("Leaderboard load error", e);
+        list.innerHTML = `<p class="text-center text-red-400 py-8">${texts[currentLang].errorServer}</p>`;
+    }
 }
 
 function showFavorites() {
