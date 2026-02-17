@@ -35,7 +35,7 @@ const texts = {
         category:'Категория', selectCategory:'Выберите категорию',
         clothesCat:'Одежда', toysCat:'Игрушки', gearCat:'Коляски и переноски', seatsCat:'Автокресла', otherCat:'Другое',
         country:'Страна', city:'Город', cityPlaceholder:'Например: Батуми',
-        district:'Район', districtPlaceholder:'Например: Сабуртало',
+        district:'Район',        districtPlaceholder:'Например: Центральный',
         contact:'Контакт (Telegram)', contactPlaceholder:'@username или +1...',
         publish:'Опубликовать', published:'Объявление опубликовано! ✅', deleted:'Объявление удалено',
         welcomeTitle:'Добро пожаловать! 👋',
@@ -64,7 +64,7 @@ const texts = {
         category:'Category', selectCategory:'Select category',
         clothesCat:'Clothes', toysCat:'Toys', gearCat:'Strollers & carriers', seatsCat:'Car seats', otherCat:'Other',
         country:'Country', city:'City', cityPlaceholder:'e.g. Barcelona',
-        district:'District', districtPlaceholder:'e.g. Downtown',
+        district:'District',        districtPlaceholder:'e.g. Central',
         contact:'Contact (Telegram)', contactPlaceholder:'@username or +1...',
         publish:'Publish', published:'Item published! ✅', deleted:'Item deleted',
         welcomeTitle:'Welcome! 👋',
@@ -93,7 +93,7 @@ const texts = {
         category:'Categoría', selectCategory:'Seleccionar categoría',
         clothesCat:'Ropa', toysCat:'Juguetes', gearCat:'Carritos', seatsCat:'Sillas auto', otherCat:'Otro',
         country:'País', city:'Ciudad', cityPlaceholder:'Ej: Barcelona',
-        district:'Barrio', districtPlaceholder:'Ej: Centro',
+        district:'Barrio',        districtPlaceholder:'Ej: El Born',
         contact:'Contacto (Telegram)', contactPlaceholder:'@usuario o +1...',
         publish:'Publicar', published:'¡Publicado! ✅', deleted:'Anuncio eliminado',
         welcomeTitle:'¡Bienvenido! 👋',
@@ -122,7 +122,7 @@ const texts = {
         category:'Categoria', selectCategory:'Selecionar categoria',
         clothesCat:'Roupas', toysCat:'Brinquedos', gearCat:'Carrinhos', seatsCat:'Cadeiras', otherCat:'Outro',
         country:'País', city:'Cidade', cityPlaceholder:'Ex: Lisboa',
-        district:'Bairro', districtPlaceholder:'Ex: Centro',
+        district:'Bairro',        districtPlaceholder:'Ex: Chiado',
         contact:'Contato (Telegram)', contactPlaceholder:'@usuario ou +1...',
         publish:'Publicar', published:'Publicado! ✅', deleted:'Anúncio excluído',
         welcomeTitle:'Bem-vindo! 👋',
@@ -151,7 +151,7 @@ const texts = {
         category:'Категорія', selectCategory:'Виберіть категорію',
         clothesCat:'Одяг', toysCat:'Іграшки', gearCat:'Коляски', seatsCat:'Автокрісла', otherCat:'Інше',
         country:'Країна', city:'Місто', cityPlaceholder:'Наприклад: Київ',
-        district:'Район', districtPlaceholder:'Наприклад: Центр',
+        district:'Район',        districtPlaceholder:'Наприклад: Печерськ',
         contact:'Контакт (Telegram)', contactPlaceholder:'@username або +1...',
         publish:'Опублікувати', published:'Оголошення опубліковано! ✅', deleted:'Оголошення видалено',
         welcomeTitle:'Ласкаво просимо! 👋',
@@ -180,7 +180,7 @@ const texts = {
         category:'კატეგორია', selectCategory:'აირჩიეთ კატეგორია',
         clothesCat:'ტანსაცმელი', toysCat:'სათამაშოები', gearCat:'კალოსკები', seatsCat:'ავტოკრესლები', otherCat:'სხვა',
         country:'ქვეყანა', city:'ქალაქი', cityPlaceholder:'მაგ: თბილისი',
-        district:'რაიონი', districtPlaceholder:'მაგ: ვაკე',
+        district:'რაიონი',        districtPlaceholder:'მაგ: ვაკე',
         contact:'კონტაქტი (Telegram)', contactPlaceholder:'@username ან +1...',
         publish:'გამოქვეყნება', published:'გამოქვეყნდა! ✅', deleted:'განცხადება წაიშალა',
         welcomeTitle:'კეთილი იყოს თქვენი მობრძანება! 👋',
@@ -214,6 +214,15 @@ let currentSearch = '';
 let currentLang = localStorage.getItem('swapkids_lang') || (tg.initDataUnsafe.user?.language_code?.substring(0,2)) || 'ru';
 let currentCountry = localStorage.getItem('swapkids_country') || '';
 let currentCity = localStorage.getItem('swapkids_city') || '';
+
+const DISTRICT_EXAMPLES = {
+    'tbilisi': 'Saburtalo', 'тбилиси': 'Сабуртало',
+    'moscow': 'Khamovniki', 'москва': 'Хамовники',
+    'barcelona': 'Eixample', 'барселона': 'Эшампле',
+    'lisbon': 'Chiado', 'лиссабон': 'Шиаду',
+    'kyiv': 'Pechersk', 'киев': 'Печерск',
+    'batumi': 'Old Batumi', 'батуми': 'Старый Батуми'
+};
 
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
@@ -438,6 +447,23 @@ function setupEventListeners() {
     });
 
     document.getElementById('fabAdd').addEventListener('click', openAddModal);
+    document.getElementById('itemCity').addEventListener('input', updateDistrictPlaceholder);
+}
+
+function updateDistrictPlaceholder() {
+    const city = document.getElementById('itemCity').value.toLowerCase().trim();
+    const input = document.getElementById('itemDistrict');
+    const example = DISTRICT_EXAMPLES[city];
+    if (example) {
+        const lang = (texts[currentLang] || texts['ru']);
+        const prefix = currentLang === 'ru' || currentLang === 'uk' ? 'Например: ' : 
+                       currentLang === 'es' ? 'Ej: ' :
+                       currentLang === 'pt' ? 'Ex: ' :
+                       currentLang === 'ka' ? 'მაგ: ' : 'e.g. ';
+        input.placeholder = prefix + example;
+    } else {
+        input.placeholder = t('districtPlaceholder');
+    }
 }
 
 // ==================== LOCATION ====================
@@ -575,7 +601,10 @@ async function compressImage(dataUrl, maxWidth = 800, maxHeight = 800) {
     });
 }
 
-function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); }
+function openAddModal() { 
+    document.getElementById('addModal').classList.remove('hidden'); 
+    updateDistrictPlaceholder();
+}
 
 function closeAddModal() {
     document.getElementById('addModal').classList.add('hidden');
