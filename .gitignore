@@ -4,6 +4,7 @@
 
 # Database (created at runtime)
 *.db
+swap_global.db
 
 # System
 .DS_Store
