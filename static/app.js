@@ -50,11 +50,12 @@ const texts = {
         invoiceSent:'Счёт отправлен! Проверьте бота 📩', premiumActivated:'🎉 Премиум активирован!',
         confirmDelete:'Удалить это объявление?', myItemBadge:'Моя вещь',
         everywhere: 'Везде', showEverywhere: 'Показать все', showNearby: 'Показать в nearby',
-        navHome: 'Лента', navProfile: 'Профиль', profileTitle: 'Профиль',
-        statsGiven: 'Отдано вещей', statsRank: 'Статус', myItems: 'Мои объявления',
-        markAsGiven: 'У меня забрали', givenAway: 'Забрали', openFavorites: 'Избранное',
+        navHome: 'Лента', navProfile: 'Профиль', navLeader: 'Топ', navFav: 'Лайки',
+        profileTitle: 'Профиль', statsGiven: 'Отдано вещей', statsRank: 'Статус',
+        myItems: 'Мои объявления', markAsGiven: 'У меня забрали', givenAway: 'Забрали',
+        openFavorites: 'Избранное', openFavoritesBtn: 'Избранное',
         rankHero: 'Герой', rankMaster: 'Мастер', rankBeginner: 'Новичок',
-        labelGiveaway: 'Отдают', labelWish: 'Ищут', typeLabel: 'Что вы хотите сделать?',
+        labelGiveaway: 'Отдают', labelWish: 'Ищут', typeLabel: 'Что вы хочете сделать?',
         typeGiveawayLabel: 'Подарю', typeWishLabel: 'Ищу', wishBadge: 'ИЩУ',
         leaderboardTitle: 'Топ Героев', topHeroes: 'Лучшие дарители',
         heroicDeeds: 'добрых дел',
@@ -99,9 +100,10 @@ const texts = {
         invoiceSent:'Invoice sent! Check your bot 📩', premiumActivated:'🎉 Premium activated!',
         confirmDelete:'Delete this listing?', myItemBadge:'My item',
         everywhere: 'Everywhere', showEverywhere: 'Show all', showNearby: 'Show in nearby',
-        navHome: 'Feed', navProfile: 'Profile', profileTitle: 'Profile',
-        statsGiven: 'Items given', statsRank: 'Rank', myItems: 'My Listings',
-        markAsGiven: 'Mark as given', givenAway: 'Given Away', openFavorites: 'Favorites',
+        navHome: 'Feed', navProfile: 'Profile', navLeader: 'Top', navFav: 'Likes',
+        profileTitle: 'Profile', statsGiven: 'Items given', statsRank: 'Rank',
+        myItems: 'My Listings', markAsGiven: 'Mark as given', givenAway: 'Given Away',
+        openFavorites: 'Favorites', openFavoritesBtn: 'Favorites',
         rankHero: 'Hero', rankMaster: 'Master', rankBeginner: 'Beginner',
         labelGiveaway: 'Offers', labelWish: 'Wishes', typeLabel: 'What do you want to do?',
         typeGiveawayLabel: 'Gifting', typeWishLabel: 'Searching', wishBadge: 'WISH',
@@ -148,9 +150,10 @@ const texts = {
         invoiceSent:'¡Factura enviada! Revisa tu bot 📩', premiumActivated:'🎉 ¡Premium activado!',
         confirmDelete:'¿Eliminar este anuncio?', myItemBadge:'Mi artículo',
         everywhere: 'En todas partes', showEverywhere: 'Mostrar todo', showNearby: 'Mostrar cerca',
-        navHome: 'Inicio', navProfile: 'Perfil', profileTitle: 'Perfil',
-        statsGiven: 'Artículos dados', statsRank: 'Rango', myItems: 'Mis anuncios',
-        markAsGiven: 'Me lo han quitado', givenAway: 'Entregado', openFavorites: 'Favoritos',
+        navHome: 'Inicio', navProfile: 'Perfil', navLeader: 'Top', navFav: 'Likes',
+        profileTitle: 'Perfil', statsGiven: 'Artículos dados', statsRank: 'Rango',
+        myItems: 'Mis anuncios', markAsGiven: 'Me lo han quitado', givenAway: 'Entregado',
+        openFavorites: 'Favoritos', openFavoritesBtn: 'Favoritos',
         rankHero: 'Héroe', rankMaster: 'Maestro', rankBeginner: 'Principiante',
         labelGiveaway: 'Regalan', labelWish: 'Buscan', typeLabel: '¿Qué quieres hacer?',
         typeGiveawayLabel: 'Regalo', typeWishLabel: 'Busco', wishBadge: 'BUSCO',
@@ -246,9 +249,10 @@ const texts = {
         invoiceSent:'Рахунок надіслано! Перевірте бота 📩', premiumActivated:'🎉 Премиум активовано!',
         confirmDelete:'Видалити це оголошення?', myItemBadge:'Моя річ',
         everywhere: 'Скрізь', showEverywhere: 'Показати все', showNearby: 'Показати поруч',
-        navHome: 'Стрічка', navProfile: 'Профіль', profileTitle: 'Профіль',
-        statsGiven: 'Віддано речей', statsRank: 'Статус', myItems: 'Мої оголошення',
-        markAsGiven: 'У мене забрали', givenAway: 'Забрали', openFavorites: 'Обране',
+        navHome: 'Стрічка', navProfile: 'Профіль', navLeader: 'Топ', navFav: 'Лайки',
+        profileTitle: 'Профіль', statsGiven: 'Віддано речей', statsRank: 'Статус',
+        myItems: 'Мої оголошення', markAsGiven: 'У мене забрали', givenAway: 'Забрали',
+        openFavorites: 'Обране', openFavoritesBtn: 'Обране',
         rankHero: 'Герой', rankMaster: 'Майстер', rankBeginner: 'Новачок',
         labelGiveaway: 'Віддають', labelWish: 'Шукають', typeLabel: 'Що ви хочете зробити?',
         typeGiveawayLabel: 'Віддаю', typeWishLabel: 'Шукаю', wishBadge: 'ШУКАЮ',
@@ -295,9 +299,12 @@ const texts = {
         invoiceSent:'ინვოისი გაიგზავნა! შეამოწმეთ ბოტი 📩', premiumActivated:'🎉 პრემიუმი გააქტიურდა!',
         confirmDelete:'წავშალოთ ეს განცხადება?', myItemBadge:'ჩემი ნივთი',
         everywhere: 'ყველგან', showEverywhere: 'ყველას ჩვენება', showNearby: 'ახლოს ჩვენება',
-        navHome: 'ლენტა', navProfile: 'პროფილი', profileTitle: 'პროფილი',
-        statsGiven: 'გაცემული ნივთები', statsRank: 'სტატუსი', myItems: 'ჩემი განცხადებები',
-        markAsGiven: 'ჩემგან წაიღეს', givenAway: 'გაიცა', openFavorites: 'რჩეულები',
+        navHome: 'ლენტა', navProfile: 'პროფილი', navLeader: 'ტოპი', navFav: 'ლაიქები',
+        profileTitle: 'პროფილი', statsGiven: 'გაცემული ნივთები', statsRank: 'სტატუსი',
+        myItems: 'ჩემი განცხადებები', markAsGiven: 'ჩემგან წაიღეს', givenAway: 'გაიცა',
+        openFavorites: 'რჩეულები', openFavoritesBtn: 'რჩეულები',
+        rankHero: 'გმირი', rankMaster: 'ოსტატი', rankBeginner: 'დამწყები',
+        labelGiveaway: 'აძლევენ', labelWish: 'ეძებენ', typeLabel: 'რა გსურთ გააკეთოთ?',
         typeGiveawayLabel: 'ვაძლევ', typeWishLabel: 'ვეძებ', wishBadge: 'ვეძებ',
         leaderboardTitle: 'გმირების სია', topHeroes: 'საუკეთესო გამცემები',
         heroicDeeds: 'გმირული საქმე',
@@ -332,7 +339,9 @@ let currentFeedType = 'giveaway'; // giveaway or wish
 let newItemType = 'giveaway'; // for add modal
 let currentSearch = '';
 let isGlobalView = false;
-let currentLang = localStorage.getItem('swapkids_lang') || (tg.initDataUnsafe.user?.language_code?.substring(0,2)) || 'ru';
+let currentLang = localStorage.getItem('swapkids_lang') || tg.initDataUnsafe.user?.language_code?.substring(0,2) || 'ru';
+if (!texts[currentLang]) currentLang = 'ru'; // Fallback if lang not supported
+
 let currentCountry = localStorage.getItem('swapkids_country') || '';
 let currentCity = localStorage.getItem('swapkids_city') || '';
 
@@ -462,13 +471,40 @@ function applyTranslations() {
         setT('statsGivenLabel', lang.statsGiven);
         setT('statsRankLabel', lang.statsRank);
         setT('myItemsTitle', lang.myItems);
-        setT('openFavoritesBtn', lang.openFavorites || 'Favorites');
+        setT('openFavoritesBtn', lang.openFavoritesBtn || 'Favorites');
         setT('karmaLabel', lang.karmaLabel);
         setT('karmaInfoTitle', lang.karmaInfoTitle);
         setT('karmaRule1', lang.karmaRule1);
         setT('karmaRule2', lang.karmaRule2);
         setT('karmaRule3', lang.karmaRule3);
         setT('karmaBookingTeaser', lang.karmaBookingTeaser);
+
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) searchInput.placeholder = lang.search;
+        setT('appSubtitle', lang.appSubtitle);
+
+        setT('catAll', lang.all);
+        setT('catClothes', lang.clothes);
+        setT('catToys', lang.toys);
+        setT('catGear', lang.gear);
+        setT('catSeats', lang.seats);
+        setT('showEverywhereText', lang.showEverywhere);
+        setT('changeLocationBtn', lang.changeLocation);
+
+        // Location Modal
+        setT('locationModalTitle', lang.locationModalTitle);
+        setT('countryLabel', lang.countryLabel);
+        setT('cityLabel', lang.cityLabel);
+
+        // Bottom Nav
+        setT('navHomeLabel', lang.navHome);
+        setT('navLeaderLabel', lang.navLeader);
+        setT('navFavLabel', lang.navFav);
+        setT('navProfileLabel', lang.navProfile);
+
+        // Modals
+        setT('leaderboardTitle', lang.leaderboardTitle);
+        setT('topHeroesText', lang.topHeroes);
 
         // Premium modal
         setT('premiumTitle', lang.premiumTitle);
@@ -568,7 +604,7 @@ function toggleGlobalView() {
 
 // ==================== FILTERING & RENDERING ====================
 function filterAndRenderItems() {
-    filteredItems = allItems.filter(item => {
+    filteredItems = allItems.map(item => translateDemo(item)).filter(item => {
         if (currentFilter !== 'all' && item.category !== currentFilter) return false;
         if (currentSearch) {
             const s = currentSearch.toLowerCase();
@@ -1018,10 +1054,25 @@ async function loadProfile() {
         if (karmaEl) karmaEl.textContent = karma;
     } catch (e) { console.error("Stats load error", e); }
 
-    // Load Referral Data
+    // Load Referral Data and Premium Status
     try {
         const refRes = await fetch(`/api/referral?user_id=${user.id}`);
         const refData = await refRes.json();
+        
+        // Show Premium badge if user has Premium (any way)
+        console.log('Referral data:', refData); // DEBUG
+        const premiumBadge = document.getElementById('premiumBadge');
+        console.log('Premium badge element:', premiumBadge); // DEBUG
+        if (premiumBadge) {
+            if (refData.is_premium) {
+                console.log('Showing premium badge'); // DEBUG
+                premiumBadge.classList.remove('hidden');
+                premiumBadge.style.display = 'inline-flex';
+            } else {
+                console.log('Hiding premium badge, is_premium:', refData.is_premium); // DEBUG
+                premiumBadge.classList.add('hidden');
+            }
+        }
         const refSection = document.getElementById('referralSection');
         if (refSection) {
             const progress = Math.min(refData.ref_count, refData.ref_needed);
@@ -1048,24 +1099,24 @@ async function loadProfile() {
                             <div class="bg-gradient-to-r from-yellow-300 to-amber-400 h-2.5 rounded-full transition-all" style="width: ${pct}%"></div>
                         </div>
                     </div>
-                    ${refData.premium_earned ? `
-                        <div class="text-center py-3 bg-white/20 rounded-xl text-white text-sm font-bold backdrop-blur">
+                    ${refData.is_premium ? `
+                        <div class="text-center py-2 bg-white/20 rounded-xl text-white text-sm font-bold backdrop-blur mb-3">
                             🌟 Premium активирован навсегда!
+                            ${refData.premium_earned ? '<div class="text-xs text-purple-200 mt-1">Получен за 3 друзей</div>' : '<div class="text-xs text-purple-200 mt-1">Premium доступ</div>'}
                         </div>
-                    ` : `
-                        <div class="space-y-2">
-                            <button onclick="shareRefLink('${refData.ref_link}')" 
-                                    class="w-full py-3 bg-white text-purple-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-purple-50 transition-all active:scale-[0.98]">
-                                <i class="fab fa-telegram text-lg"></i>
-                                ${lang.referralShare || 'Поделиться в Telegram'}
-                            </button>
-                            <button onclick="copyRefLinkAlt('${refData.ref_link}')" 
-                                    class="w-full py-2 bg-white/10 text-white/80 rounded-xl text-xs flex items-center justify-center gap-1 hover:bg-white/20 transition-all" id="copyRefBtnAlt">
-                                <i class="fas fa-link text-[10px]"></i>
-                                ${lang.referralCopy}
-                            </button>
-                        </div>
-                    `}
+                    ` : ''}
+                    <div class="space-y-2">
+                        <button onclick="shareRefLink('${refData.ref_link}')" 
+                                class="w-full py-3 bg-white text-purple-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-purple-50 transition-all active:scale-[0.98]">
+                            <i class="fab fa-telegram text-lg"></i>
+                            ${lang.referralShare || 'Поделиться в Telegram'}
+                        </button>
+                        <button onclick="copyRefLinkAlt('${refData.ref_link}')" 
+                                class="w-full py-2 bg-white/10 text-white/80 rounded-xl text-xs flex items-center justify-center gap-1 hover:bg-white/20 transition-all" id="copyRefBtnAlt">
+                            <i class="fas fa-link text-[10px]"></i>
+                            ${lang.referralCopy}
+                        </button>
+                    </div>
                 </div>
             `;
         }
@@ -1212,6 +1263,78 @@ async function loadLeaderboard() {
     }
 }
 
+const DEMO_TRANSLATIONS = {
+    'Автокресло Maxi-Cosi': { en: 'Maxi-Cosi Car Seat', es: 'Silla auto Maxi-Cosi', pt: 'Cadeira Maxi-Cosi', uk: 'Автокрісло Maxi-Cosi', ka: 'ავტოკრესლო Maxi-Cosi' },
+    'LEGO Duplo набор': { en: 'LEGO Duplo set', es: 'Set LEGO Duplo', pt: 'Conjunto LEGO Duplo', uk: 'Набір LEGO Duplo', ka: 'LEGO Duplo-ს ნაკრები' },
+    'Комбинезон зимний': { en: 'Winter jumpsuit', es: 'Mono de invierno', pt: 'Macacão de inverno', uk: 'Комбінезон зимовий', ka: 'ზამთრის კომბინიზონი' },
+    'Коляска Bugaboo Fox 3': { en: 'Bugaboo Fox 3 Stroller', es: 'Cochecito Bugaboo Fox 3', pt: 'Carrinho Bugaboo Fox 3', uk: 'Коляска Bugaboo Fox 3', ka: 'ეტლი Bugaboo Fox 3' },
+    'Деревянная лошадка': { en: 'Wooden horse', es: 'Caballito de madera', pt: 'Cavalo de madeira', uk: 'Дерев’яна конячка', ka: 'ხის ცხენი' },
+    'Детская кроватка': { en: 'Baby crib', es: 'Cuna de bebé', pt: 'Berço de bebé', uk: 'Дитяче ліжечко', ka: 'საბავშვო საწოლი' },
+    'Стульчик для кормления': { en: 'High chair', es: 'Trona de bebé', pt: 'Cadeira de alimentação', uk: 'Стільчик для годування', ka: 'საკვები სკამი' },
+    'Велосипед детский': { en: 'Kids bicycle', es: 'Bicicleta infantil', pt: 'Bicicleta infantil', uk: 'Велосипед дитячий', ka: 'საბავშვო ველოსიპედი' },
+    'Набор развивающих игрушек': { en: 'Educational toys set', es: 'Set de juguetes educativos', pt: 'Conjunto de brinquedos educativos', uk: 'Набір розвиваючих іграшок', ka: 'განმავითარებელი სათამაშოების ნაკრები' },
+    'Кукла в платье': { en: 'Doll in a dress', es: 'Muñeca con vestido', pt: 'Boneca de vestido', uk: 'Лялька у сукні', ka: 'თოჯინა კაბაში' },
+    'Радионяня Philips': { en: 'Philips baby monitor', es: 'Vigilabebés Philips', pt: 'Monitor de bebé Philips', uk: 'Радіоняня Philips', ka: 'რადიოძიძა Philips' },
+    'Ванночка для купания': { en: 'Baby bath tub', es: 'Bañera de bebé', pt: 'Banheira de bebé', uk: 'Ванночка для купання', ka: 'საბავშვო აბაზანა' },
+    'Электрокачели 4moms': { en: '4moms mamaRoo', es: 'Hamaca 4moms', pt: 'Espreguiçadeira 4moms', uk: 'Електрогойдалка 4moms', ka: 'ელექტრო საქანელა 4moms' },
+    'Конструктор магнитный': { en: 'Magnetic building tiles', es: 'Bloques magnéticos', pt: 'Blocos magnéticos', uk: 'Магнітний конструктор', ka: 'მაგნიტური კონსტრუქტორი' },
+    'Плед детский мягкий': { en: 'Soft baby blanket', es: 'Manta suave para bebé', pt: 'Manta macia para bebé', uk: 'Плед дитячий м’який', ka: 'საბავშვო რბილი პლედი' },
+    'Кроссовки Nike 22р': { en: 'Nike sneakers size 22', es: 'Zapatillas Nike talla 22', pt: 'Sapatilhas Nike tam 22', uk: 'Кросівки Nike 22р', ka: 'Nike-ს ბოტასები 22ზ.' },
+    'Машина на пульте': { en: 'RC car', es: 'Coche teledirigido', pt: 'Carro telecomandado', uk: 'Машина на пульті', ka: 'სათამაშო მანქანა პულტით' },
+    'Самокат трехколесный': { en: '3-wheel scooter', es: 'Patinete de 3 ruedas', pt: 'Trotinete de 3 rodas', uk: 'Самокат триколісний', ka: 'სამბორბლიანი სკუტერი' },
+    'Кухонный игровой набор': { en: 'Play kitchen set', es: 'Set de cocina de juguete', pt: 'Conjunto de cozinha de brinquedo', uk: 'Ігровий набір кухня', ka: 'სათამაშო სამზარეულოს ნაკრები' },
+    'Книжки для малышей (5шт)': { en: 'Board books (5pcs)', es: 'Libros de cartón (5 uds)', pt: 'Livros de cartão (5 un)', uk: 'Книжки для малюків (5шт)', ka: 'წიგნები პატარებისთვის (5ც.)' },
+    'Ищу зимний комбинезон 86см': { en: 'Looking for winter jumpsuit 86cm', es: 'Busco mono de invierno 86cm', pt: 'Procuro macacão de inverno 86cm', uk: 'Шукаю зимовий комбінезон 86см', ka: 'ვეძებ ზამთრის კომბინიზონს 86სმ' },
+    'Нужен велосипед 14"': { en: 'Need 14" bicycle', es: 'Busco bicicleta de 14"', pt: 'Preciso de bicicleta 14"', uk: 'Потрібен велосипед 14"', ka: 'მჭირდება ველოსიპედი 14"' },
+    'Приму в дар автокресло': { en: 'Looking for a free car seat', es: 'Busco silla auto de regalo', pt: 'Aceito doação de cadeira auto', uk: 'Прийму в дарунок автокрісло', ka: 'მივიღებ საჩუქრად ავტოკრესლოს' },
+    'Ищу игрушки для песочницы': { en: 'Looking for sandbox toys', es: 'Busco juguetes de arena', pt: 'Procuro brinquedos de areia', uk: 'Шукаю іграшки для пісочниці', ka: 'ვეძებ სათამაშოებს სილისთვის' },
+    'Нужна прогулочная коляска': { en: 'Need a lightweight stroller', es: 'Busco sillita de paseo', pt: 'Preciso de um carrinho leve', uk: 'Потрібна прогулянкова коляска', ka: 'მჭირდება სასეირნო ეტლი' },
+    'Ищу развивающий коврик': { en: 'Looking for a play mat', es: 'Busco manta de actividades', pt: 'Procuro tapete de atividades', uk: 'Шукаю розвиваючий килимок', ka: 'ვეძებ განმავითარებელ ხალიჩას' },
+    'Батуми': { en: 'Batumi', es: 'Batumi', pt: 'Batumi', uk: 'Батумі', ka: 'ბათუმი' },
+    'Тбилиси': { en: 'Tbilisi', es: 'Tbilisi', pt: 'Tbilisi', uk: 'Тбілісі', ka: 'თბილისი' },
+    'Москва': { en: 'Moscow', es: 'Moscú', pt: 'Moscovo', uk: 'Москва', ka: 'მოსკოვი' },
+    'Барселона': { en: 'Barcelona', es: 'Barcelona', pt: 'Barcelona', uk: 'Барселона', ka: 'ბარსელონა' },
+    'Киев': { en: 'Kyiv', es: 'Kiev', pt: 'Kiev', uk: 'Київ', ka: 'კიევი' },
+    'Лиссабон': { en: 'Lisbon', es: 'Lisboa', pt: 'Lisboa', uk: 'Лісабон', ka: 'ლისაბონი' },
+    'Мадрид': { en: 'Madrid', es: 'Madrid', pt: 'Madrid', uk: 'Мадрид', ka: 'მადრიდი' },
+    'Казань': { en: 'Kazan', es: 'Kazán', pt: 'Cazã', uk: 'Казань', ka: 'ყაზანი' },
+    'Старый город': { en: 'Old Town', es: 'Casco Antiguo', pt: 'Cidade Velha', uk: 'Старе місто', ka: 'ძველი ქალაქი' },
+    'Сабуртало': { en: 'Saburtalo', es: 'Saburtalo', pt: 'Saburtalo', uk: 'Сабуртало', ka: 'საბურთალო' },
+    'Эшампле': { en: 'Eixample', es: 'Eixample', pt: 'Eixample', uk: 'Ешампლე', ka: 'ეშამპლე' },
+    'Хамовники': { en: 'Khamovniki', es: 'Khamovniki', pt: 'Khamovniki', uk: 'Хамовники', ka: 'ხამოვნიკი' },
+    'Печерск': { en: 'Pechersk', es: 'Pechersk', pt: 'Pechersk', uk: 'Печерськ', ka: 'პეჩერსკი' },
+    'Шиаду': { en: 'Chiado', es: 'Chiado', pt: 'Chiado', uk: 'Шіаду', ka: 'შიადუ' },
+    'Андрей': { en: 'Andrew', es: 'Andrés', pt: 'André', uk: 'Андрій', ka: 'ანდრია' },
+    'Мария': { en: 'Maria', es: 'María', pt: 'Maria', uk: 'Марія', ka: 'მარიამი' },
+    'Давид': { en: 'David', es: 'David', pt: 'David', uk: 'Давид', ka: 'დავითი' },
+    'Елена': { en: 'Elena', es: 'Elena', pt: 'Elena', uk: 'Олена', ka: 'ელენე' },
+    'Анна': { en: 'Anna', es: 'Ana', pt: 'Ana', uk: 'Анна', ka: 'ანა' },
+    'Тамара': { en: 'Tamara', es: 'Tamara', pt: 'Tamara', uk: 'Тамара', ka: 'თამარი' }
+};
+
+function translateStr(str) {
+    if (currentLang === 'ru') return str;
+    const trans = DEMO_TRANSLATIONS[str];
+    if (trans && trans[currentLang]) return trans[currentLang];
+    return str;
+}
+
+function translateDemo(item) {
+    // Only translate demo items (owner_id == 0) and only if NOT FROM RU OR IF USER NOT RU
+    if (item.owner_id != 0) return item;
+    
+    // Rule: "по странам только, если из россии объявление не надо переводить и тд"
+    // Interpretation: If item is from RU, keep Russian. Otherwise translate.
+    if (item.country === 'RU') return item;
+    
+    return {
+        ...item,
+        title: translateStr(item.title),
+        city: translateStr(item.city),
+        district: translateStr(item.district)
+    };
+}
+
 let tickerMessages = [];
 let tickerIndex = 0;
 let tickerInterval = null;
@@ -1226,22 +1349,22 @@ async function loadActivities() {
         
         // Format messages
         tickerMessages = data.map(act => {
-            const name = act.user_name;
-            const title = act.item_title;
+            const name = translateStr(act.user_name);
+            const title = translateStr(act.item_title);
             if (act.activity_type === 'new_item') return `🎁 <b>${name}</b> ${t('activityNewItem')} ${title}`;
             if (act.activity_type === 'new_wish') return `🔍 <b>${name}</b> ${t('activityNewWish')} ${title}`;
             if (act.activity_type === 'item_given') return `💚 <b>${name}</b> ${t('activityGiven')} ${title}`;
             return `⚡ <b>${name}</b> — ${title}`;
         });
         
-        // Fallback demo messages if no real data
+        // Fallback demo messages (fully localized)
         if (tickerMessages.length === 0) {
             tickerMessages = [
-                '🎁 <b>Мария</b> добавила коляску в Тбилиси',
-                '💚 <b>Елена</b> отдала автокресло в Барселоне',
-                '🔍 <b>Давид</b> ищет зимний комбинезон',
-                '🎁 <b>Анна</b> добавила набор LEGO в Батуми',
-                '💚 <b>Тамара</b> отдала 20 книжек в Казани',
+                `🎁 <b>${translateStr('Мария')}</b> ${t('activityNewItem')} ${translateStr('Коляска Bugaboo Fox 3')}`,
+                `💚 <b>${translateStr('Елена')}</b> ${t('activityGiven')} ${translateStr('Автокресло Maxi-Cosi')}`,
+                `🔍 <b>${translateStr('Давид')}</b> ${t('activityNewWish')} ${translateStr('Комбинезон зимний')}`,
+                `🎁 <b>${translateStr('Анна')}</b> ${t('activityNewItem')} ${translateStr('LEGO Duplo набор')}`,
+                `💚 <b>${translateStr('Тамара')}</b> ${t('activityGiven')} ${translateStr('Книжки для малышей (5шт)')}`,
             ];
         }
         

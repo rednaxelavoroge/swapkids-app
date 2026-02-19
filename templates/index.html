@@ -230,6 +230,7 @@
             <button
               class="category-btn active px-4 py-2 bg-teal-500 text-white rounded-full text-sm font-medium whitespace-nowrap transition-all"
               data-category="all"
+              id="catAll"
             >
               Все
             </button>
@@ -237,25 +238,25 @@
               class="category-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap transition-all hover:bg-gray-200"
               data-category="clothes"
             >
-              <i class="fas fa-tshirt mr-1"></i>Одежда
+              <i class="fas fa-tshirt mr-1"></i><span id="catClothes">Одежда</span>
             </button>
             <button
               class="category-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap transition-all hover:bg-gray-200"
               data-category="toys"
             >
-              <i class="fas fa-gamepad mr-1"></i>Игрушки
+              <i class="fas fa-gamepad mr-1"></i><span id="catToys">Игрушки</span>
             </button>
             <button
               class="category-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap transition-all hover:bg-gray-200"
               data-category="gear"
             >
-              <i class="fas fa-baby-carriage mr-1"></i>Коляски
+              <i class="fas fa-baby-carriage mr-1"></i><span id="catGear">Коляски</span>
             </button>
             <button
               class="category-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap transition-all hover:bg-gray-200"
               data-category="seats"
             >
-              <i class="fas fa-chair mr-1"></i>Автокресла
+              <i class="fas fa-chair mr-1"></i><span id="catSeats">Автокресла</span>
             </button>
           </div>
         </div>
@@ -376,8 +377,13 @@
                           <img id="profilePhoto" src="" alt="" class="w-full h-full object-cover hidden" />
                           <i id="profilePhotoIcon" class="fas fa-user text-3xl"></i>
                       </div>
-                      <div>
-                          <h3 class="text-xl font-bold" id="profileName">User Name</h3>
+                       <div>
+                          <div class="flex items-center gap-2">
+                              <h3 class="text-xl font-bold" id="profileName">User Name</h3>
+                              <span id="premiumBadge" class="hidden px-2 py-0.5 bg-gradient-to-r from-yellow-400 to-amber-500 text-white text-xs font-bold rounded-full shadow-lg border border-white/30">
+                                  ⭐ PREMIUM
+                              </span>
+                          </div>
                           <p class="text-teal-100 text-sm" id="profileStatsLabel">Ваша статистика</p>
                       </div>
                   </div>
@@ -854,6 +860,6 @@
       </div>
     </div>
 
-    <script src="/static/app.js?v=3.6"></script>
+    <script src="/static/app.js?v=3.7"></script>
   </body>
 </html>

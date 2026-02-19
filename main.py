@@ -800,6 +800,7 @@ async def api_get_referral(request):
         'ref_link': ref_link,
         'ref_count': ref_count,
         'ref_needed': 3,
+        'is_premium': is_premium,
         'premium_earned': is_premium and ref_count >= 3
     })
 
