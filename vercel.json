@@ -1,51 +1,17 @@
 {
   "version": 2,
-  "name": "swapkids",
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/index.py",
-      "use": "@vercel/python"
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
     },
     {
-      "src": "landing.html",
-      "use": "@vercel/static"
+      "source": "/app",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/landing.html"
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/test-bot",
-      "dest": "api/index.py"
-    },
-    {
-      "src": "/api/debug",
-      "dest": "api/index.py"
-    },
-    {
-      "src": "/api/webhook",
-      "dest": "api/index.py"
-    },
-    {
-      "src": "/api/app",
-      "dest": "api/index.py"
-    },
-    {
-      "src": "/app",
-      "dest": "api/index.py"
-    },
-    {
-      "src": "/static/(.*)",
-      "dest": "/static/$1"
-    },
-    {
-      "src": "/landing",
-      "dest": "/landing.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/landing.html"
-    }
-  ],
-  "github": {
-    "silent": true
-  }
+  ]
 }
