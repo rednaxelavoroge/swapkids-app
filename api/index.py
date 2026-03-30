@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 import json
 import os
 import logging
+import requests
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -36,7 +37,7 @@ items_db = {
 user_locations = {}  # user_id -> {country, city}
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "8465311912:AAGEVTxHRr3-tc6vCBAUE_9Flni26APK-lk")
-BASE_URL = "https://swapkids.org"
+BASE_URL = "https://tg.swapkids.org"
 
 # Полные переводы для 6 языков
 TRANSLATIONS = {
@@ -1071,24 +1072,27 @@ def webhook():
                 
                 # Отправляем через Telegram API
                 if BOT_TOKEN:
-                    import requests
-                    requests.post(
-                        f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-                        json={
-                            'chat_id': chat_id,
-                            'text': welcome_text,
-                            'parse_mode': 'HTML',
-                            'reply_markup': {
-                                'inline_keyboard': [[
-                                    {
-                                        'text': btn_text,
-                                        'web_app': {'url': f"{BASE_URL}/app?lang={lang}"}
-                                    }
-                                ]]
-                            }
-                        },
-                        timeout=10
-                    )
+                    try:
+                        resp = requests.post(
+                            f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+                            json={
+                                'chat_id': chat_id,
+                                'text': welcome_text,
+                                'parse_mode': 'HTML',
+                                'reply_markup': {
+                                    'inline_keyboard': [[
+                                        {
+                                            'text': btn_text,
+                                            'web_app': {'url': f"{BASE_URL}/app?lang={lang}"}
+                                        }
+                                    ]]
+                                }
+                            },
+                            timeout=10
+                        )
+                        logger.info(f"Telegram API response: {resp.status_code} {resp.text}")
+                    except Exception as e:
+                        logger.error(f"Failed to send Telegram message: {e}")
         
         return jsonify({'ok': True})
     except Exception as e:

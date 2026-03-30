@@ -46,7 +46,7 @@ ADMIN_ID = os.environ.get("ADMIN_ID") # ID вашего аккаунта в ТГ
 PRICE_STARS = 500  # 500 Telegram Stars
 
 # Явно прописываем домен VPS вместо Replit
-BASE_URL = "https://swapkids.org"
+BASE_URL = "https://tg.swapkids.org"
 # =============================================
 
 logging.basicConfig(level=logging.INFO)
