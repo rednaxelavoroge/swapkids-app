@@ -62,6 +62,16 @@ def test_bot():
     except Exception as e:
         return str(e), 500
 
+@app.route('/')
+@app.route('/api')
+@app.route('/api/')
+def root():
+    return jsonify({
+        'status': 'ok',
+        'app': 'Swap Kids Global API',
+        'routes': ['/api/hello', '/api/debug', '/api/test-bot', '/api/webhook', '/app']
+    })
+
 @app.route('/api/hello')
 @app.route('/hello')
 def hello():
