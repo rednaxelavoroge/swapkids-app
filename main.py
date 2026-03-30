@@ -397,7 +397,7 @@ async def command_start(message: types.Message):
         text = greetings.get(lang, greetings['en'])
         
         kb = InlineKeyboardBuilder()
-        kb.button(text=btn_text, web_app=WebAppInfo(url=f"{BASE_URL}?lang={lang}"))
+        kb.button(text=btn_text, web_app=WebAppInfo(url=f"{BASE_URL}/app?lang={lang}"))
         
         await message.answer(text, reply_markup=kb.as_markup(), parse_mode="HTML")
     except Exception as e:

@@ -970,11 +970,13 @@ def generate_html():
 </body>
 </html>'''
 
-@app.route('/')
+@app.route('/app')
+@app.route('/api/app')
 def index():
     """Main page"""
     return generate_html()
 
+@app.route('/api/webhook', methods=['POST'])
 @app.route('/webhook', methods=['POST'])
 def webhook():
     """Handle Telegram webhook"""
@@ -1080,7 +1082,7 @@ def webhook():
                                 'inline_keyboard': [[
                                     {
                                         'text': btn_text,
-                                        'web_app': {'url': f"{BASE_URL}?lang={lang}"}
+                                        'web_app': {'url': f"{BASE_URL}/app?lang={lang}"}
                                     }
                                 ]]
                             }
