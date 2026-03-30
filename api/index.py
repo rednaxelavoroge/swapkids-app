@@ -35,7 +35,8 @@ items_db = {
 }
 user_locations = {}  # user_id -> {country, city}
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "8465311912:AAGEVTxHRr3-tc6vCBAUE_9Flni26APK-lk")
+BASE_URL = "https://swapkids.org"
 
 # Полные переводы для 6 языков
 TRANSLATIONS = {
@@ -986,25 +987,105 @@ def webhook():
             chat_id = data['message']['chat']['id']
             user = data['message']['from']
             
-            if text == '/start':
+            if text == '/start' or text.startswith('/start'):
                 # Определяем язык пользователя
                 lang = user.get('language_code', 'en')[:2]
                 if lang not in TRANSLATIONS:
                     lang = 'en'
                 
-                welcome = TRANSLATIONS[lang]['welcome']
+                # Детальные приветствия (как в main.py)
+                welcome_messages = {
+                    'ru': (
+                        "👋 <b>Добро пожаловать в Swap Kids Global!</b>\n\n"
+                        "🌍 Здесь родители со всего мира обмениваются детскими вещами <b>бесплатно</b>!\n\n"
+                        "👕 Одежда  •  🧸 Игрушки\n"
+                        "🚗 Коляски  •  💺 Автокресла\n\n"
+                        "📍 Выберите свою страну и город в приложении,\n"
+                        "чтобы найти вещи рядом с вами.\n\n"
+                        "✨ <i>Swap Kids — некоммерческий проект.\n"
+                        "Делитесь вещами, помогайте друг другу!</i>\n\n"
+                        "Нажмите кнопку ниже, чтобы начать 👇"
+                    ),
+                    'en': (
+                        "👋 <b>Welcome to Swap Kids Global!</b>\n\n"
+                        "🌍 Parents worldwide exchange children's items <b>for free</b>!\n\n"
+                        "👕 Clothes  •  🧸 Toys\n"
+                        "🚗 Strollers  •  💺 Car seats\n\n"
+                        "📍 Select your country and city in the app\n"
+                        "to find items near you.\n\n"
+                        "✨ <i>Swap Kids is a non-profit project.\n"
+                        "Share things, help each other!</i>\n\n"
+                        "Tap the button below to start 👇"
+                    ),
+                    'es': (
+                        "👋 <b>¡Bienvenido a Swap Kids Global!</b>\n\n"
+                        "🌍 Los padres de todo el mundo intercambian artículos infantiles <b>gratis</b>!\n\n"
+                        "👕 Ropa  •  🧸 Juguetes\n"
+                        "🚗 Carritos  •  💺 Sillas auto\n\n"
+                        "📍 Selecciona tu país и ciudad en la app\n"
+                        "para encontrar artículos cerca de ti.\n\n"
+                        "Toca el botón para comenzar 👇"
+                    ),
+                    'uk': (
+                        "👋 <b>Ласкаво просимо до Swap Kids Global!</b>\n\n"
+                        "🌍 Тут батьки з усього світу обмінюються дитячими речами <b>безкоштовно</b>!\n\n"
+                        "👕 Одяг  •  🧸 Іграшки\n"
+                        "🚗 Коляски  •  💺 Автокрісла\n\n"
+                        "📍 Виберіть країну та місто в додатку,\n"
+                        "щоб знайти речі поруч.\n\n"
+                        "Натисніть кнопку нижче, щоб почати 👇"
+                    ),
+                    'ka': (
+                        "👋 <b>კეთილი იყოს თქვენი მობრძანება Swap Kids Global-ში!</b>\n\n"
+                        "🌍 მშობლები მთელს მსოფლიოში აცვლიან ბავშვთა ნივთებს <b>უფასოდ</b>!\n\n"
+                        "👕 ტანსაცმელი  •  🧸 სათამაშოები\n"
+                        "🚗 კალოსკები  •  💺 ავტოკრესლები\n\n"
+                        "📍 აირჩიეთ ქვეყანა და ქალაქი აპლიკაციაში.\n\n"
+                        "დააჭირეთ ღילაკს დასაწყებად 👇"
+                    ),
+                    'pt': (
+                        "👋 <b>Bem-vindo ao Swap Kids Global!</b>\n\n"
+                        "🌍 Aqui os pais trocam itens infantis <b>gratuitamente</b> em todo o mundo!\n\n"
+                        "👕 Roupas  •  🧸 Brinquedos\n"
+                        "🚗 Carrinhos  •  💺 Cadeiras\n\n"
+                        "📍 Selecione seu país и cidade no app\n"
+                        "para encontrar itens perto de você.\n\n"
+                        "Toque no botão abaixo para começar 👇"
+                    ),
+                }
+                
+                welcome_text = welcome_messages.get(lang, welcome_messages['en'])
+                
+                # Текст кнопки на разных языках
+                btn_texts = {
+                    'ru': "🌍 Открыть Swap Kids",
+                    'en': "🌍 Open Swap Kids",
+                    'es': "🌍 Abrir Swap Kids",
+                    'pt': "🌍 Abrir Swap Kids",
+                    'uk': "🌍 Відкрити Swap Kids",
+                    'ka': "🌍 Swap Kids-ის გახსნა"
+                }
+                btn_text = btn_texts.get(lang, btn_texts['en'])
                 
                 # Отправляем через Telegram API
                 if BOT_TOKEN:
                     import requests
                     requests.post(
                         f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-                        json={{
+                        json={
                             'chat_id': chat_id,
-                            'text': welcome,
-                            'parse_mode': 'HTML'
-                        }},
-                        timeout=5
+                            'text': welcome_text,
+                            'parse_mode': 'HTML',
+                            'reply_markup': {
+                                'inline_keyboard': [[
+                                    {
+                                        'text': btn_text,
+                                        'web_app': {'url': f"{BASE_URL}?lang={lang}"}
+                                    }
+                                ]]
+                            }
+                        },
+                        timeout=10
                     )
         
         return jsonify({'ok': True})
