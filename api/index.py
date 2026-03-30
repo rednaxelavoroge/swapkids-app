@@ -40,6 +40,7 @@ BOT_TOKEN = "8465311912:AAGEVTxHRr3-tc6vCBAUE_9Flni26APK-lk"
 BASE_URL = "https://tg.swapkids.org"
 
 @app.route('/api/test-bot')
+@app.route('/test-bot')
 def test_bot():
     chat_id = request.args.get('chat_id')
     if not chat_id:
@@ -60,6 +61,23 @@ def test_bot():
         })
     except Exception as e:
         return str(e), 500
+
+@app.route('/api/debug')
+@app.route('/debug')
+def debug():
+    return jsonify({
+        'path': request.path,
+        'url': request.url,
+        'method': request.method
+    })
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return jsonify({
+        'error': '404',
+        'path': request.path,
+        'url': request.url
+    }), 404
 
 # Полные переводы для 6 языков
 TRANSLATIONS = {
