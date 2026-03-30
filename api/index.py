@@ -62,6 +62,14 @@ def test_bot():
     except Exception as e:
         return str(e), 500
 
+@app.route('/api/hello')
+@app.route('/hello')
+def hello():
+    return jsonify({
+        'message': 'Hello from Vercel Python API!',
+        'status': 'ok'
+    })
+
 @app.route('/api/debug')
 @app.route('/debug')
 def debug():
