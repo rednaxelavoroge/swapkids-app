@@ -36,8 +36,30 @@ items_db = {
 }
 user_locations = {}  # user_id -> {country, city}
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "8465311912:AAGEVTxHRr3-tc6vCBAUE_9Flni26APK-lk")
+BOT_TOKEN = "8465311912:AAGEVTxHRr3-tc6vCBAUE_9Flni26APK-lk"
 BASE_URL = "https://tg.swapkids.org"
+
+@app.route('/api/test-bot')
+def test_bot():
+    chat_id = request.args.get('chat_id')
+    if not chat_id:
+        return "Please provide chat_id", 400
+    try:
+        resp = requests.post(
+            f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+            json={
+                'chat_id': chat_id,
+                'text': "✅ Тестовое сообщение от бота Swap Kids!",
+                'parse_mode': 'HTML'
+            },
+            timeout=10
+        )
+        return jsonify({
+            'status': resp.status_code,
+            'response': resp.json()
+        })
+    except Exception as e:
+        return str(e), 500
 
 # Полные переводы для 6 языков
 TRANSLATIONS = {
@@ -985,11 +1007,13 @@ def webhook():
         data = request.get_json()
         logger.info(f"Webhook: {data}")
         
-        if 'message' in data and 'text' in data['message']:
-            text = data['message']['text']
-            chat_id = data['message']['chat']['id']
-            user = data['message']['from']
+        if 'message' in data:
+            message = data['message']
+            chat_id = message['chat']['id']
+            text = message.get('text', '')
+            user = message.get('from', {})
             
+            # Если это /start или любое первое сообщение
             if text == '/start' or text.startswith('/start'):
                 # Определяем язык пользователя
                 lang = user.get('language_code', 'en')[:2]
