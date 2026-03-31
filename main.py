@@ -821,7 +821,8 @@ async def main():
     app = web.Application()
     
     # Роуты
-    app.router.add_get('/', handle_index)
+    app.router.add_get('/', handle_landing)
+    app.router.add_get('/app', handle_index)
     app.router.add_get('/static/{filename}', handle_static)
     
     # API
