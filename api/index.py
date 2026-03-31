@@ -3,7 +3,6 @@ from flask import Flask, request, jsonify
 import json
 import os
 import logging
-import requests
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -36,66 +35,7 @@ items_db = {
 }
 user_locations = {}  # user_id -> {country, city}
 
-BOT_TOKEN = "8465311912:AAGEVTxHRr3-tc6vCBAUE_9Flni26APK-lk"
-BASE_URL = "https://tg.swapkids.org"
-
-@app.route('/api/test-bot')
-@app.route('/test-bot')
-def test_bot():
-    chat_id = request.args.get('chat_id')
-    if not chat_id:
-        return "Please provide chat_id", 400
-    try:
-        resp = requests.post(
-            f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-            json={
-                'chat_id': chat_id,
-                'text': "✅ Тестовое сообщение от бота Swap Kids!",
-                'parse_mode': 'HTML'
-            },
-            timeout=10
-        )
-        return jsonify({
-            'status': resp.status_code,
-            'response': resp.json()
-        })
-    except Exception as e:
-        return str(e), 500
-
-@app.route('/')
-@app.route('/api')
-@app.route('/api/')
-def root():
-    return jsonify({
-        'status': 'ok',
-        'app': 'Swap Kids Global API',
-        'routes': ['/api/hello', '/api/debug', '/api/test-bot', '/api/webhook', '/app']
-    })
-
-@app.route('/api/hello')
-@app.route('/hello')
-def hello():
-    return jsonify({
-        'message': 'Hello from Vercel Python API!',
-        'status': 'ok'
-    })
-
-@app.route('/api/debug')
-@app.route('/debug')
-def debug():
-    return jsonify({
-        'path': request.path,
-        'url': request.url,
-        'method': request.method
-    })
-
-@app.errorhandler(404)
-def page_not_found(e):
-    return jsonify({
-        'error': '404',
-        'path': request.path,
-        'url': request.url
-    }), 404
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 
 # Полные переводы для 6 языков
 TRANSLATIONS = {
@@ -1029,13 +969,11 @@ def generate_html():
 </body>
 </html>'''
 
-@app.route('/app')
-@app.route('/api/app')
+@app.route('/')
 def index():
     """Main page"""
     return generate_html()
 
-@app.route('/api/webhook', methods=['POST'])
 @app.route('/webhook', methods=['POST'])
 def webhook():
     """Handle Telegram webhook"""
@@ -1043,116 +981,31 @@ def webhook():
         data = request.get_json()
         logger.info(f"Webhook: {data}")
         
-        if 'message' in data:
-            message = data['message']
-            chat_id = message['chat']['id']
-            text = message.get('text', '')
-            user = message.get('from', {})
+        if 'message' in data and 'text' in data['message']:
+            text = data['message']['text']
+            chat_id = data['message']['chat']['id']
+            user = data['message']['from']
             
-            # Если это /start или любое первое сообщение
-            if text == '/start' or text.startswith('/start'):
+            if text == '/start':
                 # Определяем язык пользователя
                 lang = user.get('language_code', 'en')[:2]
                 if lang not in TRANSLATIONS:
                     lang = 'en'
                 
-                # Детальные приветствия (как в main.py)
-                welcome_messages = {
-                    'ru': (
-                        "👋 <b>Добро пожаловать в Swap Kids Global!</b>\n\n"
-                        "🌍 Здесь родители со всего мира обмениваются детскими вещами <b>бесплатно</b>!\n\n"
-                        "👕 Одежда  •  🧸 Игрушки\n"
-                        "🚗 Коляски  •  💺 Автокресла\n\n"
-                        "📍 Выберите свою страну и город в приложении,\n"
-                        "чтобы найти вещи рядом с вами.\n\n"
-                        "✨ <i>Swap Kids — некоммерческий проект.\n"
-                        "Делитесь вещами, помогайте друг другу!</i>\n\n"
-                        "Нажмите кнопку ниже, чтобы начать 👇"
-                    ),
-                    'en': (
-                        "👋 <b>Welcome to Swap Kids Global!</b>\n\n"
-                        "🌍 Parents worldwide exchange children's items <b>for free</b>!\n\n"
-                        "👕 Clothes  •  🧸 Toys\n"
-                        "🚗 Strollers  •  💺 Car seats\n\n"
-                        "📍 Select your country and city in the app\n"
-                        "to find items near you.\n\n"
-                        "✨ <i>Swap Kids is a non-profit project.\n"
-                        "Share things, help each other!</i>\n\n"
-                        "Tap the button below to start 👇"
-                    ),
-                    'es': (
-                        "👋 <b>¡Bienvenido a Swap Kids Global!</b>\n\n"
-                        "🌍 Los padres de todo el mundo intercambian artículos infantiles <b>gratis</b>!\n\n"
-                        "👕 Ropa  •  🧸 Juguetes\n"
-                        "🚗 Carritos  •  💺 Sillas auto\n\n"
-                        "📍 Selecciona tu país и ciudad en la app\n"
-                        "para encontrar artículos cerca de ti.\n\n"
-                        "Toca el botón para comenzar 👇"
-                    ),
-                    'uk': (
-                        "👋 <b>Ласкаво просимо до Swap Kids Global!</b>\n\n"
-                        "🌍 Тут батьки з усього світу обмінюються дитячими речами <b>безкоштовно</b>!\n\n"
-                        "👕 Одяг  •  🧸 Іграшки\n"
-                        "🚗 Коляски  •  💺 Автокрісла\n\n"
-                        "📍 Виберіть країну та місто в додатку,\n"
-                        "щоб знайти речі поруч.\n\n"
-                        "Натисніть кнопку нижче, щоб почати 👇"
-                    ),
-                    'ka': (
-                        "👋 <b>კეთილი იყოს თქვენი მობრძანება Swap Kids Global-ში!</b>\n\n"
-                        "🌍 მშობლები მთელს მსოფლიოში აცვლიან ბავშვთა ნივთებს <b>უფასოდ</b>!\n\n"
-                        "👕 ტანსაცმელი  •  🧸 სათამაშოები\n"
-                        "🚗 კალოსკები  •  💺 ავტოკრესლები\n\n"
-                        "📍 აირჩიეთ ქვეყანა და ქალაქი აპლიკაციაში.\n\n"
-                        "დააჭირეთ ღילაკს დასაწყებად 👇"
-                    ),
-                    'pt': (
-                        "👋 <b>Bem-vindo ao Swap Kids Global!</b>\n\n"
-                        "🌍 Aqui os pais trocam itens infantis <b>gratuitamente</b> em todo o mundo!\n\n"
-                        "👕 Roupas  •  🧸 Brinquedos\n"
-                        "🚗 Carrinhos  •  💺 Cadeiras\n\n"
-                        "📍 Selecione seu país и cidade no app\n"
-                        "para encontrar itens perto de você.\n\n"
-                        "Toque no botão abaixo para começar 👇"
-                    ),
-                }
-                
-                welcome_text = welcome_messages.get(lang, welcome_messages['en'])
-                
-                # Текст кнопки на разных языках
-                btn_texts = {
-                    'ru': "🌍 Открыть Swap Kids",
-                    'en': "🌍 Open Swap Kids",
-                    'es': "🌍 Abrir Swap Kids",
-                    'pt': "🌍 Abrir Swap Kids",
-                    'uk': "🌍 Відкрити Swap Kids",
-                    'ka': "🌍 Swap Kids-ის გახსნა"
-                }
-                btn_text = btn_texts.get(lang, btn_texts['en'])
+                welcome = TRANSLATIONS[lang]['welcome']
                 
                 # Отправляем через Telegram API
                 if BOT_TOKEN:
-                    try:
-                        resp = requests.post(
-                            f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-                            json={
-                                'chat_id': chat_id,
-                                'text': welcome_text,
-                                'parse_mode': 'HTML',
-                                'reply_markup': {
-                                    'inline_keyboard': [[
-                                        {
-                                            'text': btn_text,
-                                            'web_app': {'url': f"{BASE_URL}/app?lang={lang}"}
-                                        }
-                                    ]]
-                                }
-                            },
-                            timeout=10
-                        )
-                        logger.info(f"Telegram API response: {resp.status_code} {resp.text}")
-                    except Exception as e:
-                        logger.error(f"Failed to send Telegram message: {e}")
+                    import requests
+                    requests.post(
+                        f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+                        json={{
+                            'chat_id': chat_id,
+                            'text': welcome,
+                            'parse_mode': 'HTML'
+                        }},
+                        timeout=5
+                    )
         
         return jsonify({'ok': True})
     except Exception as e:

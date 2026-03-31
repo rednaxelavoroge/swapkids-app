@@ -13,32 +13,6 @@ from aiogram.types import PreCheckoutQuery, LabeledPrice, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiohttp import web
 import aiosqlite
-import aiohttp
-from aiohttp import FormData
-
-# --- ЗАГРУЗКА ФОТО ---
-async def upload_to_telegraph(base64_or_bytes):
-    """Загружает фото на Telegraph и возвращает URL"""
-    try:
-        # Если пришел base64, декодируем
-        if isinstance(base64_or_bytes, str) and "base64," in base64_or_bytes:
-            import base64
-            header, encoded = base64_or_bytes.split(",", 1)
-            data = base64.b64decode(encoded)
-        else:
-            data = base64_or_bytes
-
-        form = FormData()
-        form.add_field('file', data, filename='photo.jpg', content_type='image/jpeg')
-        
-        async with aiohttp.ClientSession() as session:
-            async with session.post('https://telegra.ph/upload', data=form) as resp:
-                result = await resp.json()
-                if isinstance(result, list) and len(result) > 0:
-                    return 'https://telegra.ph' + result[0]['src']
-    except Exception as e:
-        logging.error(f"Upload to Telegraph failed: {e}")
-    return None
 
 # ================= НАСТРОЙКИ =================
 BOT_TOKEN = "8465311912:AAGEVTxHRr3-tc6vCBAUE_9Flni26APK-lk"
@@ -76,11 +50,6 @@ async def init_db():
                              given_count INTEGER DEFAULT 0,
                              karma INTEGER DEFAULT 0,
                              referred_by INTEGER)''')
-        await db.execute('''CREATE TABLE IF NOT EXISTS referrals
-                            (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                             referrer_id INTEGER, referred_id INTEGER,
-                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                             UNIQUE(referrer_id, referred_id))''')
         await db.execute('''CREATE TABLE IF NOT EXISTS items 
                             (id INTEGER PRIMARY KEY AUTOINCREMENT, owner_id INTEGER, title TEXT, 
                              country TEXT, city TEXT, category TEXT, district TEXT,
@@ -126,11 +95,11 @@ async def init_db():
         await db.execute('''CREATE TABLE IF NOT EXISTS likes 
                             (user_id INTEGER, item_id INTEGER, 
                              PRIMARY KEY (user_id, item_id))''')
-        await db.execute('''CREATE TABLE IF NOT EXISTS visit_logs 
-                            (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, 
-                             country TEXT, city TEXT, lang TEXT, 
-                             source TEXT, 
-                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
+        await db.execute('''CREATE TABLE IF NOT EXISTS referrals 
+                            (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                             referrer_id INTEGER, referred_id INTEGER,
+                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                             UNIQUE(referred_id))''')
         await db.commit()
 
 async def seed_demo_data():
@@ -257,9 +226,8 @@ async def seed_demo_data():
         print("✅ Demo data seeded!")
 
 # --- ЛОГИКА ТЕЛЕГРАМ БОТА ---
-@router.message(F.text.startswith('/start'))
+@router.message(CommandStart())
 async def command_start(message: types.Message):
-    # ... (старый код start остается без изменений внутри)
     user = message.from_user
     async with aiosqlite.connect('swap_global.db') as db:
         # Проверяем, существует ли пользователь уже
@@ -322,17 +290,6 @@ async def command_start(message: types.Message):
     # Determine user language
     lang = (user.language_code or 'ru')[:2]
     
-    # Текст кнопки на разных языках
-    btn_texts = {
-        'ru': "🌍 Открыть Swap Kids",
-        'en': "🌍 Open Swap Kids",
-        'es': "🌍 Abrir Swap Kids",
-        'pt': "🌍 Abrir Swap Kids",
-        'uk': "🌍 Відкрити Swap Kids",
-        'ka': "🌍 Swap Kids-ის გახსნა"
-    }
-    btn_text = btn_texts.get(lang, btn_texts['en'])
-    
     greetings = {
         'ru': (
             "👋 <b>Добро пожаловать в Swap Kids Global!</b>\n\n"
@@ -382,26 +339,14 @@ async def command_start(message: types.Message):
             "📍 აირჩიეთ ქვეყანა და ქალაქი აპლიკაციაში.\n\n"
             "დააჭირეთ ღილაკს დასაწყებად 👇"
         ),
-        'pt': (
-            "👋 <b>Bem-vindo ao Swap Kids Global!</b>\n\n"
-            "🌍 Aqui os pais trocam itens infantis <b>gratuitamente</b> em todo o mundo!\n\n"
-            "👕 Roupas  •  🧸 Brinquedos\n"
-            "🚗 Carrinhos  •  💺 Cadeiras\n\n"
-            "📍 Selecione seu país e cidade no app\n"
-            "para encontrar itens perto de você.\n\n"
-            "Toque no botão abaixo para começar 👇"
-        ),
     }
     
-    try:
-        text = greetings.get(lang, greetings['en'])
-        
-        kb = InlineKeyboardBuilder()
-        kb.button(text=btn_text, web_app=WebAppInfo(url=f"{BASE_URL}/app?lang={lang}"))
-        
-        await message.answer(text, reply_markup=kb.as_markup(), parse_mode="HTML")
-    except Exception as e:
-        logging.error(f"Error in command_start answer: {e}")
+    text = greetings.get(lang, greetings['en'])
+    
+    kb = InlineKeyboardBuilder()
+    kb.button(text="🌍 Открыть Swap Kids", web_app=WebAppInfo(url=f"{BASE_URL}/app?lang={lang}"))
+    
+    await message.answer(text, reply_markup=kb.as_markup(), parse_mode="HTML")
 
 @router.pre_checkout_query()
 async def on_pre_checkout(pre_checkout_query: PreCheckoutQuery):
@@ -415,16 +360,6 @@ async def on_successful_payment(message: types.Message):
     await message.answer("🎉 <b>Поздравляем!</b>\n\nПремиум доступ активирован!\nТеперь вы можете видеть контакты всех продавцов.", parse_mode="HTML")
 
 # --- ВЕБ-СЕРВЕР ---
-async def handle_landing(request):
-    import os
-    # Путь к лендингу
-    template_path = os.path.join(os.path.dirname(__file__), 'landing.html')
-    if not os.path.exists(template_path):
-        return web.Response(text="Landing page not found", status=404)
-    with open(template_path, 'r', encoding='utf-8') as f:
-        html_content = f.read()
-    return web.Response(text=html_content, content_type='text/html')
-
 async def handle_index(request):
     import os
     # Путь к шаблону
@@ -449,16 +384,6 @@ async def api_get_user(request):
                     'last_name': row[4]
                 })
     return web.json_response({'error': 'User not found'}, status=404)
-
-async def api_get_user_stats(request):
-    """Статистика пользователя (сколько отдал)"""
-    user_id = request.query.get('user_id')
-    async with aiosqlite.connect('swap_global.db') as db:
-        async with db.execute("SELECT given_count, karma FROM users WHERE user_id = ?", (user_id,)) as cur:
-            row = await cur.fetchone()
-            if row:
-                return web.json_response({'given_count': row[0], 'karma': row[1]})
-    return web.json_response({'given_count': 0, 'karma': 0})
 
 async def api_get_leaderboard(request):
     """Топ 10 дарителей"""
@@ -547,27 +472,15 @@ async def api_get_items(request):
     return web.json_response(items)
 
 async def api_add_item(request):
-    """Добавить новую вещь с загрузкой фото в облако и модерацией"""
+    """Добавить новую вещь"""
     data = await request.json()
-    
-    image_url = data.get('image', '')
-    
-    # Если это base64 (загрузка с клиента), заливаем в облако
-    if image_url and image_url.startswith('data:image'):
-        cloud_url = await upload_to_telegraph(image_url)
-        if cloud_url:
-            image_url = cloud_url
-
-    # Все новые товары уходят в pending (ожидание модерации)
-    status = 'pending' if data['user_id'] != 0 else 'active'
-
     async with aiosqlite.connect('swap_global.db') as db:
         cursor = await db.execute(
-            """INSERT INTO items (owner_id, title, country, city, category, district, contact, image_url, item_type, status) 
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            """INSERT INTO items (owner_id, title, country, city, category, district, contact, image_url, item_type) 
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (data['user_id'], data['title'], data.get('country', ''), data.get('city', ''),
-             data['category'], data.get('district', ''), data['contact'], image_url,
-             data.get('item_type', 'giveaway'), status)
+             data['category'], data.get('district', ''), data['contact'], data.get('image', ''),
+             data.get('item_type', 'giveaway'))
         )
         item_id = cursor.lastrowid
         
@@ -586,58 +499,7 @@ async def api_add_item(request):
         await db.execute("UPDATE users SET karma = karma + 10 WHERE user_id = ?", (data['user_id'],))
         
         await db.commit()
-        
-        # Уведомляем админа о новом товаре
-        if status == 'pending' and ADMIN_ID:
-            asyncio.create_task(notify_admin_new_item(item_id, data, image_url))
-            
-        return web.json_response({'ok': True, 'id': item_id, 'status': status})
-
-async def notify_admin_new_item(item_id, data, image_url):
-    """Отправляет админу карточку для модерации"""
-    if not bot or not ADMIN_ID: return
-    
-    kb = InlineKeyboardBuilder()
-    kb.button(text="✅ Опубликовать", callback_data=f"mod_approve_{item_id}")
-    kb.button(text="❌ Отклонить", callback_data=f"mod_reject_{item_id}")
-    
-    text = (
-        f"🆕 <b>Новое объявление #{item_id}</b>\n\n"
-        f"👤 От: {data['contact']}\n"
-        f"📦 Товар: {data['title']}\n"
-        f"📍 Локация: {data.get('country')}, {data.get('city')}\n"
-        f"📂 Категория: {data['category']}\n"
-        f"📝 Тип: {data.get('item_type')}"
-    )
-    
-    try:
-        if image_url and image_url.startswith('http'):
-            await bot.send_photo(ADMIN_ID, photo=image_url, caption=text, reply_markup=kb.as_markup(), parse_mode="HTML")
-        else:
-            await bot.send_message(ADMIN_ID, text=text, reply_markup=kb.as_markup(), parse_mode="HTML")
-    except Exception as e:
-        logging.error(f"Moderation notify error: {e}")
-
-# Обработка колбэков модерации
-@router.callback_query(F.data.startswith("mod_"))
-async def handle_moderation(callback: types.CallbackQuery):
-    if str(callback.from_user.id) != str(ADMIN_ID):
-        await callback.answer("У вас нет прав администратора", show_alert=True)
-        return
-        
-    action, status_type, item_id = callback.data.split("_")
-    
-    async with aiosqlite.connect('swap_global.db') as db:
-        if status_type == "approve":
-            await db.execute("UPDATE items SET status = 'active' WHERE id = ?", (item_id,))
-            msg = "✅ Объявление опубликовано!"
-        else:
-            await db.execute("UPDATE items SET status = 'rejected' WHERE id = ?", (item_id,))
-            msg = "❌ Объявление отклонено."
-        await db.commit()
-        
-    await callback.message.edit_caption(caption=callback.message.caption + f"\n\n🏁 <b>Результат:</b> {msg}", parse_mode="HTML")
-    await callback.answer(msg)
+        return web.json_response({'ok': True, 'id': item_id})
 
 async def api_mark_item_given(request):
     """Отметить вещь как отданную"""
@@ -675,59 +537,17 @@ async def api_mark_item_given(request):
         await db.commit()
         return web.json_response({'ok': True})
 
-async def api_log_visit(request):
-    """Логирование входа пользователя в Mini App"""
-    data = await request.json()
-    user_id = data.get('user_id')
-    if not user_id: return web.json_response({'ok': False})
-    
+async def api_get_user_stats(request):
+    """Получить статистику пользователя (сколько отдал)"""
+    user_id = request.query.get('user_id')
     async with aiosqlite.connect('swap_global.db') as db:
-        await db.execute(
-            """INSERT INTO visit_logs (user_id, country, city, lang, source) 
-               VALUES (?, ?, ?, ?, ?)""",
-            (user_id, data.get('country'), data.get('city'), data.get('lang'), data.get('source'))
-        )
-        await db.commit()
-    return web.json_response({'ok': True})
-
-@router.message(F.text == "/admin")
-async def command_admin(message: types.Message):
-    """Админ-панель со статистикой"""
-    if str(message.from_user.id) != str(ADMIN_ID):
-        return
-
-    async with aiosqlite.connect('swap_global.db') as db:
-        # Всего пользователей
-        async with db.execute("SELECT COUNT(*) FROM users") as cur:
-            total_users = (await cur.fetchone())[0]
-        
-        # Всего товаров (активных и на модерации)
-        async with db.execute("SELECT status, COUNT(*) FROM items GROUP BY status") as cur:
-            items_stats = await cur.fetchall()
-            items_text = "\n".join([f"• {s}: {c}" for s, c in items_stats])
-            
-        # Визиты за последние 24 часа
-        async with db.execute("SELECT COUNT(DISTINCT user_id) FROM visit_logs WHERE created_at > datetime('now', '-1 day')") as cur:
-            visits_24h = (await cur.fetchone())[0]
-            
-        # Топ стран
-        async with db.execute("SELECT country, COUNT(*) as c FROM visit_logs GROUP BY country ORDER BY c DESC LIMIT 5") as cur:
-            top_countries = await cur.fetchall()
-            countries_text = "\n".join([f"• {flag_or_code(code)}: {c}" for code, c in top_countries if code])
-
-    text = (
-        "📊 <b>Статистика Swap Kids</b>\n\n"
-        f"👥 Всего пользователей: <b>{total_users}</b>\n"
-        f"📈 Уникальных визитов (24ч): <b>{visits_24h}</b>\n\n"
-        f"📦 Статус вещей:\n{items_text or 'Нет данных'}\n\n"
-        f"🌍 Топ стран визитов:\n{countries_text or 'Нет данных'}"
-    )
-    await message.answer(text, parse_mode="HTML")
-
-def flag_or_code(code):
-    # Простая функция для красоты
-    flags = {'RU': '🇷🇺', 'GE': '🇬🇪', 'ES': '🇪🇸', 'UA': '🇺🇦', 'PT': '🇵🇹', 'KZ': '🇰🇿'}
-    return flags.get(code, code)
+        async with db.execute(
+            "SELECT COUNT(*) FROM items WHERE owner_id = ? AND status = 'given'",
+            (user_id,)
+        ) as cur:
+            row = await cur.fetchone()
+            count = row[0] if row else 0
+            return web.json_response({'given_count': count})
 
 async def api_delete_item(request):
     """Удалить свою вещь"""
@@ -1001,14 +821,12 @@ async def main():
     app = web.Application()
     
     # Роуты
-    app.router.add_get('/', handle_landing)
-    app.router.add_get('/app', handle_index)
+    app.router.add_get('/', handle_index)
     app.router.add_get('/static/{filename}', handle_static)
     
     # API
     app.router.add_get('/api/user', api_get_user)
     app.router.add_post('/api/user', api_register_user)
-    app.router.add_post('/api/log_visit', api_log_visit)
     app.router.add_get('/api/items', api_get_items)
     app.router.add_post('/api/items', api_add_item)
     app.router.add_delete('/api/items', api_delete_item)
@@ -1048,7 +866,7 @@ async def main():
                     web_app=WebAppInfo(url=f"{BASE_URL}/app")
                 )
             )
-            print(f"✅ Кнопка меню установлена на: {BASE_URL}")
+            print(f"✅ Кнопка меню установлена на: {BASE_URL}/app")
             
             # Удаляем вебхук и пропускаем старые обновления, чтобы избежать Conflict
             await bot.delete_webhook(drop_pending_updates=True)
