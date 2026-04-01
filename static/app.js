@@ -479,8 +479,8 @@ function applyTranslations() {
         setT('karmaRule3', lang.karmaRule3);
         setT('karmaBookingTeaser', lang.karmaBookingTeaser);
 
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) searchInput.placeholder = lang.search;
+        const searchInput2 = document.getElementById('searchInput');
+        if (searchInput2) searchInput2.placeholder = lang.search;
         setT('appSubtitle', lang.appSubtitle);
 
         setT('catAll', lang.all);
