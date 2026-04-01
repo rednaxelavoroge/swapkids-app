@@ -700,14 +700,18 @@ async function toggleLike(itemId) {
         });
         const data = await res.json();
         if (data.ok) {
-            // Update with real count from server just in case
             likeCounter.textContent = data.likes_count;
-            // Also update the local state for this item so it persists during current session filtering
             const item = allItems.find(it => it.id === itemId);
             if (item) {
                 item.likes_count = data.likes_count;
                 item.is_liked = data.action === 'added';
             }
+            // Also add/remove from personal favorites (Лайки tab)
+            await fetch('/api/favorites', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ item_id: itemId, user_id: userId })
+            });
         }
     } catch (e) {
         console.error("Like toggle error", e);
@@ -1018,12 +1022,20 @@ function switchView(view) {
     const profileView = document.getElementById('profileView');
     const fab = document.getElementById('fabAdd');
 
+    // Reset nav highlight
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('text-teal-500'));
+
     if (view === 'home') {
         profileView.classList.add('hidden');
         if (fab) fab.classList.remove('hidden');
+        const navHome = document.getElementById('navHome');
+        if (navHome) navHome.classList.add('text-teal-500');
+        loadItems(); // always reload full feed
     } else if (view === 'profile') {
         profileView.classList.remove('hidden');
         if (fab) fab.classList.add('hidden');
+        const navProfile = document.getElementById('navProfile');
+        if (navProfile) navProfile.classList.add('text-teal-500');
         loadProfile();
     }
 }
