@@ -855,7 +855,7 @@ async def main():
     await runner.setup()
     
     # Поменяем порт на 8000, так как 8080 может быть занят на VPS
-    site = web.TCPSite(runner, '0.0.0.0', 8000)
+    site = web.TCPSite(runner, '0.0.0.0', 8080)
     await site.start()
     
     print(f"✅ Сервер работает: {BASE_URL}")
