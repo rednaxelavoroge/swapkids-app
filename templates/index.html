@@ -1,121 +1,865 @@
 <!doctype html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Растем вместе</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Swap Kids Global — Круговорот добра</title>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://t.me/SwapKidsBot">
+    <meta property="og:title" content="Swap Kids — Отдавайте и забирайте вещи бесплатно!">
+    <meta property="og:description" content="🎁 10,000+ родителей уже с нами! Обменивайтесь колясками, одеждой и игрушками в 50+ странах. Экономьте бюджет и дарите вещам вторую жизнь. ✨">
+    <meta property="og:image" content="/static/og-banner.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://t.me/SwapKidsBot">
+    <meta property="twitter:title" content="Swap Kids — Отдавайте и забирайте вещи бесплатно!">
+    <meta property="twitter:description" content="🎁 10,000+ родителей уже с нами! Обменивайтесь колясками, одеждой и игрушками в 50+ странах. Экономьте бюджет и дарите вещам вторую жизнь. ✨">
+    <meta property="twitter:image" content="/static/og-banner.png">
+
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .tab-active { color: #f59e0b; }
-        .tab-inactive { color: #9ca3af; }
-    </style>
-</head>
-<body class="bg-gray-50 font-sans text-gray-800 pb-20">
-    
-    <div class="bg-white p-5 rounded-b-[2rem] shadow-sm border-b border-gray-100 flex justify-between items-center sticky top-0 z-40">
-        <div>
-            <h1 class="text-2xl font-bold flex items-center gap-2 text-gray-800">
-                <i class="fas fa-sun text-yellow-400"></i> Растем вместе
-            </h1>
-            <p class="text-gray-500 text-xs mt-1">Сообщество родителей</p>
-        </div>
-        <button onclick="alert('В будущем здесь откроется чат с Ангелом-помощником!')" class="w-10 h-10 bg-yellow-50 rounded-full flex items-center justify-center text-yellow-500 shadow-sm relative">
-            <i class="fas fa-dove"></i>
-            <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-400 rounded-full border-2 border-white"></span>
-        </button>
-    </div>
-
-    <div class="mx-4 mt-4 bg-white p-4 rounded-2xl shadow-sm flex justify-between items-center border border-gray-100">
-        <div class="flex items-center gap-3 text-gray-700">
-            <i class="fas fa-map-marker-alt text-yellow-400 text-lg"></i>
-            <div>
-                <div class="font-bold text-sm" id="locText">Батуми, Грузия</div>
-            </div>
-        </div>
-        <button class="text-yellow-500 font-bold text-xs flex items-center gap-1 bg-yellow-50 px-3 py-1.5 rounded-lg">
-            Изменить
-        </button>
-    </div>
-
-    <div id="mainContent" class="p-4">
-        <div class="flex justify-between items-center mb-4">
-            <h2 id="sectionTitle" class="font-bold text-lg text-gray-800">📦 Желтый чемоданчик</h2>
-            <span class="text-xs bg-gray-100 px-2 py-1 rounded text-gray-500">Свежее</span>
-        </div>
-        
-        <div id="grid" class="grid grid-cols-2 gap-4">
-            <div class="col-span-2 text-center py-10 text-gray-400">
-                <i class="fas fa-spinner fa-spin text-2xl mb-2 text-yellow-400"></i>
-                <p class="text-sm">Загружаем добрые дела...</p>
-            </div>
-        </div>
-    </div>
-
-    <button onclick="alert('Откроется форма добавления для выбранного раздела')" class="fixed bottom-24 right-4 w-14 h-14 bg-yellow-400 text-white rounded-full shadow-lg shadow-yellow-200 text-2xl z-50 flex items-center justify-center transition-transform active:scale-90">
-        <i class="fas fa-plus"></i>
-    </button>
-
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-between px-6 py-3 pb-safe z-50">
-        <button onclick="switchTab('suitcase', '📦 Желтый чемоданчик')" class="flex flex-col items-center gap-1 tab-active w-1/4" id="tab-suitcase">
-            <i class="fas fa-suitcase text-xl"></i>
-            <span class="text-[10px] font-medium">Вещи</span>
-        </button>
-        <button onclick="switchTab('help', '🆘 Выручка')" class="flex flex-col items-center gap-1 tab-inactive w-1/4" id="tab-help">
-            <i class="fas fa-hands-helping text-xl"></i>
-            <span class="text-[10px] font-medium">Помощь</span>
-        </button>
-        <button onclick="switchTab('yard', '🌳 Дворик')" class="flex flex-col items-center gap-1 tab-inactive w-1/4" id="tab-yard">
-            <i class="fas fa-tree text-xl"></i>
-            <span class="text-[10px] font-medium">Встречи</span>
-        </button>
-        <button onclick="switchTab('navigator', '🧭 Навигатор')" class="flex flex-col items-center gap-1 tab-inactive w-1/4" id="tab-navigator">
-            <i class="fas fa-compass text-xl"></i>
-            <span class="text-[10px] font-medium">Места</span>
-        </button>
-    </div>
-
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <script>
-        const tg = window.Telegram.WebApp; 
-        tg.expand();
-        
-        function switchTab(tabId, title) {
-            document.getElementById('sectionTitle').innerText = title;
-            const tabs = ['suitcase', 'help', 'yard', 'navigator'];
-            tabs.forEach(t => {
-                document.getElementById('tab-' + t).classList.remove('tab-active');
-                document.getElementById('tab-' + t).classList.add('tab-inactive');
-            });
-            document.getElementById('tab-' + tabId).classList.remove('tab-inactive');
-            document.getElementById('tab-' + tabId).classList.add('tab-active');
-            loadData(tabId);
-        }
-
-        async function loadData(category = 'suitcase'){
-            try {
-                let r = await fetch('/api/items'); 
-                let d = await r.json();
-                let g = document.getElementById('grid');
-                
-                if(d.length == 0) {
-                    g.innerHTML = `<div class="col-span-2 text-center py-10 text-gray-400">Здесь пока пусто. Станьте первым Прогрессором! 🌟</div>`;
-                } else {
-                    g.innerHTML = d.map(i => `
-                        <div class="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm">
-                            <img src="${i.image||'https://placehold.co/400x300?text=Фото'}" class="w-full h-32 object-cover">
-                            <div class="p-3">
-                                <div class="font-bold text-sm text-gray-800 line-clamp-1">${i.title}</div>
-                                <div class="text-xs text-yellow-500 mt-1 flex items-center gap-1"><i class="fas fa-map-pin"></i> ${i.district}</div>
-                            </div>
-                        </div>`).join('');
-                }
-            } catch(e) {
-                console.error(e);
-            }
-        }
-
-        loadData();
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              teal: {
+                50: "#f0fdfa",
+                100: "#ccfbf1",
+                200: "#99f6e4",
+                300: "#5eead4",
+                400: "#2dd4bf",
+                500: "#14b8a6",
+                600: "#0d9488",
+                700: "#0f766e",
+                800: "#115e59",
+                900: "#134e4a",
+              },
+            },
+            fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+          },
+        },
+      };
     </script>
-</body>
+    <style>
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #f0fdfa 0%,
+          #e0f2fe 50%,
+          #f0f9ff 100%
+        );
+        min-height: 100vh;
+      }
+      .card-hover {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+      .slide-up {
+        animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+      @keyframes slideUp {
+        from {
+          transform: translateY(100%);
+        }
+        to {
+          transform: translateY(0);
+        }
+      }
+      .item-card {
+        animation: fadeInUp 0.5s ease-out forwards;
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .loading-spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #14b8a6;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .modal-enter {
+        animation: modalIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+      @keyframes modalIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="bg-white md:bg-gradient-to-br md:from-teal-50 md:via-cyan-50 md:to-blue-50 min-h-screen"
+  >
+    <div
+      class="max-w-md mx-auto bg-white md:rounded-[2.5rem] overflow-hidden min-h-screen relative md:shadow-2xl"
+    >
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-teal-600 to-teal-500 px-4 pb-6 pt-6 shadow-lg">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur shadow-inner">
+              <i class="fas fa-exchange-alt text-white text-xl"></i>
+            </div>
+            <h1 class="text-2xl font-black text-white tracking-tight">
+              Swap Kids
+            </h1>
+          </div>
+          <div class="flex items-center gap-2">
+            <select
+              id="langSelector"
+              onchange="changeLanguage()"
+              class="bg-white/20 text-white text-xs font-bold rounded-full px-3 py-2 border-0 outline-none cursor-pointer backdrop-blur appearance-none shadow-sm hover:bg-white/30 transition-all"
+            >
+              <option value="ru" class="text-gray-800">🇷🇺 RU</option>
+              <option value="en" class="text-gray-800">🇺🇸 EN</option>
+              <option value="es" class="text-gray-800">🇪🇸 ES</option>
+              <option value="pt" class="text-gray-800">🇵🇹 PT</option>
+              <option value="uk" class="text-gray-800">🇺🇦 UK</option>
+              <option value="ka" class="text-gray-800">🇬🇪 KA</option>
+            </select>
+          </div>
+        </div>
+        
+        <p class="text-teal-50 text-sm font-medium opacity-90 mb-5 pl-1" id="appSubtitle">
+          Обмен детскими вещами для заботливых родителей
+        </p>
+
+        <div class="relative group">
+          <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-teal-400 group-focus-within:text-teal-600 transition-colors"></i>
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Что вы ищете сегодня?"
+            class="w-full pl-11 pr-4 py-4 rounded-2xl bg-white border-0 text-gray-700 shadow-xl placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-teal-400/20 transition-all text-sm"
+          />
+        </div>
+      </div>
+
+      <!-- Location Bar -->
+      <div class="px-4 py-3 bg-white border-b border-gray-100">
+        <div class="flex items-center justify-between">
+          <div class="flex flex-col">
+            <span id="locationDisplay" class="text-sm text-gray-600">
+              <i class="fas fa-map-marker-alt text-teal-500 mr-1"></i>📍 Выберите
+              локацию
+            </span>
+            <button id="showGlobalBtn" onclick="toggleGlobalView()" class="text-teal-600 text-[10px] font-bold uppercase tracking-wider mt-1 flex items-center gap-1 hidden">
+              <i class="fas fa-globe"></i><span id="showEverywhereText">Показать везде</span>
+            </button>
+          </div>
+          <button
+            onclick="showLocationModal()"
+            class="text-teal-600 text-sm font-medium hover:text-teal-700"
+          >
+            <i class="fas fa-edit mr-1"></i
+            ><span id="changeLocationBtn">Изменить</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Content Views -->
+      <div id="homeView" class="view-content">
+        <!-- Feed Type Toggle -->
+        <div class="px-4 pt-4 bg-white">
+          <div class="flex p-1 bg-gray-100 rounded-2xl">
+            <button id="tabGiveaway" onclick="switchFeedType('giveaway')" class="flex-1 py-2 text-sm font-bold rounded-xl transition-all bg-white text-teal-600 shadow-sm">
+              <i class="fas fa-gift mr-1"></i><span id="labelGiveaway">Отдают</span>
+            </button>
+            <button id="tabWish" onclick="switchFeedType('wish')" class="flex-1 py-2 text-sm font-bold rounded-xl transition-all text-gray-500">
+              <i class="fas fa-bullhorn mr-1"></i><span id="labelWish">Ищут</span>
+            </button>
+          </div>
+        </div>
+        <!-- Categories -->
+        <div class="px-4 py-4 bg-white border-b border-gray-100">
+          <div
+            class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
+            id="categories"
+          >
+            <button
+              class="category-btn active px-4 py-2 bg-teal-500 text-white rounded-full text-sm font-medium whitespace-nowrap transition-all"
+              data-category="all"
+              id="catAll"
+            >
+              Все
+            </button>
+            <button
+              class="category-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap transition-all hover:bg-gray-200"
+              data-category="clothes"
+            >
+              <i class="fas fa-tshirt mr-1"></i><span id="catClothes">Одежда</span>
+            </button>
+            <button
+              class="category-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap transition-all hover:bg-gray-200"
+              data-category="toys"
+            >
+              <i class="fas fa-gamepad mr-1"></i><span id="catToys">Игрушки</span>
+            </button>
+            <button
+              class="category-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap transition-all hover:bg-gray-200"
+              data-category="gear"
+            >
+              <i class="fas fa-baby-carriage mr-1"></i><span id="catGear">Коляски</span>
+            </button>
+            <button
+              class="category-btn px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm font-medium whitespace-nowrap transition-all hover:bg-gray-200"
+              data-category="seats"
+            >
+              <i class="fas fa-chair mr-1"></i><span id="catSeats">Автокресла</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Activity Ticker -->
+        <div id="activityTicker" class="px-4 py-2.5 bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50 border-b border-teal-100/50 overflow-hidden">
+           <div class="flex items-center gap-2">
+             <span class="relative flex h-2.5 w-2.5 flex-shrink-0">
+               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+               <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+             </span>
+             <div id="tickerText" class="text-xs text-teal-800 font-medium truncate transition-all duration-500">
+                ⚡ Загрузка...
+             </div>
+           </div>
+        </div>
+
+        <!-- Welcome Message -->
+        <div
+          id="welcomeMessage"
+          class="px-4 py-4 bg-gradient-to-r from-teal-50 to-cyan-50 border-b border-teal-100"
+        >
+          <div class="flex items-start gap-3">
+            <div
+              class="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center text-white flex-shrink-0"
+            >
+              <i class="fas fa-hand-wave"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800" id="welcomeTitle">
+                Добро пожаловать! 👋
+              </h3>
+              <p
+                class="text-sm text-gray-700 mt-1 font-medium"
+                id="welcomeSubtitle"
+              >
+                Здесь родители меняются детскими вещами по всему миру.
+              </p>
+              <p class="text-sm text-gray-600 mt-2" id="welcomeText">
+                Выберите свою страну и город, чтобы видеть объявления от родителей
+                рядом с вами.
+              </p>
+              <button
+                onclick="showLocationModal()"
+                class="mt-2 text-teal-600 text-sm font-medium hover:text-teal-700"
+              >
+                <i class="fas fa-map-marker-alt mr-1"></i
+                ><span id="selectLocationBtnText">Выбрать локацию</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Items Grid -->
+        <div
+          class="px-4 py-4 pb-32 overflow-y-auto"
+          style="height: calc(100vh - 300px)"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-800" id="feedTitle">
+              Лента объявлений
+            </h2>
+            <span class="text-sm text-gray-500" id="itemsCount">0 вещей</span>
+          </div>
+          <div id="itemsGrid" class="grid grid-cols-2 gap-3 pb-8"></div>
+        </div>
+      </div>
+
+      <!-- Bottom Navigation -->
+      <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-gray-100 px-6 py-3 pb-8 flex items-center justify-around z-50 max-w-md mx-auto rounded-t-[2.5rem] shadow-[0_-15px_30px_-5px_rgba(0,0,0,0.08)]">
+          <button id="navHome" onclick="switchView('home')" class="flex flex-col items-center gap-1.5 text-teal-600 transition-all active:scale-95">
+              <i class="fas fa-house text-xl"></i>
+              <span class="text-[9px] font-black uppercase tracking-widest" id="navHomeLabel">Лента</span>
+          </button>
+          
+          <button onclick="openLeaderboard()" class="flex flex-col items-center gap-1.5 text-gray-400 hover:text-teal-500 transition-all active:scale-95">
+              <i class="fas fa-trophy text-xl"></i>
+              <span class="text-[9px] font-black uppercase tracking-widest" id="navLeaderLabel">Топ</span>
+          </button>
+
+          <div class="w-16"></div> <!-- Large Spacer for FAB -->
+
+          <button onclick="showFavorites()" class="flex flex-col items-center gap-1.5 text-gray-400 hover:text-teal-500 transition-all active:scale-95">
+              <i class="fas fa-heart text-xl"></i>
+              <span class="text-[9px] font-black uppercase tracking-widest" id="navFavLabel">Лайки</span>
+          </button>
+
+          <button id="navProfile" onclick="switchView('profile')" class="flex flex-col items-center gap-1.5 text-gray-400 hover:text-teal-500 transition-all active:scale-95">
+              <i class="fas fa-user-circle text-xl"></i>
+              <span class="text-[9px] font-black uppercase tracking-widest" id="navProfileLabel">Профиль</span>
+          </button>
+
+          <!-- Centered FAB -->
+          <button
+            id="fabAdd"
+            onclick="openAddModal()"
+            class="absolute -top-6 left-1/2 -translate-x-1/2 w-16 h-16 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full shadow-[0_10px_25px_-5px_rgba(20,184,166,0.5)] flex items-center justify-center text-white text-3xl z-[60] transition-all hover:scale-110 active:scale-90 border-4 border-white"
+          >
+            <i class="fas fa-plus"></i>
+          </button>
+      </nav>
+    </div>
+    </div>
+      <div id="profileView" class="fixed inset-0 z-50 hidden">
+          <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="switchView('home')"></div>
+          <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-w-md mx-auto h-[90vh] overflow-y-auto slide-up p-6">
+              <div class="flex items-center justify-between mb-6">
+                  <h3 class="text-xl font-bold text-gray-800" id="profileTitle">Профиль</h3>
+                  <button onclick="switchView('home')" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600">
+                      <i class="fas fa-times"></i>
+                  </button>
+              </div>
+
+              <div class="bg-gradient-to-br from-teal-500 to-teal-600 rounded-3xl p-6 text-white mb-6 shadow-lg shadow-teal-500/20">
+                  <div class="flex items-center gap-4 mb-6">
+                      <div class="w-16 h-16 bg-white/20 rounded-2xl overflow-hidden flex items-center justify-center backdrop-blur">
+                          <img id="profilePhoto" src="" alt="" class="w-full h-full object-cover hidden" />
+                          <i id="profilePhotoIcon" class="fas fa-user text-3xl"></i>
+                      </div>
+                       <div>
+                          <div class="flex items-center gap-2">
+                              <h3 class="text-xl font-bold" id="profileName">User Name</h3>
+                              <span id="premiumBadge" class="hidden px-2 py-0.5 bg-gradient-to-r from-yellow-400 to-amber-500 text-white text-xs font-bold rounded-full shadow-lg border border-white/30">
+                                  ⭐ PREMIUM
+                              </span>
+                          </div>
+                          <p class="text-teal-100 text-sm" id="profileStatsLabel">Ваша статистика</p>
+                      </div>
+                  </div>
+                  <div class="grid grid-cols-3 gap-2">
+                      <div class="bg-white/10 rounded-2xl p-3 backdrop-blur min-w-0">
+                          <div class="text-2xl font-bold" id="statsGivenCount">0</div>
+                          <div class="text-[10px] text-teal-100 uppercase tracking-wider mt-1" id="statsGivenLabel">Отдано вещей</div>
+                      </div>
+                      <div class="bg-white/10 rounded-2xl p-3 backdrop-blur min-w-0 overflow-hidden">
+                          <div class="text-lg font-bold truncate" id="statsRank">Hero</div>
+                          <div class="text-[10px] text-teal-100 uppercase tracking-wider mt-1" id="statsRankLabel">Статус</div>
+                      </div>
+                      <div class="bg-white/10 rounded-2xl p-3 backdrop-blur min-w-0">
+                          <div class="text-2xl font-bold flex items-center gap-1">
+                              <span id="karmaCount">0</span>
+                              <i class="fas fa-bolt text-yellow-300 text-sm"></i>
+                          </div>
+                          <div class="text-[10px] text-teal-100 uppercase tracking-wider mt-1" id="karmaLabel">Карма</div>
+                      </div>
+                  </div>
+              </div>
+
+              <!-- Karma Info Card -->
+              <div class="mb-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-4 border border-amber-100">
+                  <div class="flex items-center gap-2 mb-3">
+                      <div class="w-8 h-8 bg-amber-500 rounded-xl flex items-center justify-center">
+                          <i class="fas fa-bolt text-white text-sm"></i>
+                      </div>
+                      <h4 class="font-bold text-gray-800" id="karmaInfoTitle">Как работает Карма?</h4>
+                  </div>
+                  <div class="space-y-2 mb-3">
+                      <div class="flex items-center gap-2 text-sm text-gray-700">
+                          <span class="w-14 text-right font-bold text-amber-600">+10</span>
+                          <span id="karmaRule1">Опубликуй вещь</span>
+                      </div>
+                      <div class="flex items-center gap-2 text-sm text-gray-700">
+                          <span class="w-14 text-right font-bold text-amber-600">+50</span>
+                          <span id="karmaRule2">Отдай вещь</span>
+                      </div>
+                      <div class="flex items-center gap-2 text-sm text-gray-700">
+                          <span class="w-14 text-right font-bold text-amber-600">+30</span>
+                          <span id="karmaRule3">Пригласи друга</span>
+                      </div>
+                  </div>
+                  <div class="text-xs text-amber-700 bg-amber-100/60 rounded-xl px-3 py-2 font-medium" id="karmaBookingTeaser">
+                      💡 Скоро: карма даст приоритет при бронировании популярных вещей!
+                  </div>
+              </div>
+
+              <div class="mb-6" id="referralSection">
+                  <!-- Referral data loaded by JS -->
+              </div>
+
+              <div class="mb-6">
+                  <h4 class="text-lg font-bold text-gray-800 mb-4" id="myItemsTitle">Мои объявления</h4>
+                  <div id="myItemsList" class="space-y-3">
+                      <!-- My items here -->
+                  </div>
+              </div>
+              
+              <button onclick="showFavorites()" class="w-full py-4 bg-gray-50 border border-gray-200 text-gray-700 rounded-2xl font-semibold flex items-center justify-center gap-2 hover:bg-gray-100 transition-all">
+                  <i class="fas fa-heart text-teal-500"></i>
+                  <span id="openFavoritesBtn">Избранное</span>
+              </button>
+          </div>
+      </div>
+
+      <!-- Add Item Modal -->
+    <div id="locationModal" class="fixed inset-0 z-50 hidden">
+      <div
+        class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        onclick="closeLocationModal()"
+      ></div>
+      <div
+        class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-w-md mx-auto slide-up p-6"
+      >
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-bold text-gray-800" id="locationModalTitle">
+            📍 Выберите локацию
+          </h3>
+          <button
+            onclick="closeLocationModal()"
+            class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-200"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="mb-4">
+          <label
+            class="block text-sm font-medium text-gray-700 mb-2"
+            id="countryLabel"
+            >Страна:</label
+          >
+          <select
+            id="countrySelect"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all bg-white"
+          >
+            <option value="">Выберите страну...</option>
+          </select>
+        </div>
+        <div class="mb-6">
+          <label
+            class="block text-sm font-medium text-gray-700 mb-2"
+            id="cityLabel"
+            >Город:</label
+          >
+          <input
+            type="text"
+            id="cityInput"
+            placeholder="Введите город..."
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+          />
+        </div>
+        <button
+          onclick="saveLocation()"
+          class="w-full py-4 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl font-semibold shadow-lg shadow-teal-500/30 hover:shadow-teal-500/50 transition-all"
+          id="applyBtn"
+        >
+          Применить
+        </button>
+      </div>
+    </div>
+
+    <!-- Item Detail Modal -->
+    <div id="itemModal" class="fixed inset-0 z-50 hidden">
+      <div
+        class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        onclick="closeItemModal()"
+      ></div>
+      <div
+        class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-w-md mx-auto max-h-[90vh] overflow-y-auto slide-up"
+      >
+        <div class="relative">
+          <img id="modalImage" src="" alt="" class="w-full h-64 object-cover" />
+          <button
+            onclick="closeItemModal()"
+            class="absolute top-4 right-4 w-10 h-10 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+          <div
+            id="myItemBadge"
+            class="absolute top-4 left-4 px-3 py-1 bg-teal-500 text-white text-sm font-medium rounded-full hidden"
+          >
+            <i class="fas fa-user-check mr-1"></i
+            ><span id="myItemBadgeText">Моя вещь</span>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-start justify-between mb-3">
+            <h3 id="modalTitle" class="text-xl font-bold text-gray-800"></h3>
+            <span
+              id="modalCategory"
+              class="px-3 py-1 bg-teal-100 text-teal-700 text-xs font-medium rounded-full"
+            ></span>
+          </div>
+          <div class="flex items-center gap-2 text-gray-500 mb-4">
+            <i class="fas fa-map-marker-alt text-teal-500"></i>
+            <span id="modalLocation"></span>
+          </div>
+          <div id="modalActions"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Premium Modal -->
+    <div id="premiumModal" class="fixed inset-0 z-50 hidden">
+      <div
+        class="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        onclick="closePremiumModal()"
+      ></div>
+      <div
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm px-4"
+      >
+        <div class="bg-white rounded-3xl p-6 modal-enter">
+          <div class="text-center">
+            <div
+              class="w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-amber-500/30"
+            >
+              <i class="fas fa-crown text-white text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2" id="premiumTitle">
+              Премиум доступ
+            </h3>
+            <p class="text-gray-600 mb-4" id="premiumDesc">
+              Доступ к контактам закрыт. Оплатите единый взнос для просмотра
+              всех контактов.
+            </p>
+            <div
+              class="bg-gradient-to-r from-amber-100 to-orange-100 rounded-2xl p-4 mb-4"
+            >
+              <div class="flex items-center justify-center gap-2">
+                <span class="text-3xl font-bold text-amber-700">500 ⭐</span>
+              </div>
+              <p class="text-amber-600 text-sm mt-1" id="premiumOnetime">
+                единоразовый платёж
+              </p>
+            </div>
+            <button
+              id="payButton"
+              onclick="processPayment()"
+              class="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-semibold shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 transition-all flex items-center justify-center gap-2"
+            >
+              <span id="payButtonText">Оплатить</span>
+              <div id="payLoader" class="loading-spinner hidden"></div>
+            </button>
+            <button
+              onclick="closePremiumModal()"
+              class="mt-3 text-gray-500 text-sm hover:text-gray-700 transition-colors"
+              id="premiumCancelBtn"
+            >
+              Отмена
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="fixed inset-0 z-50 hidden">
+      <div
+        class="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        onclick="closeContactModal()"
+      ></div>
+      <div
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm px-4"
+      >
+        <div class="bg-white rounded-3xl p-6 modal-enter">
+          <div class="text-center">
+            <div
+              class="w-20 h-20 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-teal-500/30"
+            >
+              <i class="fas fa-phone text-white text-3xl"></i>
+            </div>
+            <h3
+              class="text-xl font-bold text-gray-800 mb-2"
+              id="contactSellerTitle"
+            >
+              Контакт продавца
+            </h3>
+            <div class="bg-teal-50 rounded-2xl p-4 mb-4">
+              <p
+                id="contactInfo"
+                class="text-lg font-semibold text-teal-700"
+              ></p>
+            </div>
+            <a
+              id="contactLink"
+              href="#"
+              target="_blank"
+              class="block w-full py-4 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl font-semibold shadow-lg shadow-teal-500/30 hover:shadow-teal-500/50 transition-all text-center"
+            >
+              <i class="fab fa-telegram mr-2"></i
+              ><span id="writeTelegramText">Написать в Telegram</span>
+            </a>
+            <button
+              onclick="closeContactModal()"
+              class="mt-3 text-gray-500 text-sm hover:text-gray-700 transition-colors"
+              id="closeContactBtn"
+            >
+              Закрыть
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Item Modal -->
+    <div id="addModal" class="fixed inset-0 z-50 hidden">
+      <div
+        class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        onclick="closeAddModal()"
+      ></div>
+      <div
+        class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-w-md mx-auto h-[90vh] overflow-y-auto slide-up"
+      >
+        <div
+          class="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between z-10"
+        >
+          <h3 class="text-xl font-bold text-gray-800" id="addItemTitle">
+            Добавить вещь
+          </h3>
+          <button
+            onclick="closeAddModal()"
+            class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-200"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="p-6">
+          <form id="addItemForm" onsubmit="submitItem(event)">
+            <div class="mb-4">
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2"
+                id="photoLabel"
+                >Фотография</label
+              >
+              <div
+                id="photoUpload"
+                class="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center cursor-pointer hover:border-teal-500 hover:bg-teal-50 transition-all"
+                onclick="document.getElementById('itemPhoto').click()"
+              >
+                <div id="uploadPlaceholder">
+                  <i class="fas fa-camera text-4xl text-gray-400 mb-2"></i>
+                  <p class="text-gray-500 text-sm" id="uploadPhotoText">
+                    Нажмите для загрузки фото
+                  </p>
+                </div>
+                <div id="uploadPreview" class="hidden">
+                  <img
+                    src=""
+                    alt="Preview"
+                    class="w-full h-40 object-cover rounded-xl"
+                  />
+                  <p class="text-teal-600 text-sm mt-2">
+                    <i class="fas fa-check mr-1"></i
+                    ><span id="photoLoadedText">Фото загружено</span>
+                  </p>
+                </div>
+              </div>
+              <input
+                type="file"
+                id="itemPhoto"
+                class="hidden"
+                accept="image/*"
+                onchange="previewPhoto(event)"
+              />
+            </div>
+            <!-- Item Type Selector -->
+            <div class="mb-6">
+              <label class="block text-sm font-bold text-gray-700 mb-2" id="typeLabel">Что вы хотите сделать?</label>
+              <div class="flex gap-2">
+                <button type="button" id="typeBtnGiveaway" onclick="setItemType('giveaway')" class="flex-1 py-3 px-2 rounded-xl border-2 border-teal-500 bg-teal-50 text-teal-700 font-bold transition-all text-xs">
+                  <i class="fas fa-gift mr-1"></i><span id="typeGiveawayLabel">Отдаю</span>
+                </button>
+                <button type="button" id="typeBtnWish" onclick="setItemType('wish')" class="flex-1 py-3 px-2 rounded-xl border-2 border-gray-100 bg-white text-gray-500 font-bold transition-all text-xs">
+                  <i class="fas fa-bullhorn mr-1"></i><span id="typeWishLabel">Ищу</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2"
+                id="nameLabel"
+                >Название</label
+              >
+              <input
+                type="text"
+                id="itemTitle"
+                required
+                placeholder="Например: Детская коляска"
+                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+              />
+            </div>
+            <div class="mb-4">
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2"
+                id="categoryLabel"
+                >Категория</label
+              >
+              <select
+                id="itemCategory"
+                required
+                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all bg-white"
+              >
+                <option value="" id="selectCategoryOpt">
+                  Выберите категорию
+                </option>
+                <option value="clothes" id="optClothes">Одежда</option>
+                <option value="toys" id="optToys">Игрушки</option>
+                <option value="gear" id="optGear">Коляски и переноски</option>
+                <option value="seats" id="optSeats">Автокресла</option>
+                <option value="other" id="optOther">Другое</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2"
+                id="countryFormLabel"
+                >Страна</label
+              >
+              <select
+                id="itemCountry"
+                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all bg-white"
+              >
+                <option value="">Выберите страну...</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2"
+                id="cityFormLabel"
+                >Город</label
+              >
+              <input
+                type="text"
+                id="itemCity"
+                placeholder="Например: Батуми"
+                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+              />
+            </div>
+            <div class="mb-4">
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2"
+                id="districtLabel"
+                >Район</label
+              >
+              <input
+                type="text"
+                id="itemDistrict"
+                placeholder="Например: Сабуртало"
+                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+              />
+            </div>
+            <div class="mb-6">
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2"
+                id="contactFormLabel"
+                >Контакт (Telegram)</label
+              >
+              <input
+                type="text"
+                id="itemContact"
+                required
+                placeholder="@username или +1..."
+                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+              />
+            </div>
+            <button
+              type="submit"
+              id="submitButton"
+              class="w-full py-4 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-xl font-semibold shadow-lg shadow-teal-500/30 hover:shadow-teal-500/50 transition-all flex items-center justify-center gap-2"
+            >
+              <span id="publishBtn">Опубликовать</span>
+              <div id="submitLoader" class="loading-spinner hidden"></div>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div
+      id="successToast"
+      class="fixed top-8 left-1/2 -translate-x-1/2 z-[60] hidden"
+    >
+      <div
+        class="bg-gray-900 text-white px-6 py-3 rounded-full shadow-xl flex items-center gap-3"
+      >
+        <i class="fas fa-check-circle text-green-400"></i>
+        <span id="toastMessage">Успешно!</span>
+      </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboardModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden">
+      <div class="bg-white w-full max-w-sm rounded-[2rem] overflow-hidden modal-enter">
+        <div class="bg-gradient-to-r from-teal-600 to-teal-500 p-6 text-white text-center">
+          <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-trophy text-3xl"></i>
+          </div>
+          <h2 class="text-xl font-bold" id="leaderboardTitle">Топ Героев</h2>
+          <p class="text-teal-100 text-sm" id="topHeroesText">Лучшие дарители сообщества</p>
+        </div>
+        <div class="p-4 max-h-[60vh] overflow-y-auto" id="leaderboardList">
+          <!-- Leaderboard items will be loaded here -->
+        </div>
+        <div class="p-4 bg-gray-50 border-t">
+          <button onclick="closeLeaderboard()" class="w-full py-3 bg-white border border-gray-200 text-gray-600 rounded-xl font-semibold hover:bg-gray-100 transition-all">
+            Закрыть
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/static/app.js?v=3.7"></script>
+  </body>
 </html>

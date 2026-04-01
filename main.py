@@ -360,6 +360,15 @@ async def on_successful_payment(message: types.Message):
     await message.answer("🎉 <b>Поздравляем!</b>\n\nПремиум доступ активирован!\nТеперь вы можете видеть контакты всех продавцов.", parse_mode="HTML")
 
 # --- ВЕБ-СЕРВЕР ---
+async def handle_landing(request):
+    import os
+    template_path = os.path.join(os.path.dirname(__file__), 'landing.html')
+    if not os.path.exists(template_path):
+        return web.Response(text="Landing page not found", status=404)
+    with open(template_path, 'r', encoding='utf-8') as f:
+        html_content = f.read()
+    return web.Response(text=html_content, content_type='text/html')
+
 async def handle_index(request):
     import os
     # Путь к шаблону
