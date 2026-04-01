@@ -649,9 +649,9 @@ function renderItems() {
                     </div>
                     <span class="absolute top-2 left-2 px-2 py-1 bg-cyan-500 text-white text-[9px] font-black rounded-lg shadow-sm z-10 uppercase tracking-wider">${t('wishBadge')}</span>
                 ` : `
-                    <img src="${item.image_url || 'https://placehold.co/400x300/e0f2fe/0d9488?text=' + encodeURIComponent(item.title)}"
+                    <img src="${item.image_url || `https://picsum.photos/seed/swapkids${item.id}/400/300`}"
                          alt="${item.title}" class="w-full h-32 object-cover" loading="lazy"
-                         onerror="this.src='https://placehold.co/400x300/e0f2fe/0d9488?text=${encodeURIComponent(item.title)}'">
+                         onerror="this.src='https://picsum.photos/seed/swapkids${item.id}/400/300'">
                     ${item.owner_id == userId ? `<span class="absolute top-2 left-2 px-2 py-1 bg-teal-500 text-white text-xs font-medium rounded-full">${t('myItem')}</span>` : ''}
                     ${item.owner_id == 0 ? `<span class="absolute top-2 left-2 px-1.5 py-0.5 bg-black/30 text-white/70 text-[8px] font-medium rounded backdrop-blur-sm uppercase tracking-wider">demo</span>` : ''}
                 `}
