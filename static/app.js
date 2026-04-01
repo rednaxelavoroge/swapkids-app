@@ -22,7 +22,7 @@ const COUNTRIES = [
 // ==================== TRANSLATIONS ====================
 const texts = {
     'ru': {
-        appSubtitle:'Обмен детскими вещами', search:'Поиск вещей...',
+        appSubtitle:'Круговорот детских вещей', search:'Поиск вещей...',
         all:'Все', clothes:'Одежда', toys:'Игрушки', gear:'Коляски', seats:'Автокресла',
         feedTitle:'Лента объявлений', itemsCount:'вещей', noItems:'Ничего не найдено',
         changeFilters:'Попробуйте изменить фильтры', myItem:'Моё',
@@ -39,7 +39,7 @@ const texts = {
         contact:'Контакт (Telegram)', contactPlaceholder:'@username или +1...',
         publish:'Опубликовать', published:'Объявление опубликовано! ✅', deleted:'Объявление удалено',
         welcomeTitle:'Добро пожаловать! 👋',
-        welcomeSubtitle:'Здесь родители меняются детскими вещами по всему миру.',
+        welcomeSubtitle:'Здесь опытные родители помогают молодым родителям вещами по всему миру.',
         welcomeText:'Выберите свою страну и город, чтобы видеть объявления от родителей рядом с вами.',
         selectLocation:'Выбрать локацию', changeLocation:'Изменить',
         locationDisplay:'📍 Выберите локацию', locationModalTitle:'📍 Выберите локацию',

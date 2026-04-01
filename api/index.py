@@ -42,7 +42,7 @@ TRANSLATIONS = {
     'ru': {
         'welcome': "👋 Добро пожаловать в Swap Kids Global!\n\nЗдесь родители обмениваются детскими вещами по всему миру.\n📍 Выберите страну и город внутри приложения.\n\nНажмите кнопку ниже, чтобы начать 👇",
         'title': 'Swap Kids',
-        'subtitle': 'Обмен детскими вещами',
+        'subtitle': 'Круговорот детских вещей',
         'search': 'Поиск вещей...',
         'all': 'Все',
         'clothes': 'Одежда',
@@ -341,7 +341,7 @@ def generate_html():
                         <i class="fas fa-exchange-alt"></i>
                         <span id="appTitle">Swap Kids</span>
                     </h1>
-                    <p class="text-teal-100 text-sm mt-1" id="appSubtitle">Обмен детскими вещами</p>
+                    <p class="text-teal-100 text-sm mt-1" id="appSubtitle">Круговорот детских вещей</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <!-- Language Selector -->
@@ -411,7 +411,7 @@ def generate_html():
                 <div>
                     <h3 class="font-semibold text-gray-800" id="welcomeTitle">Добро пожаловать! 👋</h3>
                     <p class="text-sm text-gray-700 mt-1 font-medium" id="welcomeSubtitle">
-                        Здесь родители меняются детскими вещами по всему миру.
+                        Здесь опытные родители помогают молодым родителям вещами по всему миру.
                     </p>
                     <p class="text-sm text-gray-600 mt-2" id="welcomeText">
                         Выберите свою страну и город, чтобы видеть объявления от родителей рядом с вами.
@@ -565,13 +565,13 @@ def generate_html():
         // Translations object (embedded to avoid API calls)
         const texts = {{
             'ru': {{
-                'appSubtitle': 'Обмен детскими вещами',
+                'appSubtitle': 'Круговорот детских вещей',
                 'search': 'Поиск вещей...',
                 'all': 'Все', 'clothes': 'Одежда', 'toys': 'Игрушки', 'gear': 'Коляски', 'seats': 'Автокресла',
                 'feedTitle': 'Лента объявлений', 'itemsCount': 'вещей',
                 'noItems': 'Ничего не найдено', 'change_filters': 'Попробуйте изменить фильтры',
                 'welcomeTitle': 'Добро пожаловать! 👋',
-                'welcomeSubtitle': 'Здесь родители меняются детскими вещами по всему миру.',
+                'welcomeSubtitle': 'Здесь опытные родители помогают молодым родителям вещами по всему миру.',
                 'welcomeText': 'Выберите свою страну и город, чтобы видеть объявления от родителей рядом с вами.',
                 'contact_seller': 'Контакт продавца',
                 'selectLocationBtn': 'Выбрать локацию',
