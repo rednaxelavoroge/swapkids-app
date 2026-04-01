@@ -1393,10 +1393,30 @@ function showTickerMessage() {
     }, 400);
 }
 
-function showFavorites() {
-    isFavoritesOnly = true;
+async function showFavorites() {
+    // Highlight favorites nav button
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('text-teal-500'));
+    const navFav = document.getElementById('navFav');
+    if (navFav) navFav.classList.add('text-teal-500');
     switchView('home');
-    loadItems();
+    try {
+        const res = await fetch(`/api/favorites?user_id=${userId}`);
+        allItems = await res.json();
+        if (allItems.length === 0) {
+            const grid = document.getElementById('itemsGrid');
+            document.getElementById('itemsCount').textContent = '';
+            grid.innerHTML = `
+                <div class="col-span-2 text-center py-12">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="far fa-heart text-gray-300 text-3xl"></i>
+                    </div>
+                    <p class="text-gray-500">${t('noItems')}</p>
+                    <p class="text-gray-400 text-sm mt-1">Добавляйте вещи в избранное ❤️</p>
+                </div>`;
+        } else {
+            filterAndRenderItems();
+        }
+    } catch (e) { console.error('Error loading favorites:', e); }
 }
 
 // ==================== COLLAPSIBLE NAV ====================
